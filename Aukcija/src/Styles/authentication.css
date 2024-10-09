@@ -1,0 +1,76 @@
+/* Glavni stil za formu */
+form {
+    max-width: 500px; /* Povećana širina forme */
+    margin: 50px auto;
+    padding: 30px; /* Više prostora unutar forme */
+    background-color: #f9f9f9;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border-radius: 15px; /* Blago povećana zaobljenost ivica */
+}
+
+/* Stil za h2 (naslov) */
+h2 {
+    text-align: center;
+    color: #333;
+    font-family: 'Arial', sans-serif;
+    font-size: 28px; /* Veći naslov */
+}
+
+/* Stil za svako polje u formi */
+div {
+    margin-bottom: 20px;
+}
+
+/* Stil za label */
+label {
+    display: block;
+    margin-bottom: 8px; /* Malo više prostora između labela i polja */
+    color: #555;
+    font-size: 18px; /* Veći font za label */
+    font-family: 'Arial', sans-serif;
+}
+
+/* Stil za input polja */
+input[type="email"],
+input[type="password"] {
+    width: 100%;
+    padding: 10px; /* Povećan padding unutar input polja */
+    font-size: 18px; /* Veći font za lakše čitanje */
+    border: 1px solid #ccc;
+    border-radius: 8px; /* Zaobljenije ivice input polja */
+    box-sizing: border-box;
+    transition: border-color 0.3s;
+    text-align: center;
+}
+
+/* Promena boje okvira kada se input fokusira */
+input[type="email"]:focus,
+input[type="password"]:focus {
+    border-color: #4caf50;
+    outline: none;
+}
+
+/* Stil za dugme za prijavu */
+button[type="submit"] {
+    width: 100%;
+    padding: 15px; /* Povećan padding na dugmetu */
+    background-color:#4caf50; /* Zelena boja */
+    color: white;
+    font-size: 20px; /* Veći font na dugmetu */
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+/* Promena boje dugmeta pri hover-u */
+button[type="submit"]:hover {
+    background-color: #45a049;
+}
+
+/* Stil za poruke o uspehu ili grešci */
+p {
+    text-align: center;
+    font-size: 16px; /* Veći font za poruke */
+    font-family: 'Arial', sans-serif;
+}
