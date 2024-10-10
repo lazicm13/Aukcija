@@ -3,9 +3,9 @@ form {
     max-width: 500px; /* Povećana širina forme */
     margin: 50px auto;
     padding: 30px; /* Više prostora unutar forme */
-    background-color: #f9f9f9;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     border-radius: 15px; /* Blago povećana zaobljenost ivica */
+    background-color: white;
 }
 
 /* Stil za h2 (naslov) */
@@ -32,10 +32,11 @@ label {
 
 /* Stil za input polja */
 input[type="email"],
-input[type="password"] {
+input[type="password"],
+input[type="text"] {
     width: 100%;
-    padding: 10px; /* Povećan padding unutar input polja */
-    font-size: 18px; /* Veći font za lakše čitanje */
+    padding: 5px; /* Povećan padding unutar input polja */
+    font-size: 14px; /* Veći font za lakše čitanje */
     border: 1px solid #ccc;
     border-radius: 8px; /* Zaobljenije ivice input polja */
     box-sizing: border-box;
@@ -45,7 +46,8 @@ input[type="password"] {
 
 /* Promena boje okvira kada se input fokusira */
 input[type="email"]:focus,
-input[type="password"]:focus {
+input[type="password"]:focus,
+input[type="text"] {
     border-color: #4caf50;
     outline: none;
 }
@@ -54,7 +56,7 @@ input[type="password"]:focus {
 button[type="submit"] {
     width: 100%;
     padding: 15px; /* Povećan padding na dugmetu */
-    background-color:#4caf50; /* Zelena boja */
+    background-color: #8BC34A; /* Zelena boja */
     color: white;
     font-size: 20px; /* Veći font na dugmetu */
     border: none;
@@ -74,3 +76,37 @@ p {
     font-size: 16px; /* Veći font za poruke */
     font-family: 'Arial', sans-serif;
 }
+
+.form-container{
+    background-color: #f9f9f9;
+    padding: 30px;
+    border: solid #ccc 1px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border-radius: 15px;
+}
+
+.google-button{
+    background-color: white;
+    color: black;
+    font-size: 16px;
+    padding: 10px 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    transition: background-color 0.3s ease;
+    margin: 25px auto;
+}
+
+.google-button:hover {
+    background-color: greenyellow; /* Darker blue on hover */
+}
+
+.google-logo{
+    width: 30px; /* Logo size */
+    height: auto;
+    margin-right: 8px;
+}
+
+

@@ -37,7 +37,12 @@ function LoginComponent() {
 
     return (
         <Fragment>
-            <h2>Ulogujte se</h2>
+            <div className='form-container'>
+                <h2>Ulogujte se</h2>
+                <button className="google-button">
+                <img src="./src/assets/google-logo.png" className="google-logo"/>
+                Ulogujte se preko Gmail-a
+                </button>
             <form onSubmit={handleSubmit}>
                 <div>
                     <label htmlFor="email">Email:</label>
@@ -65,6 +70,7 @@ function LoginComponent() {
             </form>
             {error && <p style={{ color: 'red' }}>{error}</p>}
             {successMessage && <p style={{ color: 'green' }}>{successMessage}</p>}
+            </div>
         </Fragment>
     );
 }

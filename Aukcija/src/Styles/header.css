@@ -1,0 +1,24 @@
+.sticky-header {
+    position: fixed; /* Fiksira header na vrhu stranice */
+    top: 0; /* Uvek na vrhu */
+    left: 0; /* Na levoj strani */
+    width: 100%; /* Širina headera je 100% */
+    background-color: #f9f9f9; /* Pozadinska boja */
+    color: black; /* Boja teksta */
+    padding: 10px 20px; /* Unutrašnje margine */
+    display: flex; /* Aktivira flexbox */
+    justify-content: space-between; /* Omogućava razmak između elemenata */
+    align-items: center; /* Vertikalno centriranje elemenata */
+    z-index: 1000; /* Osigurava da bude iznad drugih elemenata */
+}
+
+.header-logo {
+    width: 80px;
+    height: auto; /* Zadrži proporcije logoa */
+    margin-left: 20%; /* Pomera logo bliže sredini, između početka i sredine */
+}
+
+p {
+    margin-right: 20%; /* Pomera tekst između sredine i kraja */
+    font-size: 1em; /* Veličina teksta */
+}
