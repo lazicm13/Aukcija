@@ -6,3 +6,6 @@ django-cors-headers
 djangorestframework-simplejwt
 PyJWT
 pytz
+asgiref
+python-dotenv
+sqlparse
