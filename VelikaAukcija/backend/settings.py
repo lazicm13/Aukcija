@@ -37,7 +37,7 @@ REST_FRAMEWORK = {
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
     "DEFAULT_PERMISSION_CLASSES":(
-        "rest_framework_permissions.IsAuthenticated",
+        "rest_framework.permissions.IsAuthenticated",
     ),
 }
 
@@ -71,7 +71,7 @@ MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
 ]
 
-ROOT_URLCONF = 'VelikaAukcija.urls'
+ROOT_URLCONF = 'backend.urls'
 
 TEMPLATES = [
     {
@@ -89,7 +89,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'VelikaAukcija.wsgi.application'
+WSGI_APPLICATION = 'backend.wsgi.application'
 
 
 # Database
