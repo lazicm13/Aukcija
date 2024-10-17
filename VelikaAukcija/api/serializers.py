@@ -8,9 +8,9 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ["id", "username", "password"]    
         extra_kwargs = {"password": {"write_only": True}} #We're accepting password but we are not returning it
 
-        def Create(self, validated_data):
-            user = User.objects.create_user(**validated_data)
-            return user
+    def create(self, validated_data):
+        user = User.objects.create_user(**validated_data)
+        return user
         
 class AuctionItemSerializer(serializers.ModelSerializer):
     class Meta:

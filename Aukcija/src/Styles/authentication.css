@@ -38,7 +38,7 @@ input[type="text"] {
     padding: 5px; /* Povećan padding unutar input polja */
     font-size: 14px; /* Veći font za lakše čitanje */
     border: 1px solid #ccc;
-    border-radius: 8px; /* Zaobljenije ivice input polja */
+    border-radius: 3px; /* Zaobljenije ivice input polja */
     box-sizing: border-box;
     transition: border-color 0.3s;
     text-align: center;
@@ -48,7 +48,7 @@ input[type="text"] {
 input[type="email"]:focus,
 input[type="password"]:focus,
 input[type="text"] {
-    border-color: #4caf50;
+    border-color: #B9A188;
     outline: none;
 }
 
@@ -56,7 +56,7 @@ input[type="text"] {
 button[type="submit"] {
     width: 100%;
     padding: 15px; /* Povećan padding na dugmetu */
-    background-color: #8BC34A; /* Zelena boja */
+    background-color: #4477E6; 
     color: white;
     font-size: 20px; /* Veći font na dugmetu */
     border: none;
@@ -67,7 +67,7 @@ button[type="submit"] {
 
 /* Promena boje dugmeta pri hover-u */
 button[type="submit"]:hover {
-    background-color: #45a049;
+    background-color: #518EFF;
 }
 
 /* Stil za poruke o uspehu ili grešci */
@@ -100,7 +100,7 @@ p {
 }
 
 .google-button:hover {
-    background-color: greenyellow; /* Darker blue on hover */
+    background-color: #ccc; 
 }
 
 .google-logo{
