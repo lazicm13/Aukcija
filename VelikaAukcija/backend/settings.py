@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 from pathlib import Path
 from datetime import timedelta
 from dotenv import load_dotenv
+from corsheaders.defaults import default_headers as cors_default_headers
 import os
 
 load_dotenv()
@@ -27,10 +28,37 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-^cr3fd-km1e0e5r&#6!$#a=xjh7cc1ebr0fvrw%7h)a+v5043('
 
+
+
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",
+]
+
+CORS_ORIGIN_WHITELIST = [
+    'http://localhost:5173',  # Ili adresa sa koje šalješ zahteve
+]
+# Dozvoljena zaglavlja
+default_headers = list(cors_default_headers)
+
+# Sada dodaj svoj header
+CORS_ALLOW_HEADERS = default_headers + [
+    'X-CSRFToken',
+]
+
+
+CORS_ALLOWED_METHODS = [
+    "GET",
+    "POST",
+    "OPTIONS",  
+]
+
+
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["*"] #this will allow any different host, to host our Django app
+ALLOWED_HOSTS = ["localhost"] #this will allow any different host, to host our Django app
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES":(
@@ -44,6 +72,10 @@ REST_FRAMEWORK = {
 SESSION_COOKIE_AGE = 3600
 SESSION_SAVE_EVERY_REQUEST = True
 CSRF_COOKIE_AGE = 31449600
+CSRF_COOKIE_NAME = 'csrftoken'  # Naziv kolačića
+CSRF_COOKIE_SECURE = False  # Postavite na True ako koristite HTTPS
+CSRF_COOKIE_HTTPONLY = False  # Postavite na True ako želite da onemogućite pristup JavaScript-u
+CSRF_USE_SESSIONS = False
 
 
 # Application definition
@@ -61,14 +93,14 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'backend.urls'
@@ -148,6 +180,3 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-CORS_ALLOW_ALL_ORIGINS = True # Change it later for better security
-
-CORS_ALLOWS_CREDENTIALS = True

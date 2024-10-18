@@ -21,7 +21,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
 
     if (isAuthorized === null) return <div>Loading...</div>;
 
-    if(!isAuthorized) return;
+    if(!isAuthorized) navigate('/login');
     return <>{children}</>;
 };
 

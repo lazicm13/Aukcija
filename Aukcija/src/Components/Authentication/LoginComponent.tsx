@@ -1,5 +1,6 @@
 import React, { Fragment, useState } from 'react';
 import './../../Styles/authentication.css';
+import api from '../../api';
 
 function LoginComponent() {
     const [formData, setFormData] = useState({
@@ -10,30 +11,48 @@ function LoginComponent() {
     const [error, setError] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
 
-    const handleChange = (e) => {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
     };
+    
 
-    const handleSubmit = (e) => {
+
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-
+    
         // Validacija (primer)
         if (!formData.email || !formData.password) {
             setError('Please fill in both fields.');
             return;
         }
-
-        // Simuliraj uspešnu prijavu
-        setSuccessMessage('Login successful!');
-        setError('');
-
-        // Resetuj formu (opciono)
-        setFormData({
-            email: '',
-            password: ''
-        });
+    
+        try {
+            // API poziv za prijavu
+            const response = await api.post("/api/login/", {
+                email: formData.email, // Pretpostavljamo da je korisničko ime email
+                password: formData.password
+            });
+    
+            if (response.status === 200) {
+                setSuccessMessage('Login successful!');
+                setError('');
+    
+                // Resetuj formu (opciono)
+                setFormData({
+                    email: '',
+                    password: ''
+                });
+    
+                // Ovdje možeš dodati redirekciju ili druge akcije nakon uspešne prijave
+            }
+        } catch (error) {
+            console.error("Login failed:", error);
+            setError('Invalid credentials. Please try again.');
+            setSuccessMessage('');
+        }
     };
+    
 
     return (
         <Fragment>
@@ -73,6 +92,8 @@ function LoginComponent() {
             </div>
         </Fragment>
     );
+
+    
 }
 
 export default LoginComponent;
