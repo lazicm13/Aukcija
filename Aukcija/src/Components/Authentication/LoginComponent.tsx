@@ -1,8 +1,10 @@
 import React, { Fragment, useState } from 'react';
 import './../../Styles/authentication.css';
 import api from '../../api';
+import { useNavigate } from 'react-router-dom';
 
 function LoginComponent() {
+    const navigate = useNavigate();
     const [formData, setFormData] = useState({
         email: '',
         password: ''
@@ -43,8 +45,9 @@ function LoginComponent() {
                     email: '',
                     password: ''
                 });
-    
-                // Ovdje možeš dodati redirekciju ili druge akcije nakon uspešne prijave
+                
+                alert("You are successfully logged in");
+                navigate('/');
             }
         } catch (error) {
             console.error("Login failed:", error);

@@ -1,6 +1,7 @@
 /* Glavni stil za formu */
 form {
-    max-width: 500px; /* Povećana širina forme */
+    max-width: 230px; /* Povećana širina forme */
+    min-width: 230px;
     margin: 50px auto;
     padding: 30px; /* Više prostora unutar forme */
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
@@ -109,4 +110,8 @@ p {
     margin-right: 8px;
 }
 
+.error-message, .success-message{
+    color:red;
+    text-align: center;
+}
 

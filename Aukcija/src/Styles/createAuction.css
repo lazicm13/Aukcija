@@ -1,0 +1,73 @@
+/* Glavni stil za formu kreiranja aukcije */
+.formContainer {
+    max-width: 600px; /* Povećana širina forme */
+    min-width: 600px;
+    margin: 50px auto;
+    padding: 30px;
+    background-color: #f9f9f9;
+    border: 1px solid #ccc;
+    border-radius: 15px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Stil za h2 (naslov forme) */
+.formContainer h2 {
+    text-align: center;
+    color: #333;
+    font-family: 'Arial', sans-serif;
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+/* Stil za label */
+.formContainer label {
+    display: block;
+    margin-bottom: 8px;
+    color: #555;
+    font-size: 18px;
+    font-family: 'Arial', sans-serif;
+}
+
+/* Stil za input polja i textarea */
+.formContainer input[type="text"],
+.formContainer textarea {
+    width: 100%; /* Polja su proširena na celu širinu forme */
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+    margin-bottom: 20px;
+    transition: border-color 0.3s;
+}
+
+/* Stil za textarea */
+.formContainer textarea {
+    height: 150px; /* Dodatno povećana visina textarea */
+    resize: none;  /* Onemogućava promenu veličine tekstualnog polja */
+}
+
+/* Promena boje okvira kada je input fokusiran */
+.formContainer input[type="text"]:focus,
+.formContainer textarea:focus {
+    border-color: #B9A188;
+    outline: none;
+}
+
+/* Stil za dugme za kreiranje aukcije */
+.formContainer input[type="submit"] {
+    width: 100%;
+    padding: 12px;
+    background-color: #4477E6;
+    color: white;
+    font-size: 18px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+/* Promena boje dugmeta na hover */
+.formContainer input[type="submit"]:hover {
+    background-color: #518EFF;
+}

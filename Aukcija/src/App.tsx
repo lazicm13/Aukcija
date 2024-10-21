@@ -8,6 +8,7 @@ import NotFound from './Pages/NotFound'
 import ProtectedRoute from './Components/ProtectedRoute'
 import api from './api'
 import { useState, useEffect } from 'react'
+import CreateAuction from './Components/AuctionItems/CreateAuction'
 
 async function logout(){
   try{
@@ -26,6 +27,8 @@ async function logout(){
   }
 }
 
+
+
 function RegisterAndLogout() {
   const [isLoggedOut, setIsLoggedOut] = useState(false);
 
@@ -39,7 +42,7 @@ function RegisterAndLogout() {
       handleLogout();
   }, []);
 
-  if (isLoggedOut) {
+  if (!isLoggedOut) {
       return <RegistrationComponent />;
   }
 
@@ -67,6 +70,10 @@ function App() {
           <Route
             path='/registracija'
             element={<RegisterAndLogout/>}
+          />
+          <Route
+            path='/novaAukcija'
+            element={<CreateAuction/>}
           />
           <Route
             path='*'
