@@ -33,17 +33,19 @@ SECRET_KEY = 'django-insecure-^cr3fd-km1e0e5r&#6!$#a=xjh7cc1ebr0fvrw%7h)a+v5043(
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
+    "http://localhost:3000", #dodato za svaki slucaj
 ]
+CSRF_COOKIE_SAMESITE = "None"
 
-CORS_ORIGIN_WHITELIST = [
-    'http://localhost:5173',  # Ili adresa sa koje šalješ zahteve
-]
 # Dozvoljena zaglavlja
 default_headers = list(cors_default_headers)
 
 # Sada dodaj svoj header
 CORS_ALLOW_HEADERS = default_headers + [
     'X-CSRFToken',
+    'x-csrftoken',
+    'authorization',
+    'x-requested-with',
 ]
 
 
@@ -58,24 +60,20 @@ CORS_ALLOWED_METHODS = [
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["localhost"] #this will allow any different host, to host our Django app
+ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
 
 REST_FRAMEWORK = {
-    "DEFAULT_AUTHENTICATION_CLASSES":(
-        "rest_framework.authentication.SessionAuthentication",
-    ),
     "DEFAULT_PERMISSION_CLASSES":(
         "rest_framework.permissions.IsAuthenticated",
+    ),
+    "DEFAULT_AUTHENTICATION_CLASSES":(
+        "rest_framework.authentication.SessionAuthentication",
     ),
 }
 
 SESSION_COOKIE_AGE = 3600
 SESSION_SAVE_EVERY_REQUEST = True
-CSRF_COOKIE_AGE = 31449600
 CSRF_COOKIE_NAME = 'csrftoken'  # Naziv kolačića
-CSRF_COOKIE_SECURE = False  # Postavite na True ako koristite HTTPS
-CSRF_COOKIE_HTTPONLY = False  # Postavite na True ako želite da onemogućite pristup JavaScript-u
-CSRF_USE_SESSIONS = False
 
 
 # Application definition
@@ -87,9 +85,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'api',
     'rest_framework',
-    'corsheaders'
+    'corsheaders',
+    'api',
 ]
 
 MIDDLEWARE = [

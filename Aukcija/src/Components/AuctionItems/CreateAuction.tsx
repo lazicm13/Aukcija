@@ -3,7 +3,7 @@ import api from "../../api";
 import './../../Styles/createAuction.css'
 
 function CreateAuction(){
-    const [content, setContent] = useState("");
+    const [description, setDescription] = useState("");
     const [title, setTitle] = useState("");
 
     const createAuctionItem = (e: React.FormEvent<HTMLFormElement>) => {
@@ -14,12 +14,12 @@ function CreateAuction(){
         })
         .catch((err: unknown) => alert(err));
     }
-
+    
     return (
         <div className="formContainer">
             <h2>NOVA AUKCIJA</h2>
             <form onSubmit={createAuctionItem}>
-                <label htmlFor="title">Title:</label>
+                <label htmlFor="title">Naslov:</label>
                 <br/>
                 <input
                     type="text"
@@ -29,14 +29,14 @@ function CreateAuction(){
                     onChange={(e) => setTitle(e.target.value)}
                     value={title}
                 />
-                <label htmlFor="content">Content</label>
+                <label htmlFor="description">Opis oglasa:</label>
                 <br/>
                 <textarea 
-                    id="content"
-                    name="content" 
+                    id="description"
+                    name="description" 
                     required 
-                    value={content} 
-                    onChange={(e) => setContent(e.target.value)}>
+                    value={description} 
+                    onChange={(e) => setDescription(e.target.value)}>
                 </textarea>
                 <br/>
                 <input 

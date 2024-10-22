@@ -1,19 +1,41 @@
 import axios, { InternalAxiosRequestConfig } from "axios";
-import Cookies from "js-cookie"; // Make sure to import the Cookies library
+import Cookies from "js-cookie"; // Ensure to import the Cookies library
+
+axios.defaults.xsrfCookieName = 'csrftoken';
+axios.defaults.xsrfHeaderName = 'X-CSRFToken';
+axios.defaults.withCredentials = true;
+
+// Helper function to fetch CSRF token
+async function fetchCsrfToken() {
+    try {
+        const response = await axios.get(`http://localhost:8000/api/csrf/`);
+        const csrftoken = response.data.csrftoken; // Adjust this based on your API response
+        Cookies.set('csrftoken', csrftoken); // Set the token in cookies
+    } catch (error) {
+        console.error("Error fetching CSRF token:", error);
+    }
+}
 
 const api = axios.create({
     baseURL: import.meta.env.VITE_API_URL,
     withCredentials: true,
 });
 
-// Use the InternalAxiosRequestConfig type for the config parameter
+// Axios request interceptor
 api.interceptors.request.use(
-    (config: InternalAxiosRequestConfig) => {
-        const csrfToken = Cookies.get('csrftoken'); // Getting CSRF token from cookies
-        console.log('Token:' + csrfToken);
+    async (config: InternalAxiosRequestConfig) => {
+        // Attempt to get the CSRF token from cookies
+        let csrfToken = Cookies.get('csrftoken');
+
+        // If the token is not available, fetch it from the server
+        await fetchCsrfToken(); // Fetch the CSRF token
+        csrfToken = Cookies.get('csrftoken'); // Get the token again after fetching
+
+        console.log('Token:', csrfToken);
         if (csrfToken) {
-            config.headers['X-CSRFToken'] = csrfToken; // Adding token to headers
+            config.headers['X-CSRFToken'] = csrfToken; // Add token to headers
         }
+
         return config;
     },
     (error) => Promise.reject(error)

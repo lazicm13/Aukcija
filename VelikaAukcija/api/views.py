@@ -7,9 +7,24 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.contrib.auth import authenticate, login, logout
 from django.http import JsonResponse
-
+from django.middleware.csrf import get_token
+from django.views.decorators.csrf import ensure_csrf_cookie, csrf_protect
+from django.utils.decorators import method_decorator
 
 # Create your views here.
+
+
+@method_decorator(ensure_csrf_cookie, name='dispatch')
+class CSRFTokenView(APIView):
+    def get(self, request):
+        # Check if the CSRF token is already in the session
+        if 'csrf_token' not in request.session:
+            # If not, generate a new one and store it in the session
+            request.session['csrf_token'] = get_token(request)
+        
+        # Return the token stored in the session
+        csrf_token = request.session['csrf_token']
+        return JsonResponse({'csrftoken': csrf_token})
 
 class CreateUserView(generics.CreateAPIView):
     queryset = User.objects.all()
@@ -42,7 +57,13 @@ class LoginView(APIView):
     permission_classes = [AllowAny]
 
     def post(self, request):
+
+        csrf_token = request.META.get('CSRF_COOKIE')
+        print("CSRF Token (login):", csrf_token)
+        print("CSRF from header (login):", request.META.get('HTTP_X_CSRFTOKEN'))
+
         email = request.data.get('email')
+
         password = request.data.get('password')
         user = authenticate(username=email, password=password)
         if user is not None:
@@ -50,16 +71,17 @@ class LoginView(APIView):
             return Response({"detail": "Logged in successfully"}, status=status.HTTP_200_OK)
         return Response({"detail": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
 
-
+@method_decorator(csrf_protect, name='dispatch')
 class LogoutView(APIView):
     permission_classes = [IsAuthenticated]
     print("dosao sam do ovde")
-    
     def post(self, request):
         try:
+            print('evo me')
             print("CSRF Token:", request.META.get('CSRF_COOKIE'))
             print("CSRF from header:", request.META.get('HTTP_X_CSRFTOKEN'))
             if(request.user.is_authenticated):
+                logout(request)
                 return Response({"detail": "Logged out successfully"}, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({"detail": "Error logging out: " + str(e)}, status=status.HTTP_400_BAD_REQUEST)

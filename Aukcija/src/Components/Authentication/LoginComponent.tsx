@@ -34,6 +34,7 @@ function LoginComponent() {
             const response = await api.post("/api/login/", {
                 email: formData.email, // Pretpostavljamo da je korisničko ime email
                 password: formData.password
+                
             });
     
             if (response.status === 200) {
@@ -46,7 +47,7 @@ function LoginComponent() {
                     password: ''
                 });
                 
-                alert("You are successfully logged in");
+                alert("Uspesna prijava!");
                 navigate('/');
             }
         } catch (error) {
@@ -66,6 +67,7 @@ function LoginComponent() {
                 Ulogujte se preko Gmail-a
                 </button>
             <form onSubmit={handleSubmit}>
+            
                 <div>
                     <label htmlFor="email">Email:</label>
                     <input

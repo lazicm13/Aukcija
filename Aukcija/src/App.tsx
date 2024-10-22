@@ -12,7 +12,7 @@ import CreateAuction from './Components/AuctionItems/CreateAuction'
 
 async function logout(){
   try{
-      const response = await api.post("api/logout/", {});
+      const response = await api.post("api/logout/", {withCredentials: true});
       if (response.status === 200) {
           console.log("Logout was successful!");
           return true;
@@ -72,8 +72,12 @@ function App() {
             element={<RegisterAndLogout/>}
           />
           <Route
-            path='/novaAukcija'
-            element={<CreateAuction/>}
+            path='/nova-aukcija'
+            element={
+            <ProtectedRoute>
+              <CreateAuction/>
+            </ProtectedRoute>
+            }
           />
           <Route
             path='*'

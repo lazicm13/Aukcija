@@ -64,6 +64,7 @@ function RegistrationComponent() {
                     password: '',
                     confirmPassword: ''
                 });
+                alert('Uspesna registracija!');
                 navigate('/login');
             }
         } catch (error) {
