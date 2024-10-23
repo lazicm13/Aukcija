@@ -22,3 +22,15 @@ p {
     margin-right: 20%; /* Pomera tekst između sredine i kraja */
     font-size: 1em; /* Veličina teksta */
 }
+
+.create-auction-btn{
+    background-color: #ff4c4c; /* Red color for delete button */
+    color: white; /* White text for contrast */
+    border: none; /* Remove border */
+    border-radius: 5px; /* Round button corners */
+    padding: 10px 15px; /* Padding inside button */
+    cursor: pointer; /* Pointer cursor for button */
+    transition: background-color 0.3s; /* Smooth transition for hover */
+    margin-right: 500px;
+}
+

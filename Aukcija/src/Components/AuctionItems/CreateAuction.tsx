@@ -7,6 +7,7 @@ import axios from "axios";
 function CreateAuction(){
     const [description, setDescription] = useState("");
     const [title, setTitle] = useState("");
+    const [currentPrice, setCurrentPrice] = useState(0);
 
     
 
@@ -46,7 +47,6 @@ function CreateAuction(){
             <h2>NOVA AUKCIJA</h2>
             <form onSubmit={createAuctionItem}>
                 <label htmlFor="title">Naslov:</label>
-                <br/>
                 <input
                     type="text"
                     id="title"
@@ -56,7 +56,6 @@ function CreateAuction(){
                     value={title}
                 />
                 <label htmlFor="description">Opis oglasa:</label>
-                <br/>
                 <textarea 
                     id="description"
                     name="description" 
@@ -64,7 +63,15 @@ function CreateAuction(){
                     value={description} 
                     onChange={(e) => setDescription(e.target.value)}>
                 </textarea>
-                <br/>
+                <label htmlFor="currentPrice">Početna cena:</label>
+                <input
+                    type="text"
+                    id="currentPrice"
+                    name="currentPrice"
+                    required
+                    value={currentPrice}
+                    onChange={(e) => setCurrentPrice(Number(e.target.value))}
+                />
                 <input 
                     type="submit"
                     value="Submit">
