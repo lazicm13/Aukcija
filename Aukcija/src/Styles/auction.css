@@ -1,0 +1,63 @@
+.auction-item {
+    background-color: #f9f9f9; /* Light background for contrast */
+    border: 1px solid #e0e0e0; /* Light border for definition */
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+    margin: 15px; /* Space between items */
+    padding: 15px; /* Padding inside the item */
+    transition: transform 0.2s; /* Smooth transform on hover */
+    width: calc(33% - 30px); /* Responsive width, adjust based on your layout */
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center content */
+}
+
+.auction-item:hover {
+    transform: scale(1.05); /* Slightly enlarge item on hover */
+}
+
+.auction-item h3 {
+    font-size: 1.2em; /* Slightly smaller font size for title */
+    margin: 0; /* Remove default margin */
+    color: #333; /* Dark text for title */
+}
+
+.auction-item img {
+    width: 80%; /* Make image responsive */
+    height: auto; /* Maintain aspect ratio */
+    border-radius: 5px; /* Slightly round the image corners */
+    margin: 10px 0; /* Space around the image */
+}
+
+.auction-item p {
+    font-size: 0.9em; /* Smaller font size for description and price */
+    color: #555; /* Slightly lighter text color */
+    text-align: center; /* Center align text */
+}
+
+.auction-item .delete-btn {
+    background-color: #ff4c4c; /* Red color for delete button */
+    color: white; /* White text for contrast */
+    border: none; /* Remove border */
+    border-radius: 5px; /* Round button corners */
+    padding: 10px 15px; /* Padding inside button */
+    cursor: pointer; /* Pointer cursor for button */
+    transition: background-color 0.3s; /* Smooth transition for hover */
+    margin-top: auto; /* Push button to the bottom */
+}
+
+.auction-item .delete-btn:hover {
+    background-color: #ff1f1f; /* Darker red on hover */
+}
+
+@media (max-width: 768px) {
+    .auction-item {
+        width: calc(50% - 30px); /* Adjust for smaller screens */
+    }
+}
+
+@media (max-width: 480px) {
+    .auction-item {
+        width: calc(100% - 30px); /* Full width for mobile */
+    }
+}

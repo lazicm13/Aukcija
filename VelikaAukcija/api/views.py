@@ -17,13 +17,8 @@ from django.utils.decorators import method_decorator
 @method_decorator(ensure_csrf_cookie, name='dispatch')
 class CSRFTokenView(APIView):
     def get(self, request):
-        # Check if the CSRF token is already in the session
-        if 'csrf_token' not in request.session:
-            # If not, generate a new one and store it in the session
-            request.session['csrf_token'] = get_token(request)
-        
-        # Return the token stored in the session
-        csrf_token = request.session['csrf_token']
+        csrf_token = get_token(request)
+        print(f"CSRF token generated for request: {csrf_token}")  # Log token on the server
         return JsonResponse({'csrftoken': csrf_token})
 
 class CreateUserView(generics.CreateAPIView):
@@ -41,9 +36,10 @@ class AuctionItemListCreate(generics.ListCreateAPIView): #Has two functions
     
     def perform_create(self, serializer):
         if serializer.is_valid():
-            serializer.save(seller=self.request.user)
+            serializer.save(seller=self.request.user)  # Ensure to save the seller
         else:
-            print(serializer.errors)
+            print(serializer.errors)  # Log validation errors
+            raise serializer.ValidationError(serializer.errors)
 
 class AuctionItemDelete(generics.DestroyAPIView):
     serializer_class = AuctionItemSerializer

@@ -23,7 +23,7 @@ class UserSerializer(serializers.ModelSerializer):
 class AuctionItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = AuctionItem
-        fields = ["id", "title", "description", "created_at", "seller", "currentPrice"]
-        extra_kwargs = {"seller": {"read_only": True}}
+        fields = ["id", "title", "description"]
+        
 
     

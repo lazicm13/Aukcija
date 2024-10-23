@@ -28,8 +28,11 @@ api.interceptors.request.use(
         let csrfToken = Cookies.get('csrftoken');
 
         // If the token is not available, fetch it from the server
-        await fetchCsrfToken(); // Fetch the CSRF token
-        csrfToken = Cookies.get('csrftoken'); // Get the token again after fetching
+        if (!csrfToken) {
+            await fetchCsrfToken(); // Only fetch if not available
+            csrfToken = Cookies.get('csrftoken'); // Get the token again after fetching
+        }
+        
 
         console.log('Token:', csrfToken);
         if (csrfToken) {

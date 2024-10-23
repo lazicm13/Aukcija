@@ -12,7 +12,7 @@ interface AuctionItemProps {
     };
 }
 
-const AuctionItem: React.FC<AuctionItemProps> = ({ auction }) => {
+const AuctionItem: React.FC<AuctionItemProps> = ({ auction}) => {
     const { title, description, currentPrice} = auction;
 
     return (
@@ -20,10 +20,10 @@ const AuctionItem: React.FC<AuctionItemProps> = ({ auction }) => {
             {/* <img src={imageUrl} alt={title} className="auction-image" /> */}
             <h3>{title}</h3>
             <img src='./src/assets/auctionItem.png'></img>
-            <p><b>Trenutna cena: ${currentPrice.toFixed(2)}</b></p>
-            <p>${description}</p>
+            <p><b>Trenutna cena: {currentPrice}</b></p>
+            <p><b>Opis predmeta:</b> {description}</p>
             {/* <p>Do kraja: {new Date(endDate).toLocaleString()}</p> */}
-            <button className="bid-button">Učestvuj</button>
+            <button className="delete-btn" >Obriši aukciju</button>
         </div>
     );
 };

@@ -31,11 +31,10 @@ SECRET_KEY = 'django-insecure-^cr3fd-km1e0e5r&#6!$#a=xjh7cc1ebr0fvrw%7h)a+v5043(
 
 
 CORS_ALLOW_CREDENTIALS = True
-CORS_ALLOWED_ORIGINS = [
+
+CORS_ORIGIN_WHITELIST = [
     "http://localhost:5173",
-    "http://localhost:3000", #dodato za svaki slucaj
 ]
-CSRF_COOKIE_SAMESITE = "None"
 
 # Dozvoljena zaglavlja
 default_headers = list(cors_default_headers)
@@ -55,6 +54,11 @@ CORS_ALLOWED_METHODS = [
     "OPTIONS",  
 ]
 
+CSRF_TRUSTED_ORIGINS = [
+    'http://localhost:5173',  # Add your front-end URL
+    # You can add more trusted origins here as needed
+]
+
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
@@ -71,9 +75,12 @@ REST_FRAMEWORK = {
     ),
 }
 
-SESSION_COOKIE_AGE = 3600
+SESSION_COOKIE_AGE = 36000
 SESSION_SAVE_EVERY_REQUEST = True
 CSRF_COOKIE_NAME = 'csrftoken'  # Naziv kolačića
+CSRF_COOKIE_SECURE = False  # Set to True in production with HTTPS
+CSRF_COOKIE_HTTPONLY = False
+CSRF_COOKIE_AGE = 31449600  # 1 year in seconds
 
 
 # Application definition
