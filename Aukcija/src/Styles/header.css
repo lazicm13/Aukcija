@@ -5,7 +5,7 @@
     width: 100%; /* Širina headera je 100% */
     background-color: #f9f9f9; /* Pozadinska boja */
     color: black; /* Boja teksta */
-    padding: 10px 20px; /* Unutrašnje margine */
+    padding: 0px 20px; /* Unutrašnje margine */
     display: flex; /* Aktivira flexbox */
     justify-content: space-between; /* Omogućava razmak između elemenata */
     align-items: center; /* Vertikalno centriranje elemenata */
@@ -13,7 +13,7 @@
 }
 
 .header-logo {
-    width: 80px;
+    width: 120px;
     height: auto; /* Zadrži proporcije logoa */
     margin-left: 20%; /* Pomera logo bliže sredini, između početka i sredine */
 }
@@ -24,7 +24,7 @@ p {
 }
 
 .create-auction-btn{
-    background-color: #ff4c4c; /* Red color for delete button */
+    background-color:  #007bff; /* Red color for delete button */
     color: white; /* White text for contrast */
     border: none; /* Remove border */
     border-radius: 5px; /* Round button corners */

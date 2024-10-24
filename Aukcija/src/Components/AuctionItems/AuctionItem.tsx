@@ -6,24 +6,29 @@ interface AuctionItemProps {
         id: number;
         title: string;
         description: string;
-        currentPrice: number;
-        //endDate: string; // Možeš koristiti Date tip, ali ovde je string radi jednostavnosti
+        current_price: number;
+        //endDate: string; // You can use the Date type here, but it's a string for simplicity
         //Image
     };
+    onDelete: (id: number) => void; // Add the delete function type
 }
 
-const AuctionItem: React.FC<AuctionItemProps> = ({ auction}) => {
-    const { title, description, currentPrice} = auction;
+const AuctionItem: React.FC<AuctionItemProps> = ({ auction, onDelete }) => {
+    const { id, title, description, current_price } = auction;
+
+    const handleDelete = () => {
+        onDelete(id); // Call the delete function with the auction id
+    };
 
     return (
         <div className="auction-item">
             {/* <img src={imageUrl} alt={title} className="auction-image" /> */}
             <h3>{title}</h3>
-            <img src='./src/assets/auctionItem.png'></img>
-            <p><b>Trenutna cena: {currentPrice}</b></p>
-            <p><b>Opis predmeta:</b> {description}</p>
+            <img src='./src/assets/auctionItem.png' alt={title} />
+            <p><b>Trenutna cena: {current_price}</b></p>
+            {/* <p><b>Opis predmeta:</b> {description}</p> */}
             {/* <p>Do kraja: {new Date(endDate).toLocaleString()}</p> */}
-            <button className="delete-btn" >Obriši aukciju</button>
+            <button className="delete-btn" onClick={handleDelete}>Obriši aukciju</button>
         </div>
     );
 };

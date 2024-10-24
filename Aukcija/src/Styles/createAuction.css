@@ -29,7 +29,7 @@
 }
 
 /* Stil za input polja i textarea */
-.formContainer input[type="text"],
+.formContainer input[type="text"], input[type="number"],
 .formContainer textarea {
     width: 100%; /* Polja su proširena na celu širinu forme */
     padding: 10px;

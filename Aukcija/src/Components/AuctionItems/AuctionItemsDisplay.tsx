@@ -1,15 +1,17 @@
 import { useState, useEffect } from "react";
 import api from "../../api";
 import AuctionItem from "../../Components/AuctionItems/AuctionItem";
-import './../../Styles/auctionList.css'
+import './../../Styles/auctionList.css';
+
 // Define the interface for auction items here if not defined elsewhere
 interface AuctionItem {
     id: number;
     title: string;
     description: string;
-    currentPrice: number;
+    current_price: number;
 }
-function AuctionItemsDisplay(){
+
+function AuctionItemsDisplay() {
     const [items, setItems] = useState<AuctionItem[]>([]); // Specify type
 
     useEffect(() => {
@@ -46,8 +48,10 @@ function AuctionItemsDisplay(){
         <div className="auction-list">
             {items.map((item) => (
                 <AuctionItem 
-                    auction={item} 
+                    auction={item}
                     key={item.id} 
+                    onDelete={deleteAuctionItem} 
+                    
                 />
             ))}
         </div>

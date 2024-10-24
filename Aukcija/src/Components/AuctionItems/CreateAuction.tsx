@@ -1,47 +1,55 @@
-import { useState} from "react";
+import { useState } from "react";
 import api from "../../api";
-import './../../Styles/createAuction.css'
-import Cookies from "js-cookie";
+import './../../Styles/createAuction.css';
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
-function CreateAuction(){
+function CreateAuction() {
     const [description, setDescription] = useState("");
     const [title, setTitle] = useState("");
-    const [currentPrice, setCurrentPrice] = useState(0);
-
-    
+    const [current_price, setCurrentPrice] = useState<number>(0); // Postavljeno na number
+    const navigate = useNavigate();
 
     const createAuctionItem = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-
+    
+        // Proveravamo da li je currentPrice validan broj
+        if (current_price <= 0) { // Uveri se da je cena pozitivna
+            alert("Please enter a valid positive integer price.");
+            return;
+        }
+    
         try {
+            console.log(current_price);
             const response = await api.post("/api/auctionItems/", {
-                title,   // Osigurajte da ovo zamenite stvarnim naslovom
-                description, // Osigurajte da ovo zamenite stvarnim sadržajem
+                title,
+                description,
+                current_price: Math.floor(current_price), // Uveri se da šalješ kao ceo broj
             });
-            
-
+    
             if (response.status === 201) {
                 alert("Auction item created!");
+                // Očisti formu nakon uspešnog kreiranja
+                setTitle("");
+                setDescription("");
+                setCurrentPrice(0); // Resetovanje vrednosti
+                navigate('/');
             } else {
                 alert("Failed to make the auction item");
             }
         } catch (err) {
-            // Proveravamo da li je greška Axios greška
             if (axios.isAxiosError(err)) {
                 const errorMessage = err.response?.data?.detail || 'An unknown error occurred';
                 const statusCode = err.response?.status;
-                
-                // Prikazujemo detaljnu poruku greške
+    
                 alert(`Error ${statusCode}: ${errorMessage}`);
             } else {
                 alert('An unknown error occurred');
             }
         }
     };
+    
 
-        
-        
     return (
         <div className="formContainer">
             <h2>NOVA AUKCIJA</h2>
@@ -61,21 +69,24 @@ function CreateAuction(){
                     name="description" 
                     required 
                     value={description} 
-                    onChange={(e) => setDescription(e.target.value)}>
-                </textarea>
+                    onChange={(e) => setDescription(e.target.value)}
+                />
                 <label htmlFor="currentPrice">Početna cena:</label>
                 <input
-                    type="text"
-                    id="currentPrice"
-                    name="currentPrice"
+                    type="number"
+                    id="current_price"
+                    name="current_price"
                     required
-                    value={currentPrice}
-                    onChange={(e) => setCurrentPrice(Number(e.target.value))}
+                    value={current_price}
+                    onChange={(e) => {
+                        const value = e.target.value === "" ? NaN: Math.floor(Number(e.target.value)); // Uveri se da je ceo broj
+                        setCurrentPrice(value);
+                    }} // Update only if not empty
                 />
                 <input 
                     type="submit"
-                    value="Submit">
-                </input>
+                    value="Završi"
+                />
             </form>
         </div>
     );

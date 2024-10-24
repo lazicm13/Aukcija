@@ -1,12 +1,12 @@
 .auction-list {
     display: flex; /* Enable Flexbox */
-    flex-wrap: wrap; /* Allow items to wrap onto the next line if they exceed the container's width */ /* Distribute space evenly between items */
+    flex-wrap: wrap; /* Allow items to wrap onto the next line if they exceed the container's width */
     margin: -10px; /* Negative margin to offset padding */
 }
 
 .auction-item {
-    flex: 1 0 30%; /* Set each item to take up 30% of the container width */
-    max-width: 30%; /* Prevent items from exceeding 30% of the width */
+    flex: 1 0 22%; /* Set each item to take up 22% of the container width */
+    max-width: 22%; /* Prevent items from exceeding 22% of the width */
     margin: 10px; /* Add space between items */
     box-sizing: border-box; /* Include padding and border in the width */
 }

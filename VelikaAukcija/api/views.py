@@ -53,11 +53,9 @@ class LoginView(APIView):
     permission_classes = [AllowAny]
 
     def post(self, request):
-
-        csrf_token = request.META.get('CSRF_COOKIE')
-        print("CSRF Token (login):", csrf_token)
-        print("CSRF from header (login):", request.META.get('HTTP_X_CSRFTOKEN'))
-
+        # csrf_token = request.META.get('CSRF_COOKIE')
+        # print("CSRF Token (login):", csrf_token)
+        # print("CSRF from header (login):", request.META.get('HTTP_X_CSRFTOKEN'))
         email = request.data.get('email')
 
         password = request.data.get('password')

@@ -23,7 +23,8 @@ class UserSerializer(serializers.ModelSerializer):
 class AuctionItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = AuctionItem
-        fields = ["id", "title", "description"]
-        
+        fields = ["id", "title", "description", "current_price", "created_at", "seller"]
+        read_only_fields = ["id", "created_at", "seller"]  # These fields will be generated automatically
+
 
     
