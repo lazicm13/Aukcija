@@ -7,3 +7,5 @@ pytz
 asgiref
 python-dotenv
 sqlparse
+requests
+google-auth

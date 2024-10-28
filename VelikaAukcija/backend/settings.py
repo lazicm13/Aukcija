@@ -28,13 +28,16 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-^cr3fd-km1e0e5r&#6!$#a=xjh7cc1ebr0fvrw%7h)a+v5043('
 
-
+GOOGLE_OAUTH2_CLIENT_ID = '516726223486-ese1hmu3fmae12vgcv8b2tthgcnol316.apps.googleusercontent.com'
+GOOGLE_OAUTH2_CLIENT_SECRET = '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'
 
 CORS_ALLOW_CREDENTIALS = True
 
 CORS_ORIGIN_WHITELIST = [
     "http://localhost:5173",
+    'http://localhost',
 ]
+
 
 # Dozvoljena zaglavlja
 default_headers = list(cors_default_headers)
