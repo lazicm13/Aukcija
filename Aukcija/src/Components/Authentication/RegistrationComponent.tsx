@@ -2,6 +2,7 @@ import React, { Fragment, useState } from 'react';
 import api from '../../api';
 import './../../Styles/authentication.css';
 import { useNavigate } from 'react-router-dom';
+import { GoogleLogin } from '@react-oauth/google';
 
 function RegistrationComponent() {
     const [formData, setFormData] = useState({
@@ -74,11 +75,33 @@ function RegistrationComponent() {
         }
     };
 
+    const handleGoogleSuccess = async (credentialResponse: any) => {
+        // Here you can send the token to your backend for validation
+        const { credential } = credentialResponse;
+        try {
+            const response = await api.post("/api/auth/google/", { id_token: credential });
+            if (response.status === 200) {
+                alert("Google login successful!");
+                navigate('/');
+            }
+        } catch (error) {
+            console.error("Google login failed:", error);
+            setError('Google login failed. Please try again.');
+        }
+    };
+
+    const handleGoogleError = () => {
+        setError('Google login failed. Please try again.');
+    };
+
     return (
         <Fragment>
             <div className='form-container'>
                 <h2>Registrujte se</h2>
-                
+                <GoogleLogin
+                    onSuccess={handleGoogleSuccess}
+                    onError={handleGoogleError}
+                />
                 <form onSubmit={handleSubmit}>
                     {/* Polje za email */}
                     <div>

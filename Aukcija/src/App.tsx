@@ -9,23 +9,29 @@ import ProtectedRoute from './Components/ProtectedRoute'
 import api from './api'
 import { useState, useEffect } from 'react'
 import CreateAuction from './Components/AuctionItems/CreateAuction'
+import { GoogleOAuthProvider } from '@react-oauth/google';
+import UserPage from './Pages/UserPage'
+import MyAuctionsPage from './Pages/MyAuctionsPage'
+import ChangePasswordPage from './Pages/ChangePasswordPage'
 
-async function logout(){
-  try{
-      const response = await api.post("api/logout/", {withCredentials: true});
-      if (response.status === 200) {
-          console.log("Logout was successful!");
-          return true;
-      } else {
-          console.error("Logout failed with status:", response.status, response);
-          return false;
-      }
-  }catch(error)
-  {
-      console.error("Error, logout failed:", error);
-      return false;
+const CLIENT_ID = '516726223486-ese1hmu3fmae12vgcv8b2tthgcnol316.apps.googleusercontent.com';
+
+  async function logout(){
+    try{
+        const response = await api.post("api/logout/", {withCredentials: true});
+        if (response.status === 200) {
+            console.log("Logout was successful!");
+            return true;
+        } else {
+            console.error("Logout failed with status:", response.status, response);
+            return false;
+        }
+    }catch(error)
+    {
+        console.error("Error, logout failed:", error);
+        return false;
+    }
   }
-}
 
 
 
@@ -58,18 +64,21 @@ function App() {
           <Route
             path='/'
             element={
-              <ProtectedRoute>
                 <Home/>
-              </ProtectedRoute>
             }
           />
           <Route
             path='/login'
-            element={<LoginComponent/>}
+            element={
+              <GoogleOAuthProvider clientId={CLIENT_ID}>
+            <LoginComponent/>
+            </GoogleOAuthProvider>}
           />
           <Route
             path='/registracija'
-            element={<RegisterAndLogout/>}
+            element={<GoogleOAuthProvider clientId={CLIENT_ID}>
+            <RegisterAndLogout/>
+            </GoogleOAuthProvider>}
           />
           <Route
             path='/nova-aukcija'
@@ -82,6 +91,30 @@ function App() {
           <Route
             path='*'
             element={<NotFound/>}
+          />
+          <Route
+            path='/profil'
+            element={
+              <ProtectedRoute>
+                <UserPage/>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path='/moje-aukcije'
+            element={
+              <ProtectedRoute>
+                <MyAuctionsPage/>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path='/promena-lozinke'
+            element={
+              <ProtectedRoute>
+                <ChangePasswordPage/>
+              </ProtectedRoute>
+            }
           />
         </Routes>
       </Router>   

@@ -7,32 +7,48 @@ import { useNavigate } from "react-router-dom";
 function CreateAuction() {
     const [description, setDescription] = useState("");
     const [title, setTitle] = useState("");
-    const [current_price, setCurrentPrice] = useState<number>(0); // Postavljeno na number
+    const [current_price, setCurrentPrice] = useState<number>(NaN);
+    const [images, setImages] = useState<File[]>([]);
+    const [auctionDuration, setAuctionDuration] = useState<number>(1);
+    const [city, setCity] = useState("");
+    const [phoneNumber, setPhoneNumber] = useState("");
     const navigate = useNavigate();
 
     const createAuctionItem = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-    
-        // Proveravamo da li je currentPrice validan broj
-        if (current_price <= 0) { // Uveri se da je cena pozitivna
+
+        if (current_price <= 0) { 
             alert("Please enter a valid positive integer price.");
             return;
         }
-    
+
+        if (images.length > 5) { // Maksimalno 5 slika
+            alert("You can upload a maximum of 5 images.");
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append("title", title);
+        formData.append("description", description);
+        formData.append("current_price", Math.floor(current_price).toString());
+
+        images.forEach((image) => {
+            formData.append("images", image);
+        });
+
         try {
-            console.log(current_price);
-            const response = await api.post("/api/auctionItems/", {
-                title,
-                description,
-                current_price: Math.floor(current_price), // Uveri se da šalješ kao ceo broj
+            const response = await api.post("/api/auctionItems/", formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
             });
-    
+
             if (response.status === 201) {
                 alert("Auction item created!");
-                // Očisti formu nakon uspešnog kreiranja
                 setTitle("");
                 setDescription("");
-                setCurrentPrice(0); // Resetovanje vrednosti
+                setCurrentPrice(NaN);
+                setImages([]); // Resetovanje slika
                 navigate('/');
             } else {
                 alert("Failed to make the auction item");
@@ -41,55 +57,128 @@ function CreateAuction() {
             if (axios.isAxiosError(err)) {
                 const errorMessage = err.response?.data?.detail || 'An unknown error occurred';
                 const statusCode = err.response?.status;
-    
                 alert(`Error ${statusCode}: ${errorMessage}`);
             } else {
                 alert('An unknown error occurred');
             }
         }
     };
-    
+
+    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const selectedFiles = Array.from(e.target.files || []);
+        if (selectedFiles.length + images.length > 5) {
+            alert("You can upload a maximum of 5 images.");
+            return;
+        }
+        setImages(prevImages => [...prevImages, ...selectedFiles]);
+    };
+
+    const removeImage = (index: number) => {
+        setImages(prevImages => prevImages.filter((_, i) => i !== index)); // Uklanja sliku sa odabranog indeksa
+    };
 
     return (
+        <>
         <div className="formContainer">
-            <h2>NOVA AUKCIJA</h2>
-            <form onSubmit={createAuctionItem}>
-                <label htmlFor="title">Naslov:</label>
-                <input
-                    type="text"
-                    id="title"
-                    name="title"
-                    required
-                    onChange={(e) => setTitle(e.target.value)}
-                    value={title}
-                />
-                <label htmlFor="description">Opis oglasa:</label>
-                <textarea 
-                    id="description"
-                    name="description" 
-                    required 
-                    value={description} 
-                    onChange={(e) => setDescription(e.target.value)}
-                />
-                <label htmlFor="currentPrice">Početna cena:</label>
-                <input
-                    type="number"
-                    id="current_price"
-                    name="current_price"
-                    required
-                    value={current_price}
-                    onChange={(e) => {
-                        const value = e.target.value === "" ? NaN: Math.floor(Number(e.target.value)); // Uveri se da je ceo broj
-                        setCurrentPrice(value);
-                    }} // Update only if not empty
-                />
-                <input 
-                    type="submit"
-                    value="Završi"
-                />
+            <form onSubmit={createAuctionItem} style={{ display: 'flex' }}>
+                <div className="formLeft">
+                    <label htmlFor="title">Naslov:</label>
+                    <input
+                        type="text"
+                        id="title"
+                        name="title"
+                        required
+                        onChange={(e) => setTitle(e.target.value)}
+                        value={title}
+                    />
+                    <br></br>
+                    <br></br>
+                    <label htmlFor="current_price">Početna cena:</label>
+                    <input
+                        type="number"
+                        id="current_price"
+                        name="current_price"
+                        required
+                        value={current_price}
+                        onChange={(e) => {
+                            const value = e.target.value === "" ? NaN : Math.floor(Number(e.target.value));
+                            setCurrentPrice(value);
+                        }}
+                    />
+                    <br></br>
+                    <br></br>
+                    <label htmlFor="description">Opis oglasa:</label>
+                    <textarea 
+                        id="description"
+                        name="description" 
+                        required 
+                        value={description} 
+                        onChange={(e) => setDescription(e.target.value)}
+                    />
+                    <div className="auction-duration">
+                        <label htmlFor="auction_duration">Trajanje aukcije (dani):</label>
+                        <select
+                            className="duration"
+                            id="auction_duration"
+                            value={auctionDuration}
+                            onChange={(e) => setAuctionDuration(Number(e.target.value))}>
+                            <option value={1}>1 dan</option>
+                            <option value={2}>2 dana</option>
+                            <option value={3}>3 dana</option>
+                        </select>
+                    </div>
+                </div>
+    
+                <div className="formRight">
+                    
+                    <label htmlFor="images">Odaberi slike (maksimalno 5):</label>
+                    <input
+                        type="file"
+                        id="images"
+                        name="images"
+                        accept="image/*"
+                        onChange={handleImageChange}
+                    />
+                    <div className="selected-images">
+                        {images.map((image, index) => (
+                            <div key={index} className="image-preview">
+                                <img src={URL.createObjectURL(image)} alt={`Selected ${index}`} />
+                                <button type="button" className="remove-image" onClick={() => removeImage(index)}>X</button>
+                            </div>
+                        ))}
+                    </div>
+                    
+
+                    {/* Dodaj div za grad i broj telefona */}
+                    <div className="contact-info">
+                        <label htmlFor="city">Grad:</label>
+                        <input
+                            type="text"
+                            id="city"
+                            value={city}
+                            onChange={(e) => setCity(e.target.value)}
+                        />
+                        </div>
+                        <div className="contact-info">
+                        <label htmlFor="phone">Broj telefona:</label>
+                        <input
+                            type="text"
+                            id="phone"
+                            value={phoneNumber}
+                            onChange={(e) => setPhoneNumber(e.target.value)}
+                        />
+                    </div>
+
+                    <input 
+                        type="submit"
+                        value="Završi"
+                    />
+                </div>
             </form>
         </div>
+        </>
     );
+    
 }
 
 export default CreateAuction;

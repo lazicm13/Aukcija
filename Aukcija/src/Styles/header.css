@@ -3,34 +3,106 @@
     top: 0; /* Uvek na vrhu */
     left: 0; /* Na levoj strani */
     width: 100%; /* Širina headera je 100% */
-    background-color: #f9f9f9; /* Pozadinska boja */
+    background-color: #ffffff; /* Pozadinska boja */
     color: black; /* Boja teksta */
-    padding: 0px 20px; /* Unutrašnje margine */
+    padding: 10px 20px; /* Unutrašnje margine */
     display: flex; /* Aktivira flexbox */
-    justify-content: space-between; /* Omogućava razmak između elemenata */
+    justify-content: space-between; /* Razmak između elemenata */
     align-items: center; /* Vertikalno centriranje elemenata */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Blaga senka ispod headera */
     z-index: 1000; /* Osigurava da bude iznad drugih elemenata */
 }
 
 .header-logo {
-    width: 120px;
-    height: auto; /* Zadrži proporcije logoa */
-    margin-left: 20%; /* Pomera logo bliže sredini, između početka i sredine */
+    width: 120px; /* Keeps the logo responsive by limiting its width */
+    height: auto; /* Maintains the original aspect ratio */
+    margin-left: 400px; /* Shifts logo slightly to the right */
 }
 
-p {
-    margin-right: 20%; /* Pomera tekst između sredine i kraja */
-    font-size: 1em; /* Veličina teksta */
+/* Optional media queries for responsiveness */
+@media (max-width: 768px) {
+    .header-logo {
+        margin-left: 10px; /* Reduces the left margin on smaller screens */
+    }
+    .header-right{
+        margin-right: 5px;
+    }
 }
 
-.create-auction-btn{
-    background-color:  #007bff; /* Red color for delete button */
-    color: white; /* White text for contrast */
-    border: none; /* Remove border */
-    border-radius: 5px; /* Round button corners */
-    padding: 10px 15px; /* Padding inside button */
-    cursor: pointer; /* Pointer cursor for button */
-    transition: background-color 0.3s; /* Smooth transition for hover */
-    margin-right: 500px;
+@media (max-width: 480px) {
+    .header-logo {
+        margin-left: 5px; /* Further reduces left margin on very small screens */
+    }
+    .header-right{
+        margin-right: 5px;
+    }
 }
 
+.header-right {
+    display: flex; /* Raspoređuje elemente u red */
+    align-items: center; /* Vertikalno centriranje */
+    gap: 30px; /* Razmak između elemenata */
+    margin-right: 450px;
+}
+
+.create-auction-btn {
+    background-color: #007bff; /* Plava boja za dugme */
+    color: white; /* Bela boja teksta za kontrast */
+    border: none; /* Uklanja ivicu */
+    border-radius: 5px; /* Zaobljeni uglovi dugmeta */
+    padding: 10px 15px; /* Unutrašnje margine dugmeta */
+    cursor: pointer; /* Kursor pointer za dugme */
+    transition: background-color 0.3s; /* Glatka promena boje prilikom hover-a */
+}
+
+.create-auction-btn:hover {
+    background-color: #0056b3; /* Tamnija nijansa plave prilikom hover-a */
+}
+
+.user-profile {
+    position: relative; /* Neophodno za apsolutno pozicioniranje dropdown-a */
+    display: flex;
+    align-items: center; /* Vertikalno centriranje */
+    gap: 5px;
+    margin-top: 20px;
+}
+
+.user-name {
+    font-weight: bold; /* Podebljano ime korisnika */
+}
+
+.user-icon {
+    width: 30px; /* Veličina ikone korisnika */
+    height: 30px; /* Veličina ikone korisnika */
+    cursor: pointer; /* Kursor pointer za ikonu */
+}
+
+.dropdown-menu {
+    position: absolute;
+    right: 0; /* Poravnanje dropdown-a desno */
+    top: 40px; /* Podesite na osnovu visine header-a */
+    background-color: #fff; /* Boja pozadine dropdown-a */
+    border: 1px solid #ccc; /* Opciona ivica */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Senka za dropdown */
+    z-index: 100; /* Osigurava da dropdown bude iznad drugih elemenata */
+    padding: 10px; /* Unutrašnje margine dropdown-a */
+    min-width: 115px;
+}
+
+.dropdown-menu a {
+    display: block; /* Prikazivanje linkova u blokovima */
+    padding: 5px 10px; /* Unutrašnje margine za linkove */
+    text-decoration: none; /* Uklanja podvlačenje */
+    color: #000; /* Boja teksta linkova */
+    border-radius: 4px; /* Zaobljeni uglovi za linkove */
+    transition: background-color 0.3s; /* Glatka promena boje prilikom hover-a */
+}
+
+.dropdown-menu a:hover {
+    background-color: #f0f0f0; /* Promena boje prilikom hover-a */
+}
+
+.home-button{
+    width: 40px;
+    margin-top: 10px;
+}

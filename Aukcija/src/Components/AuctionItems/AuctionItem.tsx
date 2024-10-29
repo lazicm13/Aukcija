@@ -1,5 +1,6 @@
 import React from 'react';
 import './../../Styles/auction.css';
+import { useLocation } from 'react-router-dom';
 
 interface AuctionItemProps {
     auction: {
@@ -15,6 +16,7 @@ interface AuctionItemProps {
 
 const AuctionItem: React.FC<AuctionItemProps> = ({ auction, onDelete }) => {
     const { id, title, description, current_price } = auction;
+    const location = useLocation();
 
     const handleDelete = () => {
         onDelete(id); // Call the delete function with the auction id
@@ -25,10 +27,10 @@ const AuctionItem: React.FC<AuctionItemProps> = ({ auction, onDelete }) => {
             {/* <img src={imageUrl} alt={title} className="auction-image" /> */}
             <h3>{title}</h3>
             <img src='./src/assets/auctionItem.png' alt={title} />
-            <p><b>Trenutna cena: {current_price}</b></p>
+            <p><b>Trenutna cena: {current_price} RSD</b></p>
             {/* <p><b>Opis predmeta:</b> {description}</p> */}
             {/* <p>Do kraja: {new Date(endDate).toLocaleString()}</p> */}
-            <button className="delete-btn" onClick={handleDelete}>Obriši aukciju</button>
+            {location.pathname === '/moje-aukcije' && <button className="delete-btn" onClick={handleDelete}>Obriši aukciju</button>}
         </div>
     );
 };

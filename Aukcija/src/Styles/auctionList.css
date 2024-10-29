@@ -1,27 +1,122 @@
+.auction-container {
+    padding: 20px;
+    margin-top: 55px; /* Centriranje sadržaja unutar .auction-container */
+}
+
+.search-sort-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    max-width: 800px;
+    margin-left: 200px;
+}
+
+.search-input {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1rem;
+    margin-right: 10px;
+    height: 40px;
+}
+
+.sort-select {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1rem;
+}
+
 .auction-list {
-    display: flex; /* Enable Flexbox */
-    flex-wrap: wrap; /* Allow items to wrap onto the next line if they exceed the container's width */
-    margin: -10px; /* Negative margin to offset padding */
+    display: flex; /* Flexbox layout for items */
+    flex-wrap: wrap; /* Wrap items to the next row if necessary */
+    gap: 20px;
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .auction-item {
-    flex: 1 0 22%; /* Set each item to take up 22% of the container width */
-    max-width: 22%; /* Prevent items from exceeding 22% of the width */
-    margin: 10px; /* Add space between items */
-    box-sizing: border-box; /* Include padding and border in the width */
+    flex: 1 0 21%; /* Take approximately 21% of container width */
+    max-width: 21%;
+    min-width: 250px; /* Set minimum width for responsiveness */
+    margin: 10px; /* Space between items */
+    box-sizing: border-box;
+    padding: 15px;
+    background: #ffffff;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    text-align: center;
+    min-height: 150px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease; /* Smooth transitions */
 }
 
-/* Optional: Add a media query for responsiveness */
+.auction-item:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Shadow on hover */
+}
+
+/* Responsive adjustments */
 @media (max-width: 768px) {
     .auction-item {
-        flex: 1 0 45%; /* Adjust to take up 45% on medium screens */
+        flex: 1 0 45%;
         max-width: 45%;
+    }
+    .search-sort-container{
+        margin-left: 10px
     }
 }
 
 @media (max-width: 480px) {
     .auction-item {
-        flex: 1 0 100%; /* Full width for mobile screens */
+        flex: 1 0 100%;
         max-width: 100%;
     }
+}
+
+/* Button styles */
+button.create-auction-btn {
+    background-color: #007bff;
+    color: #ffffff;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button.create-auction-btn:hover {
+    background-color: #0056b3;
+}
+
+.pagination-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.pagination-controls button {
+    background-color: #007bff;
+    color: #ffffff;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.pagination-controls button:hover:not(:disabled) {
+    background-color: #0056b3;
+}
+
+.pagination-controls button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
 }

@@ -1,7 +1,8 @@
 /* Glavni stil za formu */
 form {
-    max-width: 230px; /* Povećana širina forme */
+    max-width: 800px; /* Povećana širina forme */
     min-width: 230px;
+    width: 200px;
     margin: 50px auto;
     padding: 30px; /* Više prostora unutar forme */
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
@@ -34,7 +35,8 @@ label {
 /* Stil za input polja */
 input[type="email"],
 input[type="password"],
-input[type="text"] {
+input[type="text"],
+input[type="number"] {
     width: 100%;
     padding: 5px; /* Povećan padding unutar input polja */
     font-size: 14px; /* Veći font za lakše čitanje */
@@ -48,7 +50,8 @@ input[type="text"] {
 /* Promena boje okvira kada se input fokusira */
 input[type="email"]:focus,
 input[type="password"]:focus,
-input[type="text"] {
+input[type="text"],
+input[type="number"] {
     border-color: #B9A188;
     outline: none;
 }
@@ -64,11 +67,18 @@ button[type="submit"] {
     border-radius: 8px;
     cursor: pointer;
     transition: background-color 0.3s;
+    margin-top: 20px
 }
 
 /* Promena boje dugmeta pri hover-u */
 button[type="submit"]:hover {
     background-color: #518EFF;
+}
+
+button[type="button"]{
+    background-color: lightblue;
+    float: left;
+    padding: 10px;
 }
 
 /* Stil za poruke o uspehu ili grešci */
@@ -81,9 +91,11 @@ p {
 .form-container{
     background-color: #f9f9f9;
     padding: 30px;
+    margin: 150px auto;
     border: solid #ccc 1px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     border-radius: 15px;
+    width: 350px;
 }
 
 .google-button{
@@ -97,7 +109,7 @@ p {
     display: flex;
     align-items: center;
     transition: background-color 0.3s ease;
-    margin: 25px auto;
+    margin: 50px auto;
 }
 
 .google-button:hover {
@@ -113,5 +125,9 @@ p {
 .error-message, .success-message{
     color:red;
     text-align: center;
+}
+
+GoogleLogin{
+    margin: 100px auto;
 }
 

@@ -1,8 +1,10 @@
 /* Glavni stil za formu kreiranja aukcije */
 .formContainer {
-    max-width: 600px; /* Povećana širina forme */
-    min-width: 600px;
-    margin: 50px auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    max-width: 1000px;
+    margin: 150px auto;
     padding: 30px;
     background-color: #f9f9f9;
     border: 1px solid #ccc;
@@ -10,53 +12,86 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-/* Stil za h2 (naslov forme) */
-.formContainer h2 {
-    text-align: center;
-    color: #333;
-    font-family: 'Arial', sans-serif;
-    font-size: 24px;
-    margin-bottom: 20px;
+/* Forma unutar formContainer */
+.formContainer form {
+    display: flex;
+    flex: 1;
 }
 
-/* Stil za label */
-.formContainer label {
-    display: block;
-    margin-bottom: 8px;
-    color: #555;
-    font-size: 18px;
-    font-family: 'Arial', sans-serif;
+/* Leva i desna strana forme */
+.formLeft, .formRight {
+    flex: 2;
 }
-
-/* Stil za input polja i textarea */
-.formContainer input[type="text"], input[type="number"],
-.formContainer textarea {
-    width: 100%; /* Polja su proširena na celu širinu forme */
-    padding: 10px;
-    font-size: 16px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    box-sizing: border-box;
-    margin-bottom: 20px;
-    transition: border-color 0.3s;
+.formLeft {
+    margin-right: 20px;
 }
 
 /* Stil za textarea */
-.formContainer textarea {
-    height: 150px; /* Dodatno povećana visina textarea */
-    resize: none;  /* Onemogućava promenu veličine tekstualnog polja */
-}
-
-/* Promena boje okvira kada je input fokusiran */
-.formContainer input[type="text"]:focus,
-.formContainer textarea:focus {
-    border-color: #B9A188;
-    outline: none;
-}
-
-/* Stil za dugme za kreiranje aukcije */
-.formContainer input[type="submit"] {
+.formLeft textarea {
+    height: 200px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    padding: 10px;
     width: 100%;
+    resize: none;
+    font-size: 16px;
+}
+
+/* Stil za inpute */
+input[type="text"],
+input[type="number"] {
+    width: 70%;
+    font-size: 16px;
+}
+
+/* Stil za izabrane slike */
+.selected-images {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 10px;
+    margin-left: 50px;
+    height: 250px;
+    border: 1px solid black;
+    background-color: rgba(204, 204, 204, 0.5);
+}
+
+/* Stil za prikaz slika */
+.image-preview {
+    position: relative;
+    margin: 5px;
+}
+.image-preview img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+/* Dugme za uklanjanje slika */
+.remove-image {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background-color: red;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    width: 20px;
+    height: 20px;
+    font-weight: bold;
+    font-size: 16px;
+    line-height: 20px;
+    transition: background-color 0.3s;
+}
+.remove-image:hover {
+    background-color: darkred;
+}
+
+/* Dugme za potvrdu */
+input[type="submit"] {
+    margin-top: 10px;
     padding: 12px;
     background-color: #4477E6;
     color: white;
@@ -65,9 +100,149 @@
     border-radius: 8px;
     cursor: pointer;
     transition: background-color 0.3s;
+    width: 40%;
+}
+input[type="submit"]:hover {
+    background-color: #518EFF;
 }
 
-/* Promena boje dugmeta na hover */
-.formContainer input[type="submit"]:hover {
-    background-color: #518EFF;
+/* Ostali stilovi */
+.auction-duration {
+    margin-top: 20px;
+}
+.contact-info {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+}
+.contact-info label {
+    margin-left: 70px;
+}
+.contact-info input {
+    width: 200px;
+}
+.duration {
+    width: 70px;
+    height: 30px;
+}
+
+@media (max-width: 768px) {
+    .formContainer {
+        display: flex;
+        flex-direction: row; /* Horizontalno postavljanje na velikim ekranima */
+        justify-content: space-between;
+        align-items: flex-start;
+        max-width: 1000px;
+        margin: 150px auto;
+        padding: 30px;
+        background-color: #f9f9f9;
+        border: 1px solid #ccc;
+        border-radius: 15px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    
+    /* Forma unutar formContainer */
+    .formContainer form {
+        display: flex;
+        flex: 1;
+        flex-direction: column; /* Vertikalni raspored elemenata */
+    }
+    
+    /* Leva i desna strana forme */
+    .formLeft, .formRight {
+        flex: 1;
+        width: 100%; /* Omogućava punu širinu na manjim ekranima */
+    }
+    .formLeft {
+        margin-right: 20px;
+    }
+    
+    /* Stil za textarea */
+    .formLeft textarea {
+        height: 200px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        padding: 10px;
+        width: 100%;
+        resize: none;
+        font-size: 16px;
+    }
+    
+    /* Stil za inpute */
+    input[type="text"],
+    input[type="number"] {
+        width: 100%; /* Prilagođavanje širine */
+        font-size: 16px;
+    }
+    
+    /* Stil za izabrane slike */
+    .selected-images {
+        display: flex;
+        flex-wrap: wrap;
+        margin-top: 10px;
+        margin-left: 0;
+        height: auto;
+        border: 1px solid black;
+        background-color: rgba(204, 204, 204, 0.5);
+        width: 100%; /* Puna širina */
+    }
+    
+    /* Stil za prikaz slika */
+    .image-preview {
+        position: relative;
+        margin: 5px;
+    }
+    .image-preview img {
+        width: 100px;
+        height: 100px;
+        object-fit: cover;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+    
+    /* Dugme za uklanjanje slika */
+    .remove-image {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        background-color: red;
+        color: white;
+        border: none;
+        border-radius: 50%;
+        cursor: pointer;
+        width: 20px;
+        height: 20px;
+        font-weight: bold;
+        font-size: 16px;
+        line-height: 20px;
+        transition: background-color 0.3s;
+    }
+    .remove-image:hover {
+        background-color: darkred;
+    }
+    
+    /* Dugme za potvrdu */
+    input[type="submit"] {
+        margin-top: 10px;
+        padding: 12px;
+        background-color: #4477E6;
+        color: white;
+        font-size: 18px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        width: 100%;
+    }
+    input[type="submit"]:hover {
+        background-color: #518EFF;
+    }
+    
+}
+
+@media (max-width: 480px) {
+    .auction-item {
+        flex: 1 0 100%;
+        max-width: 100%;
+    }
 }
