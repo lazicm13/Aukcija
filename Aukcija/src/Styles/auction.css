@@ -3,8 +3,7 @@
     border: 1px solid #e0e0e0; /* Light border for definition */
     border-radius: 8px; /* Rounded corners */
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
-    margin: 15px; /* Space between items */
-    padding: 15px; /* Padding inside the item */
+    margin: 5px; /* Space between items */ /* Padding inside the item */
     transition: transform 0.2s; /* Smooth transform on hover */
     width: calc(33% - 30px); /* Responsive width, adjust based on your layout */
     display: flex;
@@ -60,4 +59,148 @@
     .auction-item {
         width: calc(100% - 30px); /* Full width for mobile */
     }
+}
+
+/* Slideshow container */
+.slideshow-container {
+    position: relative;
+    max-width: 100%; /* Adjust the width as needed */
+    margin: auto;
+    overflow: hidden; /* Hide overflow to prevent images from spilling out */
+    margin-bottom: 0;
+}
+
+/* Individual slide */
+.slide {
+    display: none; /* Hide all slides by default */
+    width: 100%; /* Make images responsive */
+    height: auto; /* Maintain aspect ratio */
+    margin-bottom: 0;
+}
+
+.slide img{
+    min-height: 180px;
+    max-height: 180px;
+    min-width: 200px;
+    max-width: 200px;
+    margin-bottom: 0;
+}
+
+/* Active slide */
+.active {
+    display: block; /* Show the active slide */
+}
+
+/* Navigation buttons */
+.prev,
+.next {
+    cursor: pointer;
+    position: absolute;
+    top: 50%; /* Center vertically */
+    width: auto;
+    padding: 16px;
+    color: white;
+    font-weight: bold;
+    font-size: 18px;
+    transition: 0.6s ease;
+    border-radius: 3px; /* Add rounded corners for both buttons */
+    user-select: none;
+}
+
+/* Position the left arrow on the left */
+.prev {
+    left: 10px; /* Add some spacing from the left */
+    transform: translateY(-50%); /* Center vertically */
+}
+
+/* Position the right arrow on the right */
+.next {
+    right: 10px; /* Add some spacing from the right */
+    transform: translateY(-50%); /* Center vertically */
+}
+
+/* Change color on hover */
+.prev:hover,
+.next:hover {
+    background-color: rgba(0, 0, 0, 0.8);
+}
+
+
+
+/* Dots (optional) */
+.dot {
+    height: 15px;
+    width: 15px;
+    margin: 0 2px;
+    background-color: #bbb;
+    border-radius: 50%;
+    display: inline-block;
+    transition: background-color 0.6s ease;
+}
+
+.active-dot {
+    background-color: #717171;
+}
+
+
+.new-offer-container {
+    display: flex;
+    align-items: center; /* Centriranje po visini */
+    gap: 8px;
+    width: 90%;
+    text-align: center;
+    margin-bottom: 0;
+    margin: 3px auto;
+}
+
+.new-offer-container input {
+    flex: 1;
+    font-size: 16px;
+}
+
+.new-offer-container .new-offer-btn {
+    width: 30%; /* Po želji prilagodite širinu */
+    font-size: 13px;
+    height: 20px;
+    display: flex; /* Koristite flexbox */
+    justify-content: center; /* Horizontalno centriranje */
+    align-items: center; /* Vertikalno centriranje */
+    cursor: pointer;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    margin-top: 0;
+}
+
+
+.open-ad-btn {
+    background-color: lightblue; /* Promenite boju po želji */
+    color: white;
+    padding: 5px ;
+    border: 1px solid cornflowerblue;
+    border-radius: 4px;
+    cursor: pointer;
+    margin: 10px 0;
+    font-size: 16px;
+    width: 90%;
+    margin-bottom: 0;
+}
+
+.slide-description {
+    position: absolute;
+    top: 121px; 
+    color: white !important; /* Boja teksta, belo za kontrast */
+    background-color: rgba(0, 0, 0, 0.5); /* Poluprovidna crna pozadina */
+    padding: 5px; /* Unutrašnje margine */
+    border-radius: 4px; /* Zaobljeni uglovi */
+    font-size: 14px; /* Veličina fonta */
+    z-index: 10; /* Osiguranje da je ovaj element iznad ostalih */
+    width: 96%;
+    height: 23%;
+}   
+
+.current-price-par{
+    margin: 3px auto;
+    margin-top: 10px;
 }

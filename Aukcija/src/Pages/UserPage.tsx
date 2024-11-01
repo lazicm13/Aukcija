@@ -14,17 +14,6 @@ function UserPage() {
                 <h2>Korisnička stranica</h2>
 
                 <form>
-                    {/* Polje za korisničko ime */}
-                    <div>
-                        <label htmlFor="username">Korisničko ime:</label>
-                        <input
-                            type="text"
-                            id="username"
-                            name="username"
-                            // Here you can add value and onChange for state management if needed
-                            required
-                        />
-                    </div>
                     {/* Polje za email */}
                     <div>
                         <label htmlFor="email">Email:</label>

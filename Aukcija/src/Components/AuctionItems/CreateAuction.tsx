@@ -16,42 +16,72 @@ function CreateAuction() {
 
     const createAuctionItem = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-
+    
         if (current_price <= 0) { 
             alert("Please enter a valid positive integer price.");
             return;
         }
-
+    
         if (images.length > 5) { // Maksimalno 5 slika
             alert("You can upload a maximum of 5 images.");
             return;
         }
-
+    
         const formData = new FormData();
         formData.append("title", title);
         formData.append("description", description);
         formData.append("current_price", Math.floor(current_price).toString());
-
-        images.forEach((image) => {
-            formData.append("images", image);
-        });
-
+        formData.append("auction_duration", auctionDuration.toString());
+        formData.append("city", city);
+        formData.append("phone_number", phoneNumber);
+    
         try {
+            // Step 1: Create the auction item
             const response = await api.post("/api/auctionItems/", formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
             });
-
+    
             if (response.status === 201) {
-                alert("Auction item created!");
-                setTitle("");
-                setDescription("");
-                setCurrentPrice(NaN);
-                setImages([]); // Resetovanje slika
-                navigate('/');
+                try {
+                    const auctionItemId = response.data.id;
+                    // Step 2: Prepare to upload images
+                    const imageFormData = new FormData();
+                    images.forEach((image) => {
+                        imageFormData.append('image', image);  // Append each image to FormData
+                    });
+                    console.log("ImageFormData:", [...images.entries()]);
+                
+                    // Step 3: Upload images to the newly created auction item
+                    const imageResponse = await api.post(`/api/auction-items/${auctionItemId}/images/`, imageFormData, {
+                        headers: {
+                            'Content-Type': 'multipart/form-data',
+                        },
+                    });
+                
+                    if (imageResponse.status === 201) {
+                        alert("Auction item and images created successfully!");
+                        // Reset form fields
+                        setTitle("");
+                        setDescription("");
+                        setCurrentPrice(NaN);
+                        setImages([]); // Reset images
+                        navigate('/');
+                    } else {
+                        alert("Failed to upload images");
+                    }
+                } catch (err) {
+                    if (axios.isAxiosError(err)) {
+                        const errorMessage = err.response?.data || 'An unknown error occurred';
+                        console.error("Error response:", errorMessage);
+                        alert(`Error: ${JSON.stringify(errorMessage)}`);
+                    } else {
+                        alert('An unknown error occurred');
+                    }
+                }
             } else {
-                alert("Failed to make the auction item");
+                alert("Failed to create the auction item");
             }
         } catch (err) {
             if (axios.isAxiosError(err)) {
@@ -63,15 +93,31 @@ function CreateAuction() {
             }
         }
     };
+    
 
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const selectedFiles = Array.from(e.target.files || []);
+        
+        // Check if the total number of images exceeds the limit
         if (selectedFiles.length + images.length > 5) {
             alert("You can upload a maximum of 5 images.");
             return;
         }
+    
+        // Optionally, check file size here
+        const fileSizeLimit = 5 * 1024 * 1024; // 5 MB example limit
+        for (const file of selectedFiles) {
+            if (file.size > fileSizeLimit) {
+                alert(`${file.name} exceeds the size limit of 5 MB.`);
+                return;
+            }
+        }
         setImages(prevImages => [...prevImages, ...selectedFiles]);
+    
+        // Clear the input (optional)
+        e.target.value = ''; // This allows the same file to be selected again if needed
     };
+    
 
     const removeImage = (index: number) => {
         setImages(prevImages => prevImages.filter((_, i) => i !== index)); // Uklanja sliku sa odabranog indeksa
@@ -138,7 +184,12 @@ function CreateAuction() {
                         name="images"
                         accept="image/*"
                         onChange={handleImageChange}
+                        style={{ display: "none" }}
                     />
+                    <div className="custom-file-upload">
+                        <button type="button" onClick={() => document.getElementById("images")?.click()}>Odaberi fajl</button>
+                        <span>{images.length > 0 ? `${images.length} odabranih fajlova` : "Nijedan fajl nije odabran"}</span>
+                    </div>
                     <div className="selected-images">
                         {images.map((image, index) => (
                             <div key={index} className="image-preview">

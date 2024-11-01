@@ -101,6 +101,7 @@ function RegistrationComponent() {
                 <GoogleLogin
                     onSuccess={handleGoogleSuccess}
                     onError={handleGoogleError}
+                    locale='sr-Latn'
                 />
                 <form onSubmit={handleSubmit}>
                     {/* Polje za email */}

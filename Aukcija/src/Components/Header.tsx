@@ -48,8 +48,10 @@ function Header() {
             Kreiraj aukciju ⚒️
           </button>
         )}
-        
-        {location.pathname !== '/' && <a href='/'><img src='./src/assets/home.png' className='home-button'></img></a>}
+        {location.pathname === '/registracija' && <p>Imate nalog? → <a href='login'>Ulogujte se</a></p>}
+        {location.pathname === '/login' && <p>Nemate nalog? → <a href='registracija'>Registrujte se</a></p>}
+        {(location.pathname !== '/' && location.pathname !== '/login' && location.pathname !== '/registracija') && 
+        <a href='/'><img src='./src/assets/home.png' className='home-button'></img></a>}
         {userName && (
           <div className="user-profile">
             <span className="user-name">{userName}</span>

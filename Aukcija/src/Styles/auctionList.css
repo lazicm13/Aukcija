@@ -33,7 +33,7 @@
     display: flex; /* Flexbox layout for items */
     flex-wrap: wrap; /* Wrap items to the next row if necessary */
     gap: 20px;
-    background-color: #f9f9f9;
+    background-color: #F5F5DC;
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -119,4 +119,8 @@ button.create-auction-btn:hover {
 .pagination-controls button:disabled {
     background-color: #ccc;
     cursor: not-allowed;
+}
+
+.auction-list-container{
+    margin-top: 100px
 }

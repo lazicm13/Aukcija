@@ -4,6 +4,7 @@ import api from '../../api';
 import { useNavigate } from 'react-router-dom';
 import { GoogleLogin } from '@react-oauth/google';
 
+
 function LoginComponent() {
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
@@ -78,9 +79,11 @@ function LoginComponent() {
         <Fragment>
             <div className='form-container'>
                 <h2>Login</h2>
+                
                 <GoogleLogin
                     onSuccess={handleGoogleSuccess}
                     onError={handleGoogleError}
+                    locale='sr-Latn'
                 />
                 <form onSubmit={handleSubmit}>
                     <div>

@@ -88,7 +88,7 @@ p {
     font-family: 'Arial', sans-serif;
 }
 
-.form-container{
+.form-container {
     background-color: #f9f9f9;
     padding: 30px;
     margin: 150px auto;
@@ -96,38 +96,16 @@ p {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     border-radius: 15px;
     width: 350px;
-}
-
-.google-button{
-    background-color: white;
-    color: black;
-    font-size: 16px;
-    padding: 10px 20px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    cursor: pointer;
     display: flex;
+    flex-direction: column;
     align-items: center;
-    transition: background-color 0.3s ease;
-    margin: 50px auto;
 }
 
-.google-button:hover {
-    background-color: #ccc; 
-}
 
-.google-logo{
-    width: 30px; /* Logo size */
-    height: auto;
-    margin-right: 8px;
-}
 
 .error-message, .success-message{
     color:red;
     text-align: center;
 }
 
-GoogleLogin{
-    margin: 100px auto;
-}
 

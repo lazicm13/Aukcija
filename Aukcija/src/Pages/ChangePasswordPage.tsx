@@ -15,7 +15,7 @@ function ChangePasswordPage() {
     };
 
     return (
-        <div className="auth-container">
+        <div className="form-container">
             <h2>Change Password</h2>
             <form onSubmit={handlePasswordChange} className="auth-form">
                 <div className="form-group">

@@ -8,6 +8,10 @@ interface AuctionItem {
     title: string;
     description: string;
     current_price: number;
+    images: {
+        id: number;
+        image: string;
+    }[]; 
 }
 
 function AuctionItemsDisplay() {

@@ -21,7 +21,9 @@ load_dotenv()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
+# Media files (uploaded files)
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')  # Ensure this path is correct
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
@@ -48,19 +50,25 @@ CORS_ALLOW_HEADERS = default_headers + [
     'x-csrftoken',
     'authorization',
     'x-requested-with',
+    "content-type",
+
 ]
 
 
 CORS_ALLOWED_METHODS = [
+    "DELETE",
     "GET",
+    "OPTIONS",
+    "PATCH",
     "POST",
-    "OPTIONS",  
+    "PUT",
 ]
 
 CSRF_TRUSTED_ORIGINS = [
     'http://localhost:5173',  # Add your front-end URL
     # You can add more trusted origins here as needed
 ]
+
 
 
 
