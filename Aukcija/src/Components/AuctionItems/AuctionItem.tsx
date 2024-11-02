@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './../../Styles/auction.css';
+import { useNavigate } from 'react-router-dom';
 
 interface AuctionItemProps {
     auction: {
@@ -19,6 +20,7 @@ const AuctionItem: React.FC<AuctionItemProps> = ({ auction, onDelete }) => {
     const { id, title, current_price, images, description} = auction;
     const [currentSlide, setCurrentSlide] = useState(0);
     const [new_offer, setNewOffer] = useState<number>(NaN);
+    const navigate = useNavigate();
 
     const nextSlide = () => {
         setCurrentSlide((prev) => (prev + 1) % images.length);
@@ -34,11 +36,15 @@ const AuctionItem: React.FC<AuctionItemProps> = ({ auction, onDelete }) => {
     const getFirstWords = (text: string, wordCount: number) => {
         return text.split(' ').slice(0, wordCount).join(' ') + (text.split(' ').length > wordCount ? '...' : '');
     };
+    
+    const handleOpenAd = () => {
+        navigate(`/aukcija/${auction.id}`)
+    }
 
     return (
-        <div className="auction-item">
+        <div className="auction-item" >
             <h3>{title}</h3>
-            <button className="open-ad-btn">Otvori oglas</button> {/* Dugme za otvaranje */}
+            <button className="open-ad-btn" onClick={handleOpenAd}>Otvori oglas</button> {/* Dugme za otvaranje */}
             <div className="slideshow-container">
                 {images.map((image, index) => (
                     <div className={`slide ${index === currentSlide ? 'active' : ''}`} key={image.id}>
@@ -50,7 +56,7 @@ const AuctionItem: React.FC<AuctionItemProps> = ({ auction, onDelete }) => {
                 <a className="next" onClick={nextSlide}>&#10095;</a>
             </div>
             <p className='current-price-par'><b>Trenutna cena: {current_price} RSD</b></p>
-            <div className='new-offer-container'>
+            {location.pathname !== '/moje-aukcije' && <div className='new-offer-container'>
                 <input
                     type='number'
                     name='new_offer'
@@ -62,8 +68,9 @@ const AuctionItem: React.FC<AuctionItemProps> = ({ auction, onDelete }) => {
                     }}
                     placeholder='Licitiraj ovde...'
                     />
-                <button type='submit' className='new-offer-btn'>Potvrdi</button>
+                <button type='submit' className='new-offer-btn'>Licitiraj</button>
             </div>
+}
             {location.pathname === '/moje-aukcije' && <button className="delete-btn" onClick={handleDelete}>Obriši aukciju</button>}
         </div>
     );

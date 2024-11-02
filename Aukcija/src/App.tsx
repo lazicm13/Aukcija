@@ -13,6 +13,7 @@ import { GoogleOAuthProvider } from '@react-oauth/google';
 import UserPage from './Pages/UserPage'
 import MyAuctionsPage from './Pages/MyAuctionsPage'
 import ChangePasswordPage from './Pages/ChangePasswordPage'
+import Auction from './Components/AuctionItems/Auction'
 
 const CLIENT_ID = '516726223486-ese1hmu3fmae12vgcv8b2tthgcnol316.apps.googleusercontent.com';
 
@@ -113,6 +114,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <ChangePasswordPage/>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path='/aukcija/:id'
+            element={
+              <ProtectedRoute>
+                <Auction/>
               </ProtectedRoute>
             }
           />

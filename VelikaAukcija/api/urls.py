@@ -1,6 +1,6 @@
 from django.urls import path
 from . import views
-from .views import LoginView, LogoutView, user_status, CSRFTokenView, google_login, AuctionImageListCreate
+from .views import LoginView, LogoutView, user_status, CSRFTokenView, google_login, AuctionImageListCreate, AuctionItemDetail
 
 urlpatterns = [
     path('login/', LoginView.as_view(), name='login'),
@@ -12,4 +12,5 @@ urlpatterns = [
     path('user/status/', views.user_status, name='user-status'),
     path('all-auction-items/', views.AllAuctionItemsList.as_view(), name='all-auction-items'),
     path('auction-items/<int:auction_item_id>/images/', AuctionImageListCreate.as_view(), name='auction_image_list_create'),
+    path('auction/<int:pk>/', AuctionItemDetail.as_view(), name='auction-item-detail'),
 ]

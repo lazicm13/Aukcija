@@ -46,7 +46,7 @@
 }
 
 .create-auction-btn {
-    background-color: #007bff; /* Plava boja za dugme */
+    background-color: yellow !important; /* Plava boja za dugme */
     color: white; /* Bela boja teksta za kontrast */
     border: none; /* Uklanja ivicu */
     border-radius: 5px; /* Zaobljeni uglovi dugmeta */

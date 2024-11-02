@@ -1,6 +1,6 @@
 .auction-container {
     padding: 20px;
-    margin-top: 55px; /* Centriranje sadržaja unutar .auction-container */
+    margin-top: 55px;
 }
 
 .search-sort-container {
@@ -9,7 +9,8 @@
     align-items: center;
     margin-bottom: 20px;
     max-width: 800px;
-    margin-left: 200px;
+    margin-left: auto;
+    margin-right: auto; /* Centriraj search-sort kontejner */
 }
 
 .search-input {
@@ -30,20 +31,22 @@
 }
 
 .auction-list {
-    display: flex; /* Flexbox layout for items */
-    flex-wrap: wrap; /* Wrap items to the next row if necessary */
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center; /* Centriraj aukcije u kontejneru */
     gap: 20px;
-    background-color: #F5F5DC;
+    background-color:  white;
     padding: 20px;
     border-radius: 10px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    margin-left: auto;
+    margin-right: auto; /* Centriraj auction-list kontejner */
 }
 
 .auction-item {
-    flex: 1 0 21%; /* Take approximately 21% of container width */
+    flex: 1 0 21%;
     max-width: 21%;
-    min-width: 250px; /* Set minimum width for responsiveness */
-    margin: 10px; /* Space between items */
+    min-width: 250px;
     box-sizing: border-box;
     padding: 15px;
     background: #ffffff;
@@ -51,12 +54,12 @@
     border-radius: 10px;
     text-align: center;
     min-height: 150px;
-    transition: transform 0.2s ease, box-shadow 0.2s ease; /* Smooth transitions */
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .auction-item:hover {
     transform: scale(1.05);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Shadow on hover */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
 /* Responsive adjustments */
@@ -65,8 +68,9 @@
         flex: 1 0 45%;
         max-width: 45%;
     }
-    .search-sort-container{
-        margin-left: 10px
+    .search-sort-container {
+        margin-left: auto;
+        margin-right: auto;
     }
 }
 
@@ -79,7 +83,7 @@
 
 /* Button styles */
 button.create-auction-btn {
-    background-color: #007bff;
+    background-color: #2E7D32 !important;
     color: #ffffff;
     border: none;
     padding: 10px 15px;
@@ -90,7 +94,7 @@ button.create-auction-btn {
 }
 
 button.create-auction-btn:hover {
-    background-color: #0056b3;
+    background-color: #357ABD !important;
 }
 
 .pagination-controls {
@@ -121,6 +125,9 @@ button.create-auction-btn:hover {
     cursor: not-allowed;
 }
 
-.auction-list-container{
-    margin-top: 100px
+.auction-list-container {
+    margin-top: 100px;
+    max-width: 1200px; /* Set maximum width for centering */
+    margin-left: auto;
+    margin-right: auto; /* Center the entire auction list container */
 }

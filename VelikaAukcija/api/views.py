@@ -156,3 +156,17 @@ class AuctionImageListCreate(generics.ListCreateAPIView):
                 return Response({"error": image_serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
         return Response({'message': 'Images uploaded successfully'}, status=status.HTTP_201_CREATED)
+
+class AuctionItemDetail(generics.RetrieveAPIView):
+    serializer_class = AuctionItemSerializer
+    permission_classes = [AllowAny]
+
+    def get_queryset(self):
+        return AuctionItem.objects.all()
+
+    def get_object(self):
+        auction_id = self.kwargs.get("pk")  # preuzima 'pk' iz URL-a
+        try:
+            return AuctionItem.objects.get(id=auction_id)
+        except AuctionItem.DoesNotExist:
+            raise NotFound({"error": "Auction item not found."})
