@@ -54,3 +54,45 @@ class AuctionItemSerializer(serializers.ModelSerializer):
 
         return auction_item
 
+from .models import Bid
+
+class BidSerializer(serializers.ModelSerializer):
+    auction_item_id = serializers.IntegerField(write_only=True)
+
+    class Meta:
+        model = Bid
+        fields = ['id', 'auction_item_id', 'bidder', 'amount', 'created_at']
+        read_only_fields = ['id', 'created_at', 'bidder']
+
+    def create(self, validated_data):
+        user = self.context['request'].user
+        auction_item_id = validated_data.pop('auction_item_id')  # Use auction_item_id from validated data
+        auction_item = AuctionItem.objects.get(id=auction_item_id)
+        validated_data['auction_item'] = auction_item
+        validated_data['bidder'] = user
+        return super().create(validated_data)
+
+    def validate(self, attrs):
+        auction_item_id = attrs['auction_item_id']
+        print("Validating auction_item_id:", auction_item_id)  # Debugging line
+        try:
+            auction_item = AuctionItem.objects.get(id=auction_item_id)
+        except AuctionItem.DoesNotExist:
+            raise serializers.ValidationError({
+                'auction_item_id': 'Aukcija sa datim ID-om ne postoji.'
+            })
+        
+        user = self.context['request'].user
+
+        if auction_item.seller == user:
+            raise serializers.ValidationError({
+                'amount': 'Ne možete licitirati na svoj proizvod.'
+            })
+
+        if attrs['amount'] <= auction_item.current_price:
+            raise serializers.ValidationError({
+                'amount': 'Vaša ponuda mora biti veća od trenutne cene.'
+            })
+
+        attrs['auction_item'] = auction_item
+        return attrs

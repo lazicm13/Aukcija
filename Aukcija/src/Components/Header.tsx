@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import './../Styles/header.css';
 import api from '../api';
@@ -7,8 +7,26 @@ function Header() {
   const location = useLocation();
   const navigate = useNavigate();
   
+  useEffect(() => {
+    const fetchUsername = async () => {
+      try{
+        const response = await api.get('api/username');
+        if(response.status == 200)
+        {
+          setUserName(response.data.username);
+        } else{
+          console.error('Failed to fetch username', response.status);
+        }
+      }catch(error)
+      {
+        console.error('Error fetching username:', error);
+      }
+    };
+
+    fetchUsername();
+  });
   // Assuming you get the user's name from a context, prop, or state
-  const [userName, setUserName] = useState('Marko'); // Replace with actual user fetching logic
+  const [userName, setUserName] = useState(''); // Replace with actual user fetching logic
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const handleCreateAuction = () => {
@@ -40,7 +58,7 @@ function Header() {
 
   return (
     <header className='sticky-header'>
-      <a href='/'><img src='./src/assets/logo1.png' className='header-logo' alt='Logo' /></a>
+      <a href='/'><img src='/assets/logo1.png' className='header-logo' alt='Logo' /></a>
 
       <div className="header-right">
         {location.pathname === '/' && (
@@ -51,12 +69,12 @@ function Header() {
         {location.pathname === '/registracija' && <p>Imate nalog? → <a href='login'>Ulogujte se</a></p>}
         {location.pathname === '/login' && <p>Nemate nalog? → <a href='registracija'>Registrujte se</a></p>}
         {(location.pathname !== '/' && location.pathname !== '/login' && location.pathname !== '/registracija') && 
-        <a href='/'><img src='./src/assets/home.png' className='home-button'></img></a>}
+        <a href='/'><img src='/assets/home.png' className='home-button'></img></a>}
         {userName && (
           <div className="user-profile">
             <span className="user-name">{userName}</span>
             <img 
-              src='./src/assets/user-icon.png' 
+              src='/assets/user-icon.png' 
               className='user-icon' 
               alt='User Icon' 
               onClick={toggleDropdown} 

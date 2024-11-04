@@ -171,6 +171,7 @@ function CreateAuction() {
                             <option value={1}>1 dan</option>
                             <option value={2}>2 dana</option>
                             <option value={3}>3 dana</option>
+                            <option value={4}>4 dana</option>
                         </select>
                     </div>
                 </div>

@@ -7,7 +7,7 @@
     backdrop-filter: blur(8px);
     border-radius: 12px;
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
-    overflow: hidden;
+
 }
 
 /* Naslov aukcije */
@@ -17,6 +17,7 @@
     color: #333;
     font-weight: 600;
     margin-bottom: 10px;
+    margin-top: 0px;
 }
 
 /* Slideshow - Kontejner */
@@ -29,9 +30,9 @@
 
 /* Slika aukcije */
 .large-image {
-    width: 100%;
-    height: auto;
-    border-radius: 8px;
+    max-width: 60%;
+    max-height: 400px;
+    border-radius : 8px;
     transition: transform 0.3s ease;
 }
 
@@ -45,6 +46,10 @@
     line-height: 1.6;
     color: #444;
     margin: 20px 0;
+    max-width: 500px;
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 /* Istorija ponuda - Sekcija */
@@ -65,14 +70,15 @@
 }
 
 /* Kontejner za novu ponudu */
-.new-offer-container {
+.new-bid-container {
     display: flex;
     gap: 12px;
     margin-top: 25px;
+    margin-left: 200px;
 }
 
 /* Input za novu ponudu */
-.new-offer-container input {
+.new-bid-container input {
     flex: 1;
     padding: 10px;
     font-size: 1em;
@@ -80,15 +86,16 @@
     border-radius: 6px;
     transition: all 0.3s ease;
     outline: none;
+    max-width: 300px;
 }
 
-.new-offer-container input:focus {
+.new-bid-container input:focus {
     border-color: #007bff;
     box-shadow: 0 0 8px rgba(0, 123, 255, 0.3);
 }
 
 /* Dugme za potvrdu nove ponude */
-.new-offer-btn {
+.auction-details .new-bid-btn {
     padding: 10px 20px;
     background-color: #007bff;
     color: #fff;
@@ -99,40 +106,161 @@
     transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
-.new-offer-btn:hover {
+.new-bid-btn:hover {
     background-color: #0056b3;
-    transform: translateY(-2px);
+    transform: translateY(-1px);
 }
 
 /* Dugmad za slideshow */
-.prev, .next {
+.auction-details .prev1, .next1 {
     position: absolute;
     top: 50%;
     font-size: 2em;
-    color: rgba(255, 255, 255, 0.8);
+    color: black;
     cursor: pointer;
     transition: color 0.2s;
     padding: 0 12px;
     user-select: none;
 }
 
-.prev {
+.prev1 {
     left: 10px;
 }
 
-.next {
+.next1 {
     right: 10px;
 }
 
-.prev:hover, .next:hover {
+.prev1:hover, .next1:hover {
     color: #007bff;
+    background-color: black;
 }
 
 /* Tekst za trenutnu cenu */
 .current-price {
-    font-size: 1.2em;
+    font-size: 25px;
     color: #333;
     font-weight: bold;
     margin-top: 20px;
     text-align: center;
+}
+
+.auction-city {
+    position: absolute;
+    top: -6px;
+    right: -2px;
+    color: black;
+    padding: 5px 10px;
+    border-radius: 5px;
+}
+
+@media (max-width: 768px){
+    .new-bid-container{ 
+        margin-left: 0px;
+    }
+}
+
+@media (max-width: 480px){
+    .new-bid-container{ 
+        margin-left: 0px;
+    }
+}
+
+/* Modal styles */
+.ReactModal__Overlay {
+    background-color: rgba(0, 0, 0, 0.7); /* Semi-transparent background */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed; /* Fixed positioning for full-screen coverage */
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1000; /* Ensure it's on top of other elements */
+}
+
+.ReactModal__Content {
+    position: relative;
+    background: #fff;
+    border-radius: 8px;
+    padding: 20px;
+    max-width: 420px;
+    max-height: 600px; /* Limits the height of the modal */
+    width: 90%; /* Responsive width */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    animation: fadeIn 0.3s ease;
+    overflow-y: auto; /* Allows vertical scrolling */
+}
+
+.ReactModal__Content h2 {
+    margin-top: 0;
+    color: #333;
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.ReactModal__Content ul {
+    list-style-type: none; /* Remove bullet points */
+    padding: 0;
+    margin: 10px 0;
+}
+
+.ReactModal__Content li {
+    border-bottom: 1px solid #eaeaea;
+    padding: 10px 0;
+    color: #555;
+}
+
+.ReactModal__Content li:last-child {
+    border-bottom: none; /* Remove border from last item */
+}
+
+.ReactModal__Content b {
+    color: #000; /* Bold text color */
+}
+
+.ReactModal__Content button {
+    background-color: #007bff; /* Primary button color */
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 10px 15px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.ReactModal__Content button:hover {
+    background-color: #0056b3; /* Darker shade on hover */
+}
+
+/* Keyframes for modal fade-in effect */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.auction-header{
+    display: inline;
+    margin-bottom: 0px;
+    margin-top: 0px;
+}
+
+.close-button {
+    position: absolute; /* Position it absolutely within the modal */
+    top: 10px; /* Distance from the top */
+    right: 10px; /* Distance from the right */
+    background: transparent; /* Transparent background */
+    border: none; /* No border */
+    font-size: 24px; /* Font size for the close icon */
+    color: #555; /* Color of the close icon */
+    cursor: pointer; /* Pointer cursor on hover */
+}
+
+.close-button:hover {
+    color: #ff0000; /* Change color on hover for visibility */
 }

@@ -5,12 +5,13 @@
     width: 100%; /* Širina headera je 100% */
     background-color: #ffffff; /* Pozadinska boja */
     color: black; /* Boja teksta */
-    padding: 10px 20px; /* Unutrašnje margine */
+    padding: 10px; /* Unutrašnje margine */
     display: flex; /* Aktivira flexbox */
     justify-content: space-between; /* Razmak između elemenata */
     align-items: center; /* Vertikalno centriranje elemenata */
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Blaga senka ispod headera */
     z-index: 1000; /* Osigurava da bude iznad drugih elemenata */
+    height: 9%;
 }
 
 .header-logo {
@@ -43,6 +44,7 @@
     align-items: center; /* Vertikalno centriranje */
     gap: 30px; /* Razmak između elemenata */
     margin-right: 450px;
+    margin-top: 20px;
 }
 
 .create-auction-btn {

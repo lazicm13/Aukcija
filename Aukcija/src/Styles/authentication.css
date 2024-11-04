@@ -36,7 +36,8 @@ label {
 input[type="email"],
 input[type="password"],
 input[type="text"],
-input[type="number"] {
+input[type="number"],
+input[type="phone"] {
     width: 100%;
     padding: 5px; /* Povećan padding unutar input polja */
     font-size: 14px; /* Veći font za lakše čitanje */

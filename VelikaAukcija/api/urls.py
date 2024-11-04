@@ -1,7 +1,6 @@
 from django.urls import path
 from . import views
-from .views import LoginView, LogoutView, user_status, CSRFTokenView, google_login, AuctionImageListCreate, AuctionItemDetail
-
+from .views import LoginView, LogoutView, user_status, CSRFTokenView, google_login,AuctionImageListCreate, CurrentUserView, AuctionItemDetail, BidCreateView, BidListView, FetchAuctionOwnerView, FetchUsernamesView
 urlpatterns = [
     path('login/', LoginView.as_view(), name='login'),
     path('auth/google/', google_login, name='google_login'),
@@ -13,4 +12,9 @@ urlpatterns = [
     path('all-auction-items/', views.AllAuctionItemsList.as_view(), name='all-auction-items'),
     path('auction-items/<int:auction_item_id>/images/', AuctionImageListCreate.as_view(), name='auction_image_list_create'),
     path('auction/<int:pk>/', AuctionItemDetail.as_view(), name='auction-item-detail'),
+    path('username/', CurrentUserView.as_view(), name='username'),
+    path('bids/', BidCreateView.as_view(), name='bid-create'),
+    path('bids/<int:auction_item_id>/', BidListView.as_view(), name='bid-list'),
+    path('user/username/<int:auction_id>/', FetchAuctionOwnerView.as_view(), name='fetch_auction_owner'),
+    path('users/', FetchUsernamesView.as_view(), name='all-users'),
 ]

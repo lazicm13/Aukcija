@@ -8,6 +8,7 @@ interface AuctionItem {
     title: string;
     description: string;
     current_price: number;
+    city: string;
     images: {
         id: number;
         image: string;

@@ -16,11 +16,19 @@ function UserPage() {
                 <form>
                     {/* Polje za email */}
                     <div>
-                        <label htmlFor="email">Email:</label>
+                        <label htmlFor="phone">Broj telefona</label>
                         <input
-                            type="email"
-                            id="email"
-                            name="email"
+                            type="phone"
+                            id="phone_number"
+                            name="phone_number"
+                            // Here you can add value and onChange for state management if needed
+                            required
+                        />
+                        <label htmlFor="city">Grad</label>
+                        <input
+                            type="text"
+                            id="city"
+                            name="city"
                             // Here you can add value and onChange for state management if needed
                             required
                         />

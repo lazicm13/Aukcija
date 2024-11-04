@@ -1,8 +1,8 @@
 from django.contrib.auth.models import User
-from rest_framework import generics, status
-from .serializers import UserSerializer, AuctionItemSerializer, AuctionImageSerializer
+from rest_framework import generics, status, serializers, viewsets
+from .serializers import UserSerializer, AuctionItemSerializer, AuctionImageSerializer, BidSerializer
 from rest_framework.permissions import IsAuthenticated, AllowAny
-from .models import AuctionItem, AuctionImage
+from .models import AuctionItem, AuctionImage, Bid
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.contrib.auth import authenticate, login, logout
@@ -170,3 +170,84 @@ class AuctionItemDetail(generics.RetrieveAPIView):
             return AuctionItem.objects.get(id=auction_id)
         except AuctionItem.DoesNotExist:
             raise NotFound({"error": "Auction item not found."})
+
+class CurrentUserView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(selft, request):
+        if request.user.is_authenticated:
+            return Response({'username': request.user.username}, status=status.HTTP_200_OK)
+        else:
+            return Response({'error': 'User is not authenticated'}, status=status.HTTP_401_UNAUTHORIZED)
+        
+class BidCreateView(generics.CreateAPIView):
+    queryset = Bid.objects.all()
+    serializer_class = BidSerializer
+    permission_classes = [IsAuthenticated]  # Samo prijavljeni korisnici mogu licitirati
+
+    def perform_create(self, serializer):
+        bid = serializer.save(bidder=self.request.user)
+        auction_item_id = serializer.validated_data['auction_item_id']  # Use auction_item_id here
+        auction_item = AuctionItem.objects.get(id=auction_item_id)
+
+        if bid.amount > auction_item.current_price:
+            auction_item.current_price = bid.amount
+            auction_item.save()
+        else:
+            raise serializers.ValidationError({"detail": "Bid must be higher than the current price."})
+
+class BidListView(generics.ListAPIView):
+    serializer_class = BidSerializer
+    permission_classes = [AllowAny]  # Adjust as needed
+
+    def get_queryset(self):
+        auction_item_id = self.kwargs.get('auction_item_id')
+        # Fetch bids related to the specific auction item
+        return Bid.objects.filter(auction_item_id=auction_item_id)
+
+    def get(self, request, *args, **kwargs):
+        auction_item_id = self.kwargs.get('auction_item_id')
+        # Check if auction_item_id is valid
+        if not AuctionItem.objects.filter(id=auction_item_id).exists():
+            return Response({"error": "Auction item not found."}, status=404)
+
+        # Proceed to get bids for the auction item
+        return super().get(request, *args, **kwargs)
+    
+
+class FetchAuctionOwnerView(generics.RetrieveAPIView):
+    permission_classes = [AllowAny]  # Adjust permissions as needed
+
+    def get(self, request, auction_id):
+        try:
+            auction_item = AuctionItem.objects.get(id=auction_id)
+            username = auction_item.seller.username  # Assuming 'seller' is a ForeignKey to User
+            return Response({'username': username}, status=status.HTTP_200_OK)
+        except AuctionItem.DoesNotExist:
+            return Response({'detail': 'Auction item not found'}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({'detail': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+class FetchUsernamesView(APIView):
+    permission_classes = [AllowAny]  # Možeš prilagoditi dozvole prema potrebama
+
+    def post(self, request):
+        user_ids = request.data.get('ids', [])
+        print(user_ids)
+        print('AAAAAAA')
+        
+        # Validacija ulaznih podataka
+        if not isinstance(user_ids, list):
+            return Response({'error': 'Invalid input, expected a list of user IDs.'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        usernames = []
+        
+        # Pronađi korisnike na osnovu ID-jeva
+        for user_id in user_ids:
+            try:
+                user = User.objects.get(id=user_id)
+                usernames.append(user.username)
+            except User.DoesNotExist:
+                continue  # Ignoriši nepostojeće korisnike
+        
+        return Response(usernames, status=status.HTTP_200_OK)

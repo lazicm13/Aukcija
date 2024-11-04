@@ -79,7 +79,7 @@
     margin-bottom: 0;
 }
 
-.slide img{
+.slide .auction-img{
     min-height: 160px;
     max-height: 160px;
     min-width: 180px;
@@ -156,7 +156,7 @@
 
 .new-offer-container input {
     flex: 1;
-    font-size: 16px;
+    font-size: 15px !important;
 }
 
 .new-offer-container .new-offer-btn {
@@ -186,6 +186,7 @@
     font-size: 16px;
     width: 85%;
     margin-bottom: 0px;
+    margin-top: 0px;
 }
 
 .slide-description {
@@ -204,4 +205,13 @@
 .current-price-par{
     margin: 3px auto;
     margin-top: 10px;
+}
+
+.auction-city {
+    position: absolute;
+    top: -6px;
+    right: -2px;
+    color: black;
+    padding: 5px 10px;
+    border-radius: 5px;
 }
