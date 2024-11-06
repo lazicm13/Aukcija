@@ -6,6 +6,7 @@ import api from '../api';
 function Header() {
   const location = useLocation();
   const navigate = useNavigate();
+  const [userName, setUserName] = useState(''); // Replace with actual user fetching logic
   
   useEffect(() => {
     const fetchUsername = async () => {
@@ -15,6 +16,7 @@ function Header() {
         {
           setUserName(response.data.username);
         } else{
+          setUserName('');
           console.error('Failed to fetch username', response.status);
         }
       }catch(error)
@@ -22,11 +24,10 @@ function Header() {
         console.error('Error fetching username:', error);
       }
     };
-
-    fetchUsername();
+    if(location.pathname !== '/login' && location.pathname !== '/registracija')
+      fetchUsername();
   });
   // Assuming you get the user's name from a context, prop, or state
-  const [userName, setUserName] = useState(''); // Replace with actual user fetching logic
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const handleCreateAuction = () => {
@@ -59,7 +60,7 @@ function Header() {
   return (
     <header className='sticky-header'>
       <a href='/'><img src='/assets/logo1.png' className='header-logo' alt='Logo' /></a>
-
+      
       <div className="header-right">
         {location.pathname === '/' && (
           <button className='create-auction-btn' onClick={handleCreateAuction}>
@@ -68,6 +69,7 @@ function Header() {
         )}
         {location.pathname === '/registracija' && <p>Imate nalog? → <a href='login'>Ulogujte se</a></p>}
         {location.pathname === '/login' && <p>Nemate nalog? → <a href='registracija'>Registrujte se</a></p>}
+        {(location.pathname === '/' && userName === '') && <div className='login-register-links'><a href='login'>Ulogujte se </a><a href='/registracija'> Registracija</a></div>}
         {(location.pathname !== '/' && location.pathname !== '/login' && location.pathname !== '/registracija') && 
         <a href='/'><img src='/assets/home.png' className='home-button'></img></a>}
         {userName && (

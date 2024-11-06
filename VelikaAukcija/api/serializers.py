@@ -1,17 +1,19 @@
-from django.contrib.auth.models import User
+from .models import CustomUser
 from rest_framework import serializers
 from .models import AuctionItem, AuctionImage
+from datetime import timedelta
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
-        model = User
-        fields = ['id', 'email', 'password']  # Uklonjeno confirm_password
+        model = CustomUser
+        fields = ['id', 'first_name','email', 'password']  # Uklonjeno confirm_password
         extra_kwargs = {
             'password': {'write_only': True},
         }
 
     def create(self, validated_data):
-        user = User(
+        user = CustomUser(
+            first_name = validated_data['first_name'],
             email=validated_data['email'],
             username=validated_data['email']  # Koristimo email kao username
         )
@@ -32,27 +34,49 @@ class AuctionImageSerializer(serializers.ModelSerializer):
         
 
 
+from rest_framework import serializers
+from datetime import timedelta
+from django.utils import timezone  # Import timezone to get the current time
+from .models import AuctionItem, AuctionImage
+
+class AuctionImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AuctionImage
+        fields = ["id", "image"]
+
 class AuctionItemSerializer(serializers.ModelSerializer):
     images = AuctionImageSerializer(many=True, required=False)
+    auction_duration = serializers.IntegerField(write_only=True)
 
     class Meta:
         model = AuctionItem
         fields = [
             "id", "title", "description", "current_price", 
             "auction_duration", "city", "phone_number", 
-            "created_at", "images",
+            "created_at", "end_date", "images",
         ]
-        read_only_fields = ["id", "created_at"]
+        read_only_fields = ["id", "created_at", "end_date"]
 
     def create(self, validated_data):
         images_data = validated_data.pop('images', [])
-        auction_item = AuctionItem.objects.create(**validated_data)
+        auction_duration = validated_data.pop('auction_duration', 1)  # Default to 1 day if not specified
 
-        # Sačuvaj slike
+        # Get the current time to set the created_at and end_date
+        current_time = timezone.now()
+        
+        # Create auction item and set the end_date based on the current time
+        auction_item = AuctionItem.objects.create(
+            **validated_data,
+            created_at=current_time,  # Manually set created_at if necessary (optional)
+            end_date=current_time + timedelta(days=auction_duration)
+        )
+
+        # Save images associated with this auction item
         for image_data in images_data:
             AuctionImage.objects.create(auction_item=auction_item, **image_data)
 
         return auction_item
+
 
 from .models import Bid
 

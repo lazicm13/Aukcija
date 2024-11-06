@@ -1,0 +1,30 @@
+.userpage-form {
+    width: 100%;
+    max-width: 400px; /* Adjust as needed */
+    margin: 0 auto;
+}
+
+.form-group {
+    margin-bottom: 20px; /* Space between each label-input pair */
+}
+
+.form-group label {
+    display: block;
+    font-size: 16px;
+    font-weight: 500;
+    margin-bottom: 5px; /* Space between label and input */
+}
+
+.form-group input {
+    width: 100%;
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+.form-group input:focus {
+    border-color: #007bff; /* Highlight border on focus */
+    outline: none;
+}

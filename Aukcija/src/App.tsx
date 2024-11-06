@@ -17,43 +17,22 @@ import Auction from './Components/AuctionItems/Auction'
 
 const CLIENT_ID = '516726223486-ese1hmu3fmae12vgcv8b2tthgcnol316.apps.googleusercontent.com';
 
-  async function logout(){
-    try{
-        const response = await api.post("api/logout/", {withCredentials: true});
-        if (response.status === 200) {
-            console.log("Logout was successful!");
-            return true;
-        } else {
-            console.error("Logout failed with status:", response.status, response);
-            return false;
-        }
-    }catch(error)
-    {
-        console.error("Error, logout failed:", error);
-        return false;
-    }
-  }
-
-
-
-function RegisterAndLogout() {
-  const [isLoggedOut, setIsLoggedOut] = useState(false);
+function Register() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
-      const handleLogout = async () => {
-          const success = await logout();
-          if (success) {
-              setIsLoggedOut(true);
-          }
-      };
-      handleLogout();
+    const checkAuth = async () => {
+      const response = await api.get("/api/user/status/");
+      setIsLoggedIn(response.data.is_authenticated);
+    };
+    checkAuth();
   }, []);
 
-  if (!isLoggedOut) {
-      return <RegistrationComponent />;
+  if (isLoggedIn) {
+    return <Navigate to="/" />;
   }
 
-  return <div>Logging out...</div>; // Možeš dodati loader ili nešto drugo dok čekaš
+  return <RegistrationComponent/> // Možeš dodati loader ili nešto drugo dok čekaš
 }
 
 function App() {
@@ -78,7 +57,7 @@ function App() {
           <Route
             path='/registracija'
             element={<GoogleOAuthProvider clientId={CLIENT_ID}>
-            <RegisterAndLogout/>
+            <Register/>
             </GoogleOAuthProvider>}
           />
           <Route

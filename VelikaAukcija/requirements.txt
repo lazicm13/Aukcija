@@ -10,3 +10,4 @@ sqlparse
 requests
 google-auth
 Pillow
+django-email-verification

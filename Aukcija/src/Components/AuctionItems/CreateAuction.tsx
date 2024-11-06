@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 function CreateAuction() {
     const [description, setDescription] = useState("");
     const [title, setTitle] = useState("");
-    const [current_price, setCurrentPrice] = useState<number>(NaN);
+    const [current_price, setCurrentPrice] = useState<string>('');
     const [images, setImages] = useState<File[]>([]);
     const [auctionDuration, setAuctionDuration] = useState<number>(1);
     const [city, setCity] = useState("");
@@ -17,20 +17,20 @@ function CreateAuction() {
     const createAuctionItem = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
     
-        if (current_price <= 0) { 
+        if (Number(current_price) <= 0) { 
             alert("Please enter a valid positive integer price.");
             return;
         }
     
-        if (images.length > 5) { // Maksimalno 5 slika
-            alert("You can upload a maximum of 5 images.");
+        if (images.length > 6) { // Maksimalno 5 slika
+            alert("You can upload a maximum of 6 images.");
             return;
         }
     
         const formData = new FormData();
         formData.append("title", title);
         formData.append("description", description);
-        formData.append("current_price", Math.floor(current_price).toString());
+        formData.append("current_price", Math.floor(Number(current_price)).toString());
         formData.append("auction_duration", auctionDuration.toString());
         formData.append("city", city);
         formData.append("phone_number", phoneNumber);
@@ -65,7 +65,7 @@ function CreateAuction() {
                         // Reset form fields
                         setTitle("");
                         setDescription("");
-                        setCurrentPrice(NaN);
+                        setCurrentPrice('');
                         setImages([]); // Reset images
                         navigate('/');
                     } else {
@@ -99,8 +99,8 @@ function CreateAuction() {
         const selectedFiles = Array.from(e.target.files || []);
         
         // Check if the total number of images exceeds the limit
-        if (selectedFiles.length + images.length > 5) {
-            alert("You can upload a maximum of 5 images.");
+        if (selectedFiles.length + images.length > 6) {
+            alert("You can upload a maximum of 6 images.");
             return;
         }
     
@@ -136,6 +136,8 @@ function CreateAuction() {
                         required
                         onChange={(e) => setTitle(e.target.value)}
                         value={title}
+                        maxLength={50}
+                        className="naslov"
                     />
                     <br></br>
                     <br></br>
@@ -147,7 +149,7 @@ function CreateAuction() {
                         required
                         value={current_price}
                         onChange={(e) => {
-                            const value = e.target.value === "" ? NaN : Math.floor(Number(e.target.value));
+                            const value = e.target.value;
                             setCurrentPrice(value);
                         }}
                     />
@@ -159,6 +161,7 @@ function CreateAuction() {
                         name="description" 
                         required 
                         value={description} 
+                        maxLength={600}
                         onChange={(e) => setDescription(e.target.value)}
                     />
                     <div className="auction-duration">
@@ -178,7 +181,7 @@ function CreateAuction() {
     
                 <div className="formRight">
                     
-                    <label htmlFor="images">Odaberi slike (maksimalno 5):</label>
+                    <label htmlFor="images">Odaberi slike (maksimalno 6):</label>
                     <input
                         type="file"
                         id="images"

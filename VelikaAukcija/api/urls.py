@@ -17,4 +17,5 @@ urlpatterns = [
     path('bids/<int:auction_item_id>/', BidListView.as_view(), name='bid-list'),
     path('user/username/<int:auction_id>/', FetchAuctionOwnerView.as_view(), name='fetch_auction_owner'),
     path('users/', FetchUsernamesView.as_view(), name='all-users'),
+    path('verify/<str:code>/', views.verify_email, name='verify_email'),
 ]

@@ -33,9 +33,9 @@ label {
 }
 
 /* Stil za input polja */
+input[type="text"],
 input[type="email"],
 input[type="password"],
-input[type="text"],
 input[type="number"],
 input[type="phone"] {
     width: 100%;
@@ -51,8 +51,8 @@ input[type="phone"] {
 /* Promena boje okvira kada se input fokusira */
 input[type="email"]:focus,
 input[type="password"]:focus,
-input[type="text"],
-input[type="number"] {
+input[type="text"]:focus,
+input[type="number"]:focus {
     border-color: #B9A188;
     outline: none;
 }

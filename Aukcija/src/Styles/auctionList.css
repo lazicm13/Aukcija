@@ -6,7 +6,7 @@
 .auction-list {
     display: flex;
     flex-wrap: wrap;
-    justify-content:center; /* Centriraj aukcije u kontejneru */
+    justify-content:flex-start; /* Centriraj aukcije u kontejneru */
     gap: 20px;
     background-color:  white;
     padding: 20px;

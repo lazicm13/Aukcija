@@ -108,3 +108,25 @@
     width: 40px;
     margin-top: 10px;
 }
+
+.login-register-links {
+    display: flex;
+    justify-content: center; /* Centriraj linkove */
+    margin: 20px 0; /* Dodatni prostor oko linkova */
+}
+
+.login-register-links a {
+    text-decoration: none; /* Ukloni donju liniju */
+    color: #555; /* Tamnija siva boja teksta */
+    background-color: transparent; /* Bez pozadinske boje */
+    padding: 8px 16px; /* Unutrašnji razmak */
+    border-radius: 4px; /* Zaobljeni uglovi */
+    margin: 0 8px; /* Razmak između linkova */
+    font-size: 14px; /* Manja veličina fonta */
+    transition: color 0.3s ease, background-color 0.3s ease; /* Efekti prelaza */
+}
+
+.login-register-links a:hover {
+    color: #007bff; /* Plava boja pri prelaženju mišem */
+    background-color: rgba(0, 123, 255, 0.1); /* Blaga plava pozadina pri prelaženju mišem */
+}

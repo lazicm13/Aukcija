@@ -13,6 +13,7 @@ interface AuctionItem {
         id: number;
         image: string;
     }[]; 
+    end_date: string;
 }
 
 function AuctionItemsDisplay() {
@@ -35,7 +36,8 @@ function AuctionItemsDisplay() {
             const data: AuctionItem[] = response.data;
             setItems(data);
         } catch (err) {
-            alert(err);
+            //alert(err);
+            console.log(err);
         }
     };
     const getMyAuctionItems = async () => {
@@ -44,7 +46,8 @@ function AuctionItemsDisplay() {
             const data: AuctionItem[] = response.data;
             setItems(data);
         } catch (err) {
-            alert(err);
+            //alert(err);
+            console.log(err);
         }
     };
 

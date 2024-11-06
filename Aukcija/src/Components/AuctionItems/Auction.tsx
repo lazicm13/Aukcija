@@ -4,6 +4,7 @@ import './../../Styles/auctionPage.css';
 import api from '../../api';
 import { AxiosError } from 'axios';
 import Modal from 'react-modal';
+import ConfirmationModal from '../ConfirmationModal'; // Import your modal component
 
 interface AuctionImage {
     id: number;
@@ -31,13 +32,17 @@ const Auction: React.FC = () => {
     const { id } = useParams<{ id: string }>();
     const [auction, setAuction] = useState<Auction | null>(null);
     const [currentSlide, setCurrentSlide] = useState(0);
-    const [newOffer, setNewOffer] = useState<number>(NaN);
+    const [newOffer, setNewOffer] = useState<string>('');
     const [currentPrice, setCurrentPrice] = useState<number>(0); // Dodano stanje za trenutnu cenu
     const [bidCount, setBidCount] = useState<number>(0);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [bids, setBids] = useState<Bid[]>([]);
     const [auctionOwner, setAuctionOwner] = useState<string>('');
     const [usernames, setUsernames] = useState<string[]>([]);
+    const [endDate, setEndDate] = useState<Date | null>(null);
+    const [timeLeft, setTimeLeft] = useState<string>('');
+    const [bidError, setBidError] = useState('');
+    const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState<boolean>(false);
     
     const fetchUsernames = async (userIds: number[]) => {
         try {
@@ -99,6 +104,13 @@ const Auction: React.FC = () => {
                 if (response.status === 200) {
                     setAuction(response.data);
                     setCurrentPrice(response.data.current_price); // Ažuriranje trenutne cene
+                    if (response.data.end_date) {
+                        setEndDate(new Date(response.data.end_date)); // Set end date
+                        console.log('Datum:' + response.data.end_date);
+                    }
+                    else
+                        console.log('nisam ni dobio vrednost datuma');
+                    
 
                     await fetchBids();
                 } else {
@@ -109,9 +121,52 @@ const Auction: React.FC = () => {
             }
         };
 
+        
+
         fetchAuction();
         fetchAuctionOwner(Number(id));
     }, [id]);
+
+    useEffect(() => {
+        let countdownInterval: number;
+    
+        const updateCountdown = () => {
+            if (endDate) {
+                const now = new Date();
+                const timeRemaining = endDate.getTime() - now.getTime();
+    
+                if (timeRemaining <= 0) {
+                    setTimeLeft("Auction ended");
+                    clearInterval(countdownInterval);
+                } else {
+                    const days = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
+                    const hours = Math.floor((timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    const minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
+                    const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
+    
+                    if (days > 0) {
+                        setTimeLeft(`${days}d ${hours}h ${minutes}m ${seconds}s`);
+                    } else if (hours > 0) {
+                        setTimeLeft(`${hours}h ${minutes}m ${seconds}s`);
+                    } else if (minutes > 0) {
+                        setTimeLeft(`${minutes}m ${seconds}s`);
+                    } else {
+                        setTimeLeft(`${seconds}s`);
+                    }
+                }
+            }
+        };
+    
+        // Call the function immediately to avoid waiting
+        updateCountdown();
+    
+        countdownInterval = setInterval(updateCountdown, 1000);
+    
+        return () => clearInterval(countdownInterval); // Cleanup on unmount
+    }, [endDate])
+    
+        // Pozivamo funkciju odmah da bismo izbegli čekanje
+    
 
     const nextSlide = () => {
         setCurrentSlide((prev) => (auction && auction.images.length > 0) ? (prev + 1) % auction.images.length : 0);
@@ -127,24 +182,31 @@ const Auction: React.FC = () => {
 
     interface ErrorResponse {
         detail?: string; // ili dodajte druge potrebne atribute
+        amount?: string[];
     }
 
     const handleNewBid = async () => {
-        if (newOffer && newOffer > currentPrice) { // Koristi currentPrice umesto auction.current_price
+        if (newOffer && Number(newOffer) > currentPrice) {
             try {
                 const response = await api.post('/api/bids/', {
                     auction_item_id: id,
                     amount: newOffer,
                 });
-                setNewOffer(0);
-                setCurrentPrice(newOffer); // Ažuriraj trenutnu cenu ovde
+                setNewOffer('');
+                setCurrentPrice(Number(newOffer)); // Update the current price
                 console.log('New bid submitted:', response.data);
+                setIsConfirmDialogOpen(false);
             } catch (error) {
                 const axiosError = error as AxiosError<ErrorResponse>;
-
+    
                 if (axiosError.response) {
                     console.error('Error submitting bid:', axiosError.response.data);
-                    alert(`Error: ${axiosError.response.data.detail || 'Something went wrong!'}`);
+                    const errorMessage = axiosError.response.data.amount?.[0];
+                    if (errorMessage) {
+                        alert(errorMessage); // Display the specific error message in an alert
+                    } else {
+                        alert('An error occurred. Please try again.');
+                    }
                 } else if (axiosError.request) {
                     console.error('No response from server:', axiosError.request);
                     alert('No response from server. Please try again later.');
@@ -154,7 +216,23 @@ const Auction: React.FC = () => {
                 }
             }
         } else {
-            alert('Please enter a valid offer greater than the current price.');
+            alert('Please enter a valid bid amount greater than the current price.');
+        }
+    };
+    
+    const handleBidConfirmation = () => {
+        handleNewBid();
+        setIsConfirmDialogOpen(false); // Zatvori modal nakon potvrde
+    };
+
+    const openConfirmationModal = () => {
+        if(newOffer !== '' && Number(newOffer) > (Number(currentPrice) + 9)){
+            setIsConfirmDialogOpen(true)
+            setBidError('');
+        }
+        else{
+            let cena = Number(currentPrice) + 10;
+            setBidError(`Minimalna ponuda je ${cena} din`);
         }
     };
 
@@ -174,9 +252,11 @@ const Auction: React.FC = () => {
 
     return (
         <div className="auction-details">
-            
-            <p className='auction-city'>🧭 {auction.city}</p>
-            <h2>{auction.title}</h2>
+            <div className="auction-header">
+                <p className="auction-city">🧭 {auction.city}</p>
+                <h2>{auction.title}</h2>
+            </div>
+    
             <div className="slideshow-container-large">
                 {auction.images.map((image, index) => (
                     <div className={`slide ${index === currentSlide ? 'active' : ''}`} key={image.id}>
@@ -186,23 +266,11 @@ const Auction: React.FC = () => {
                 <a className="prev1" onClick={prevSlide}>&#10094;</a>
                 <a className="next1" onClick={nextSlide}>&#10095;</a>
             </div>
-            <hr />
-            <p className="full-description">{auction.description}</p>
-            <div>
-                <a onClick={openModal} style={{ cursor: 'pointer' }}><u>Broj ponuda: {bidCount}</u></a>
-                <p className='phone-number'>
-                    Broj telefona: <a href={`tel:${auction.phone_number}`}><b>{auction.phone_number}</b></a>
+                <p className="current-price">
+                    <b>Trenutna cena: {Number(currentPrice).toFixed(0)} Dinara</b>
                 </p>
-                <p className='auction-owner'>Prodavac: {auctionOwner}</p>
-            </div>
-
-            <hr />
-            <p className='current-price'>
-                <b>Trenutna cena: {Number(currentPrice).toFixed(0)} Dinara</b> {/* Prikazuje ažuriranu trenutnu cenu */}
-            </p>
-            
-            <Modal isOpen={isModalOpen} onRequestClose={closeModal} className="ReactModel_Content" overlayClassName="ReactModal__Overlay">
-            <button className="close-button" onClick={closeModal}>&times;</button>
+            <Modal isOpen={isModalOpen} onRequestClose={closeModal} className="ReactModal_Content" overlayClassName="ReactModal__Overlay">
+                <button className="close-button" onClick={closeModal}>&times;</button>
                 <h2>Ponude za {auction.title}</h2>
                 <ul>
                     {bids.map((bid, index) => (
@@ -213,19 +281,45 @@ const Auction: React.FC = () => {
                 </ul>
                 <button onClick={closeModal}>Close</button>
             </Modal>
-
-            <div className="new-bid-container">
-                <input
-                    type="number"
-                    name="new_offer"
-                    value={newOffer}
-                    onChange={(e) => setNewOffer(e.target.value ? Math.floor(Number(e.target.value)) : NaN)}
-                    placeholder="Unesite novu ponudu..."
-                />
-                <button className="new-bid-btn" onClick={handleNewBid}>Potvrdi</button> {/* Dodato onClick */}
+    
+            <div className="bid-section">
+                <div className="new-bid-container">
+                    <input
+                        type="number"
+                        name="new_offer"
+                        value={newOffer}
+                        onChange={(e) => setNewOffer(e.target.value)}
+                        placeholder="Unesite novu ponudu..."
+                    />
+                    <button className="new-bid-btn" onClick={openConfirmationModal}>Potvrdi</button>
+                </div>
+                <span className="bid-error">{bidError}</span>
+    
+                <div className="countdown-container">
+                    <p className="countdown-timer">Završava se za: {timeLeft}</p>
+                </div>
             </div>
+            <a onClick={openModal} className="bid-history-link">Broj ponuda: {bidCount}</a>
+    
+            <div className="contact-info">
+                <p className='phone-number'>
+                    Broj telefona: <a href={`tel:${auction.phone_number}`}><b>{auction.phone_number}</b></a>
+                </p>
+                <p className='auction-owner'>Prodavac: {auctionOwner}</p>
+            </div>
+    
+            
+    
+            <hr />
+            <p className="full-description">{auction.description}</p>
+            <ConfirmationModal
+                isOpen={isConfirmDialogOpen}
+                onConfirm={handleBidConfirmation}
+                onCancel={() => setIsConfirmDialogOpen(false)}
+            />
         </div>
     );
+    
 };
 
 export default Auction;

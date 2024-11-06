@@ -38,9 +38,9 @@
 }
 
 /* Stil za inpute */
-input[type="text"],
+.naslov,
 input[type="number"] {
-    width: 70%;
+    width: 70% !important;
     font-size: 16px;
 }
 

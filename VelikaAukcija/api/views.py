@@ -1,5 +1,4 @@
-from django.contrib.auth.models import User
-from rest_framework import generics, status, serializers, viewsets
+from rest_framework import generics, status, serializers
 from .serializers import UserSerializer, AuctionItemSerializer, AuctionImageSerializer, BidSerializer
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from .models import AuctionItem, AuctionImage, Bid
@@ -10,13 +9,52 @@ from django.http import JsonResponse
 from django.middleware.csrf import get_token
 from django.views.decorators.csrf import ensure_csrf_cookie, csrf_protect
 from django.utils.decorators import method_decorator
+from django.utils import timezone
 from backend import settings
 from google.oauth2 import id_token
 from google.auth.transport import requests
 import json
 from rest_framework.exceptions import NotFound
+import secrets
+from django.core.mail import send_mail
+from django.shortcuts import redirect
+from django.contrib import messages
+from django.contrib.auth import get_user_model
 
 # Create your views here.
+
+User = get_user_model()
+
+def send_verification_email(user):
+    verification_code = secrets.token_urlsafe(20)
+    
+    # Spremaj kod u korisnikov model (ako želiš)
+    user.verification_code = verification_code
+    user.save()
+    
+    # Kreiraj link za potvrdu
+    verification_link = f"http://127.0.0.1:8000/api/verify/{verification_code}/"
+    
+    # Pošaljite email
+    send_mail(
+        'Verifikacija naloga',
+        f'Kliknite na sledeći link da biste potvrdili svoju registraciju: {verification_link}',
+        settings.DEFAULT_FROM_EMAIL,
+        [user.email],
+        fail_silently=False,
+    )
+
+def verify_email(request, code):
+    try:
+        user = get_user_model().objects.get(verification_code=code)
+        user.is_verified = True
+        user.verification_code = None  # Očisti verifikacioni kod
+        user.save()
+        messages.success(request, "Uspešno ste verifikovali svoj nalog.")
+    except get_user_model().DoesNotExist:
+        messages.error(request, "Verifikacioni kod nije validan.")
+    
+    return redirect('login')
 
 @method_decorator(ensure_csrf_cookie, name='dispatch')
 class CSRFTokenView(APIView):
@@ -31,6 +69,10 @@ class CreateUserView(generics.CreateAPIView):
     serializer_class = UserSerializer
     permission_classes = [AllowAny]
 
+    def perform_create(self, serializer):
+        user = serializer.save()  
+        send_verification_email(user)  
+
 
 class AuctionItemListCreate(generics.ListCreateAPIView):
     serializer_class = AuctionItemSerializer
@@ -41,6 +83,10 @@ class AuctionItemListCreate(generics.ListCreateAPIView):
         return AuctionItem.objects.filter(seller=user)  # Return all auctions for the current user
 
     def perform_create(self, serializer):
+        active_auctions_count = AuctionItem.objects.filter(end_date__gt=timezone.now()).count()
+
+        if active_auctions_count >= 1000:
+            raise serializers.ValidationError({"detail": "You cannot create more than 1000 active auctions."})
         serializer.save(seller=self.request.user)  # Ensure to save the seller
 
 
@@ -59,10 +105,18 @@ class LoginView(APIView):
     def post(self, request):
         email = request.data.get('email')
         password = request.data.get('password')
+        
+        # Pronađite korisnika prema email-u
         user = authenticate(username=email, password=password)
+        
         if user is not None:
+            # Provera da li je korisnik verifikovan
+            if not user.is_verified:
+                return Response({"detail": "User account is not verified"}, status=status.HTTP_403_FORBIDDEN)
+            
             login(request, user)
             return Response({"detail": "Logged in successfully"}, status=status.HTTP_200_OK)
+        
         return Response({"detail": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
 
 
@@ -124,7 +178,7 @@ class AllAuctionItemsList(generics.ListAPIView):
     permission_classes = [AllowAny]
 
     def get_queryset(self):
-        return AuctionItem.objects.all()
+        return AuctionItem.objects.filter(end_date__gt=timezone.now())
 
 
 
@@ -176,7 +230,7 @@ class CurrentUserView(APIView):
 
     def get(selft, request):
         if request.user.is_authenticated:
-            return Response({'username': request.user.username}, status=status.HTTP_200_OK)
+            return Response({'username': request.user.first_name}, status=status.HTTP_200_OK)
         else:
             return Response({'error': 'User is not authenticated'}, status=status.HTTP_401_UNAUTHORIZED)
         
@@ -190,7 +244,7 @@ class BidCreateView(generics.CreateAPIView):
         auction_item_id = serializer.validated_data['auction_item_id']  # Use auction_item_id here
         auction_item = AuctionItem.objects.get(id=auction_item_id)
 
-        if bid.amount > auction_item.current_price:
+        if bid.amount > (auction_item.current_price + 9):
             auction_item.current_price = bid.amount
             auction_item.save()
         else:
@@ -234,7 +288,6 @@ class FetchUsernamesView(APIView):
     def post(self, request):
         user_ids = request.data.get('ids', [])
         print(user_ids)
-        print('AAAAAAA')
         
         # Validacija ulaznih podataka
         if not isinstance(user_ids, list):
@@ -246,7 +299,7 @@ class FetchUsernamesView(APIView):
         for user_id in user_ids:
             try:
                 user = User.objects.get(id=user_id)
-                usernames.append(user.username)
+                usernames.append(user.first_name)
             except User.DoesNotExist:
                 continue  # Ignoriši nepostojeće korisnike
         

@@ -40,9 +40,18 @@ CORS_ORIGIN_WHITELIST = [
     'http://localhost',
 ]
 
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'taxitracker2024@gmail.com'
+EMAIL_HOST_PASSWORD = 'qgtk hbph ibvd ojyc'
+DEFAULT_FROM_EMAIL = 'taxitracker2024@gmail.com'
 
 # Dozvoljena zaglavlja
 default_headers = list(cors_default_headers)
+
+
 
 # Sada dodaj svoj header
 CORS_ALLOW_HEADERS = default_headers + [
@@ -136,6 +145,7 @@ TEMPLATES = [
         },
     },
 ]
+AUTH_USER_MODEL = 'api.CustomUser'
 
 WSGI_APPLICATION = 'backend.wsgi.application'
 
@@ -172,6 +182,8 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
+
 
 
 # Internationalization

@@ -6,6 +6,7 @@ import { GoogleLogin } from '@react-oauth/google';
 
 function RegistrationComponent() {
     const [formData, setFormData] = useState({
+        first_name: '',
         email: '',
         password: '',
         confirmPassword: ''
@@ -53,6 +54,7 @@ function RegistrationComponent() {
         try {
             // Slanje POST zahteva ka API-u za registraciju
             const response = await api.post('/api/user/register/', {
+                first_name: formData.first_name,
                 email: formData.email,
                 password: formData.password
             });
@@ -61,6 +63,7 @@ function RegistrationComponent() {
                 setSuccessMessage('Registracija je uspešna!');
                 // Resetovanje forme
                 setFormData({
+                    first_name: '',
                     email: '',
                     password: '',
                     confirmPassword: ''
@@ -105,6 +108,17 @@ function RegistrationComponent() {
                 />
                 <form onSubmit={handleSubmit}>
                     {/* Polje za email */}
+                    <div>
+                        <label htmlFor="name">Ime i prezime:</label>
+                        <input
+                            type="text"
+                            id="name"
+                            name="first_name"
+                            value={formData.first_name}
+                            onChange={handleInputChange}
+                            required
+                        />
+                    </div>
                     <div>
                         <label htmlFor="email">Email:</label>
                         <input

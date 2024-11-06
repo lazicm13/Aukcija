@@ -8,7 +8,7 @@
     width: calc(33% - 30px); /* Responsive width, adjust based on your layout */
     display: flex;
     flex-direction: column;
-    align-items: center; /* Center content */
+    align-items: center; /* Center content */ /* Maksimalna širina ako želiš da se naslov skrati */
 }
 
 .auction-item:hover {
@@ -16,9 +16,19 @@
 }
 
 .auction-item h3 {
-    font-size: 1.2em; /* Slightly smaller font size for title */
-    margin: 0; /* Remove default margin */
-    color: #777777; /* Dark text for title */
+    margin: 0;
+    color: black;
+    font-size: 20px;
+    white-space: nowrap;        /* Sprečava prelazak u drugi red */
+    overflow: hidden;           /* Sakriva tekst koji ne stane */
+    text-overflow: ellipsis;
+    max-width: 240px;    /* Dodaje "..." na kraju */
+  }
+  
+
+
+.auction-item span{
+    font-size: 13px;
 }
 
 .auction-item img {
@@ -29,9 +39,14 @@
 }
 
 .auction-item p {
-    font-size: 0.9em; /* Smaller font size for description and price */
+    font-size: 0.8em; /* Smaller font size for description and price */
     color: #555; /* Slightly lighter text color */
     text-align: center; /* Center align text */
+    margin-top: 0px;
+}
+
+.auction-item b{
+    margin-top: 5px;
 }
 
 .auction-item .delete-btn {
@@ -162,7 +177,7 @@
 .new-offer-container .new-offer-btn {
     width: 30%; /* Po želji prilagodite širinu */
     font-size: 13px;
-    height: 20px;
+    height: 30px;
     display: flex; /* Koristite flexbox */
     justify-content: center; /* Horizontalno centriranje */
     align-items: center; /* Vertikalno centriranje */
@@ -186,20 +201,19 @@
     font-size: 16px;
     width: 85%;
     margin-bottom: 0px;
-    margin-top: 0px;
+    margin-top: 3px;
 }
 
 .slide-description {
     position: absolute;
-    top: 102px; 
+    top: 119px; 
     color:  white !important; /* Boja teksta, belo za kontrast */
-    background-color: rgba(0, 0, 0, 0.5); /* Poluprovidna crna pozadina */
+    background-color: rgba(0, 0, 0, 0.4); /* Poluprovidna crna pozadina */
     padding: 5px; /* Unutrašnje margine */
     border-radius: 4px; /* Zaobljeni uglovi */
-    font-size: 14px; /* Veličina fonta */
-    z-index: 10; /* Osiguranje da je ovaj element iznad ostalih */
+    font-size: 14px; /* Veličina fonta */ /* Osiguranje da je ovaj element iznad ostalih */
     width: 96%;
-    height: 25%;
+    height: 24%;
 }   
 
 .current-price-par{
@@ -214,4 +228,18 @@
     color: black;
     padding: 5px 10px;
     border-radius: 5px;
+}
+
+.timer {
+    margin-bottom: 0px;
+    border-radius: 5px; /* Zaobljeni uglovi */
+    font-weight: bold;
+    font-size: 13px;
+ /* Povećava težinu fonta */
+}
+
+.auction-item hr{
+    background-color: gray ;
+    height: 0.5px;
+    width: 200px;
 }
