@@ -128,34 +128,54 @@ function CreateAuction() {
         <div className="formContainer">
             <form onSubmit={createAuctionItem} style={{ display: 'flex' }}>
                 <div className="formLeft">
-                    <label htmlFor="title">Naslov:</label>
-                    <input
-                        type="text"
-                        id="title"
-                        name="title"
-                        required
-                        onChange={(e) => setTitle(e.target.value)}
-                        value={title}
-                        maxLength={50}
-                        className="naslov"
-                    />
+                    <div className="title-container">
+                        <label htmlFor="title">Naslov:</label>
+                        <input
+                            type="text"
+                            id="title"
+                            name="title"
+                            required
+                            onChange={(e) => setTitle(e.target.value)}
+                            value={title}
+                            maxLength={50}
+                            className="naslov"
+                        />
+                    </div>
+                    <div className="price-duration-container">
+                        <div className="price-input-container">
+                            <label htmlFor="current_price">Početna cena:</label>
+                            <input
+                                type="number"
+                                id="current_price"
+                                name="current_price"
+                                required
+                                value={current_price}
+                                onChange={(e) => {
+                                    const value = e.target.value;
+                                    setCurrentPrice(value);
+                                }}
+                            />
+                            <span id="din-span">Din.</span>
+                        </div>
+
+                        <div className="auction-duration">
+                            <label htmlFor="auction_duration">Trajanje aukcije</label>
+                            <select
+                                className="duration"
+                                id="auction_duration"
+                                value={auctionDuration}
+                                onChange={(e) => setAuctionDuration(Number(e.target.value))}
+                            >
+                                <option value={1}>1 dan</option>
+                                <option value={2}>2 dana</option>
+                                <option value={3}>3 dana</option>
+                                <option value={4}>4 dana</option>
+                            </select>
+                        </div>
+                    </div>
+                    <hr></hr>
                     <br></br>
-                    <br></br>
-                    <label htmlFor="current_price">Početna cena:</label>
-                    <input
-                        type="number"
-                        id="current_price"
-                        name="current_price"
-                        required
-                        value={current_price}
-                        onChange={(e) => {
-                            const value = e.target.value;
-                            setCurrentPrice(value);
-                        }}
-                    />
-                    <br></br>
-                    <br></br>
-                    <label htmlFor="description">Opis oglasa:</label>
+                    <label id='description-label'htmlFor="description">Opis oglasa:</label>
                     <textarea 
                         id="description"
                         name="description" 
@@ -164,19 +184,7 @@ function CreateAuction() {
                         maxLength={600}
                         onChange={(e) => setDescription(e.target.value)}
                     />
-                    <div className="auction-duration">
-                        <label htmlFor="auction_duration">Trajanje aukcije (dani):</label>
-                        <select
-                            className="duration"
-                            id="auction_duration"
-                            value={auctionDuration}
-                            onChange={(e) => setAuctionDuration(Number(e.target.value))}>
-                            <option value={1}>1 dan</option>
-                            <option value={2}>2 dana</option>
-                            <option value={3}>3 dana</option>
-                            <option value={4}>4 dana</option>
-                        </select>
-                    </div>
+                    
                 </div>
     
                 <div className="formRight">

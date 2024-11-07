@@ -1,21 +1,69 @@
-import React, { Fragment } from 'react';
-import './../Styles/authentication.css'; // Ensure this path is correct
+import React, { Fragment, useState, useEffect } from 'react';
+import './../Styles/authentication.css';
+import './../Styles/userpage.css';
+import api from '../api';
 import { useNavigate } from 'react-router-dom';
-import './../Styles/userpage.css'
 
 function UserPage() {
-    const navigate = useNavigate()
-    const handleChangePasword = () => {
-        navigate('/promena-lozinke');
-    }
+    const navigate = useNavigate();
+
+    const [userData, setUserData] = useState({
+        first_name: '',
+        phone_number: '',
+        city: ''
+    });
+    const [successMessage, setSuccessMessage] = useState('');
+    const [errorMessage, setErrorMessage] = useState('');
+
+    useEffect(() => {
+        const fetchUserData = async () => {
+            try {
+                const response = await api.get('/api/current_user_data');
+                setUserData({
+                    first_name: response.data.first_name || '',
+                    phone_number: response.data.phone_number || '',
+                    city: response.data.city || ''
+                });
+            } catch (error) {
+                console.error('Error fetching user data:', error);
+            }
+        };
+
+        fetchUserData();
+    }, []);
+
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        try {
+            const response = await api.put('/api/update-profile/', userData);
+            setSuccessMessage('Podaci su uspešno ažurirani.');
+            setErrorMessage('');
+            console.log(response.data);
+            
+            setTimeout(() => {
+                navigate('/');
+            }, 1300);
+        } catch (error) {
+            console.error('Error updating user data:', error);
+            setErrorMessage('Greška pri ažuriranju podataka.');
+            setSuccessMessage('');
+        }
+    };
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+        setUserData((prevData) => ({
+            ...prevData,
+            [name]: value
+        }));
+    };
 
     return (
         <Fragment>
             <div className='form-container'>
                 <h2>Korisnička stranica</h2>
 
-                <form>
-                    {/* Polje za email */}
+                <form onSubmit={handleSubmit}>
                     <div className="userpage-form">
                         <div className="form-group">
                             <label htmlFor="name">Ime i prezime</label>
@@ -23,6 +71,8 @@ function UserPage() {
                                 type="text"
                                 id="name"
                                 name="first_name"
+                                value={userData.first_name}
+                                onChange={handleChange}
                                 required
                             />
                         </div>
@@ -32,7 +82,8 @@ function UserPage() {
                                 type="phone"
                                 id="phone_number"
                                 name="phone_number"
-                                required
+                                value={userData.phone_number}
+                                onChange={handleChange}
                             />
                         </div>
                         <div className="form-group">
@@ -41,16 +92,22 @@ function UserPage() {
                                 type="text"
                                 id="city"
                                 name="city"
-                                required
+                                value={userData.city}
+                                onChange={handleChange}
                             />
                         </div>
                     </div>
 
-                    {/* Polje za lozinku */}
-                    {/* <button type='button' onClick={handleChangePasword}>Promeni lozinku</button> */}
-
                     <button type="submit">Ažurirajte podatke</button>
                 </form>
+
+                {successMessage && (
+                    <div className="success-animation">
+                        <p className="success-message">{successMessage}</p>
+                        <div className="checkmark"></div>
+                    </div>
+                )}
+                {errorMessage && <p className="error-message">{errorMessage}</p>}
             </div>
         </Fragment>
     );

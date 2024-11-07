@@ -5,6 +5,8 @@ from datetime import timedelta
 class CustomUser(AbstractUser):
     verification_code = models.CharField(max_length=100, blank=True, null=True)
     is_verified = models.BooleanField(default=False)
+    city = models.CharField(max_length=100, blank=True, null=True)  # New field for city
+    phone_number = models.CharField(max_length=15, blank=True, null=True)  # New field for phone number
 
     groups = models.ManyToManyField(
         'auth.Group',
@@ -20,6 +22,7 @@ class CustomUser(AbstractUser):
 
     def __str__(self):
         return self.username
+
 
 class AuctionItem(models.Model):
     title = models.CharField(max_length=100)

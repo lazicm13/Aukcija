@@ -1,20 +1,28 @@
-/* Glavni kontejner za aukciju */
 .auction-details {
     max-width: 900px;
-    margin: 50px auto;
+    margin: 100px auto;
     padding: 20px;
     background: rgba(255, 255, 255, 0.9);
     border-radius: 12px;
     box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+    position: relative;
+    text-align: center; /* Centriraj sav tekst u kontejneru */
 }
 
-/* Naslov aukcije */
+.auction-header {
+    margin-bottom: 15px; /* Razmak između naslova i slike */
+    padding: 10px;
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 8px;
+}
+
 .auction-header h2 {
     font-size: 2.5em;
     color: #333;
-    text-align: center;
-    margin-bottom: 15px;
+    margin: 0;
 }
+
+
 
 /* Lokacija i trenutna cena */
 .auction-header .auction-city {

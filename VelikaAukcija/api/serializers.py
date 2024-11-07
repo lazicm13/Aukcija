@@ -120,3 +120,10 @@ class BidSerializer(serializers.ModelSerializer):
 
         attrs['auction_item'] = auction_item
         return attrs
+
+class UserUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = ['first_name', 'phone_number', 'city']
+        
+   

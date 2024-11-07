@@ -35,6 +35,24 @@ function Register() {
   return <RegistrationComponent/> // Možeš dodati loader ili nešto drugo dok čekaš
 }
 
+function Login(){
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      const response = await api.get("/api/user/status/");
+      setIsLoggedIn(response.data.is_authenticated);
+    };
+    checkAuth();
+  }, []);
+
+  if (isLoggedIn) {
+    return <Navigate to="/" />;
+  }
+
+  return <LoginComponent/> 
+}
+
 function App() {
   return (
     <>
@@ -51,7 +69,7 @@ function App() {
             path='/login'
             element={
               <GoogleOAuthProvider clientId={CLIENT_ID}>
-            <LoginComponent/>
+              <Login/>
             </GoogleOAuthProvider>}
           />
           <Route

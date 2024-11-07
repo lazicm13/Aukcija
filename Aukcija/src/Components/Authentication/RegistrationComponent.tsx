@@ -14,6 +14,8 @@ function RegistrationComponent() {
     const [error, setError] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
     const navigate = useNavigate();
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [userEmail, setUserEmail] = useState('');
 
     // Funkcija za rukovanje promenama u input poljima
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -61,15 +63,15 @@ function RegistrationComponent() {
 
             if (response.status === 201) {
                 setSuccessMessage('Registracija je uspešna!');
+                setIsModalOpen(true); // Otvori modal
                 // Resetovanje forme
+                setUserEmail(formData.email);
                 setFormData({
                     first_name: '',
                     email: '',
                     password: '',
                     confirmPassword: ''
                 });
-                alert('Uspesna registracija!');
-                navigate('/login');
             }
         } catch (error) {
             console.error("Registracija nije uspela:", error);
@@ -159,6 +161,21 @@ function RegistrationComponent() {
                     <button type="submit">Registrujte se</button>
                 </form>
             </div>
+
+            {isModalOpen && (
+                <div className="modal">
+                    <div className="modal-content">
+                        <h3>Uspešna registracija!</h3>
+                        <p>Email za verifikaciju je poslat na vašu adresu: {userEmail}</p>
+                        <button onClick={() => {
+                            setIsModalOpen(false);
+                            navigate('/login'); // Preusmeri na login
+                        }}>
+                            Zatvori
+                        </button>
+                    </div>
+                </div>
+            )}
         </Fragment>
     );
 }

@@ -1,5 +1,5 @@
 from rest_framework import generics, status, serializers
-from .serializers import UserSerializer, AuctionItemSerializer, AuctionImageSerializer, BidSerializer
+from .serializers import UserSerializer, AuctionItemSerializer, AuctionImageSerializer, BidSerializer, UserUpdateSerializer
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from .models import AuctionItem, AuctionImage, Bid
 from rest_framework.views import APIView
@@ -20,6 +20,7 @@ from django.core.mail import send_mail
 from django.shortcuts import redirect
 from django.contrib import messages
 from django.contrib.auth import get_user_model
+from rest_framework.exceptions import ValidationError
 
 # Create your views here.
 
@@ -44,6 +45,17 @@ def send_verification_email(user):
         fail_silently=False,
     )
 
+def send_email_new_auction(id, user):
+    auction_link = f"http://localhost:5173/aukcija/{id}"
+
+    send_mail(
+        'Čestitamo, uspešno ste postavili aukciju!',
+        f'Pogledajte oglas ovde: {auction_link}',
+        settings.DEFAULT_FROM_EMAIL,
+        [user.email],
+        fail_silently=False,
+    )
+
 def verify_email(request, code):
     try:
         user = get_user_model().objects.get(verification_code=code)
@@ -51,10 +63,12 @@ def verify_email(request, code):
         user.verification_code = None  # Očisti verifikacioni kod
         user.save()
         messages.success(request, "Uspešno ste verifikovali svoj nalog.")
+        
+        # Redirect na login stranicu klijentskog sajta
+        return redirect(f'http://localhost:5173/login')
     except get_user_model().DoesNotExist:
         messages.error(request, "Verifikacioni kod nije validan.")
-    
-    return redirect('login')
+        return redirect(f'http://localhost:5173/login')
 
 @method_decorator(ensure_csrf_cookie, name='dispatch')
 class CSRFTokenView(APIView):
@@ -74,6 +88,9 @@ class CreateUserView(generics.CreateAPIView):
         send_verification_email(user)  
 
 
+from django.utils import timezone
+from rest_framework import serializers
+
 class AuctionItemListCreate(generics.ListCreateAPIView):
     serializer_class = AuctionItemSerializer
     permission_classes = [IsAuthenticated]
@@ -83,11 +100,19 @@ class AuctionItemListCreate(generics.ListCreateAPIView):
         return AuctionItem.objects.filter(seller=user)  # Return all auctions for the current user
 
     def perform_create(self, serializer):
+        # Proverite broj aktivnih aukcija
         active_auctions_count = AuctionItem.objects.filter(end_date__gt=timezone.now()).count()
-
+        
+        # Ako je maksimalni broj aktivnih aukcija dostignut, podignite grešku
         if active_auctions_count >= 1000:
             raise serializers.ValidationError({"detail": "You cannot create more than 1000 active auctions."})
-        serializer.save(seller=self.request.user)  # Ensure to save the seller
+        
+        # Sačuvajte aukciju i dobijte instancu novog objekta
+        auction_item = serializer.save(seller=self.request.user)  # serializer.save() vraća kreirani objekt
+        
+        # Pozovite funkciju za slanje email-a koristeći ID novokreirane aukcije
+        send_email_new_auction(auction_item.id, self.request.user)
+
 
 
 class AuctionItemDelete(generics.DestroyAPIView):
@@ -96,7 +121,17 @@ class AuctionItemDelete(generics.DestroyAPIView):
 
     def get_queryset(self):
         user = self.request.user  # Get the authenticated user
-        return AuctionItem.objects.filter(seller=user)
+        return AuctionItem.objects.filter(seller=user)  # Return all auctions for the current user
+
+    def delete(self, request, *args, **kwargs):
+        auction_item = self.get_object()  # Get the auction item to delete
+        # Proveri da li aukcija ima ponude
+        if Bid.objects.filter(auction_item=auction_item).exists():
+            return Response({"detail": "You cannot delete the auction because there are bids on it."}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Ako nema ponuda, dozvoliti brisanje
+        return super().delete(request, *args, **kwargs)
+
 
 
 class LoginView(APIView):
@@ -150,6 +185,7 @@ def google_login(request):
             idinfo = id_token.verify_oauth2_token(token, requests.Request(), settings.GOOGLE_OAUTH2_CLIENT_ID)
             email = idinfo.get('email')
             name = idinfo.get('name', '')
+
 
             user, created = User.objects.get_or_create(
                 email=email,
@@ -234,10 +270,14 @@ class CurrentUserView(APIView):
         else:
             return Response({'error': 'User is not authenticated'}, status=status.HTTP_401_UNAUTHORIZED)
         
+from rest_framework.exceptions import AuthenticationFailed
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+
 class BidCreateView(generics.CreateAPIView):
     queryset = Bid.objects.all()
     serializer_class = BidSerializer
-    permission_classes = [IsAuthenticated]  # Samo prijavljeni korisnici mogu licitirati
+    permission_classes = [IsAuthenticated]  # Only authenticated users can bid
 
     def perform_create(self, serializer):
         bid = serializer.save(bidder=self.request.user)
@@ -249,6 +289,12 @@ class BidCreateView(generics.CreateAPIView):
             auction_item.save()
         else:
             raise serializers.ValidationError({"detail": "Bid must be higher than the current price."})
+
+    def create(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            raise AuthenticationFailed("You must be logged in to place a bid.")
+        return super().create(request, *args, **kwargs)
+
 
 class BidListView(generics.ListAPIView):
     serializer_class = BidSerializer
@@ -304,3 +350,62 @@ class FetchUsernamesView(APIView):
                 continue  # Ignoriši nepostojeće korisnike
         
         return Response(usernames, status=status.HTTP_200_OK)
+    
+class AuctionCountView(APIView):
+    def get(self, request, *args, **kwargs):
+        # Get the auction_item_id from the URL parameters
+        auction_item_id = self.kwargs.get('auction_item_id', None)
+        print(auction_item_id)
+
+        # If no specific auction_item_id is provided, return an error or count all bids
+        if auction_item_id is None:
+            return Response({"error": "Auction item ID is required."}, status=status.HTTP_400_BAD_REQUEST)
+        
+        try:
+            # Check if the auction item exists
+            auction_item = AuctionItem.objects.get(id=auction_item_id)
+
+            # Count the number of bids associated with the auction item
+            bid_count = Bid.objects.filter(auction_item=auction_item).count()
+
+            # Return the bid count in the response
+            return Response({"bid_count": bid_count}, status=status.HTTP_200_OK)
+        
+        except AuctionItem.DoesNotExist:
+            return Response({"error": "Auction item not found."}, status=status.HTTP_404_NOT_FOUND)
+
+class CurrentUserDataView(APIView):
+    permission_classes = [IsAuthenticated]  # Ensure only authenticated users can access
+
+    def get(self, request):
+        # Check if the user is authenticated
+        if request.user.is_authenticated:
+            # Return the user's data as a response
+            user_data = {
+                #'email': request.user.email,
+                'first_name': request.user.first_name,
+                'city': request.user.city,
+                'phone_number': request.user.phone_number,
+                #'username': request.user.username,
+                #'is_verified': request.user.is_verified,
+                #'date_joined': request.user.date_joined,
+            }
+            return Response(user_data, status=status.HTTP_200_OK)
+        else:
+            return Response({'error': 'User is not authenticated'}, status=status.HTTP_401_UNAUTHORIZED)
+
+class UpdateUserProfileView(generics.UpdateAPIView):
+    serializer_class = UserUpdateSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self):
+        return self.request.user
+
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', False)  
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+        
+        return Response(serializer.data, status=status.HTTP_200_OK)

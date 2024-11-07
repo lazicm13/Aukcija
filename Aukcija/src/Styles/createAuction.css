@@ -64,8 +64,10 @@ input[type="number"] {
     width: 100px;
     height: 100px;
     object-fit: cover;
-    border: 1px solid #ccc;
     border-radius: 5px;
+    object-fit: contain;
+    border: 1px solid #ccc;
+    background-color: rgba(5, 5, 5, 0.1);
 }
 
 /* Dugme za uklanjanje slika */
@@ -81,13 +83,16 @@ input[type="number"] {
     width: 20px;
     height: 20px;
     font-weight: bold;
-    font-size: 16px;
-    line-height: 20px;
+    font-size: 14px; /* Adjusted font size */
+    display: flex; /* Added flexbox for alignment */
+    justify-content: center; /* Centers horizontally */
+    align-items: center; /* Centers vertically */
     transition: background-color 0.3s;
 }
+
 .remove-image:hover {
     background-color: darkred;
-}
+}   
 
 /* Dugme za potvrdu */
 input[type="submit"] {
@@ -116,7 +121,7 @@ input[type="submit"]:hover {
     margin-top: 10px;
 }
 .contact-info label {
-    margin-left: 70px;
+    margin-left: 50px;
 }
 .contact-info input {
     width: 200px;
@@ -198,28 +203,9 @@ input[type="submit"]:hover {
         object-fit: cover;
         border: 1px solid #ccc;
         border-radius: 5px;
+        object-fit: contain;
     }
     
-    /* Dugme za uklanjanje slika */
-    .remove-image {
-        position: absolute;
-        top: 5px;
-        right: 5px;
-        background-color: red;
-        color: white;
-        border: none;
-        border-radius: 50%;
-        cursor: pointer;
-        width: 20px;
-        height: 20px;
-        font-weight: bold;
-        font-size: 16px;
-        line-height: 20px;
-        transition: background-color 0.3s;
-    }
-    .remove-image:hover {
-        background-color: darkred;
-    }
     
     /* Dugme za potvrdu */
     input[type="submit"] {
@@ -268,3 +254,61 @@ input[type="submit"]:hover {
     color: #555;
 }
 
+input[type=number]::-webkit-outer-spin-button,
+input[type=number]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.price-duration-container {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1rem; /* Podesite razmak između komponenti po potrebi */
+    width: 100%;
+    text-align: left;
+    color: #333;
+    font-weight: bold;
+}
+
+.title-container {
+    width: 100%;
+    text-align: left;
+    font-size: 1.5rem; /* Možete promeniti veličinu teksta po potrebi */
+    font-weight: bold;
+    margin-bottom: 20px; /* Razmak između naslova i forme */
+    color: #333;
+}
+
+.price-input-container {
+   
+    margin-top: 20px;
+}
+
+.price-input-container .currency {
+    position: absolute;
+    right: 0px;
+    top: 80%;
+    transform: translateY(-50%);
+    font-size: 0.9rem;
+    color: #333;
+}
+
+.auction-duration {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+label{
+    font-weight: bold;
+    color: #333;    
+}
+
+#description-label{
+    text-align: left;
+}
+
+#din-span{
+    margin-left: 5px;
+    font-weight: 200;
+}

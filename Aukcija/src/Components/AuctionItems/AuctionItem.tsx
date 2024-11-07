@@ -5,6 +5,7 @@ import api from '../../api';
 import { AxiosError } from 'axios';
 import ConfirmationModal from '../ConfirmationModal';
 
+
 interface AuctionItemProps {
     auction: {
         id: number;
@@ -31,7 +32,18 @@ const AuctionItem: React.FC<AuctionItemProps> = ({ auction, onDelete }) => {
     const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState<boolean>(false); // State for confirmation dialog
     const location = useLocation();
     const [bidError, setBidError] = useState('');
+    const [placeholder, setPlaceholder] = useState('Licitiraj ovde...');
+    const [offerCount, setOfferCount] = useState<number>(0);
     
+    const handleFocus = () => {       
+        setPlaceholder('');
+    };
+
+    const handleBlur = () => {
+        if (newOffer === '') {
+            setPlaceholder('Licitiraj ovde...');
+        }
+    };
 
     useEffect(() => {
         const endTime = new Date(end_date).getTime();
@@ -59,6 +71,18 @@ const AuctionItem: React.FC<AuctionItemProps> = ({ auction, onDelete }) => {
         return () => clearInterval(interval);
     }, [end_date]);
     
+    useEffect(() => {
+        const fetchOfferCount = async () => {
+            try {
+                const response = await api.get(`/api/auctions/${id}/offer_count`); // Pretpostavljeni API endpoint
+                setOfferCount(response.data.bid_count); // Postavljanje broja ponuda
+            } catch (error) {
+                console.error('Error fetching offer count:', error);
+            }
+        };
+
+        fetchOfferCount();
+    }, [id]);
 
     const formatTimeLeft = (time: number) => {
         const seconds = Math.floor((time / 1000) % 60);
@@ -77,6 +101,7 @@ const AuctionItem: React.FC<AuctionItemProps> = ({ auction, onDelete }) => {
         }
     };
     
+
 
     const nextSlide = () => {
         setCurrentSlide((prev) => (prev + 1) % images.length);
@@ -110,33 +135,45 @@ const AuctionItem: React.FC<AuctionItemProps> = ({ auction, onDelete }) => {
                     auction_item_id: id,
                     amount: newOffer,
                 });
-                setNewOffer('');
-                setCurrentPrice(Number(newOffer)); // Update the current price
+    
+                // Handle successful bid submission
+                setNewOffer(''); // Clear the input field
+                setCurrentPrice(Number(newOffer)); // Update the current price with the new bid
                 console.log('New bid submitted:', response.data);
-                setIsConfirmDialogOpen(false); // Close confirmation dialog after successful bid
+                setIsConfirmDialogOpen(false); // Close confirmation dialog
+                setOfferCount(offerCount + 1)
+    
             } catch (error) {
                 const axiosError = error as AxiosError<ErrorResponse>; // Explicitly type the error
     
+                // Handle 403 Unauthorized Error (user is not logged in)
+                if (axiosError.response && axiosError.response.status === 403) {
+                    navigate('/login'); // Redirect to login page
+                    return; // Exit the function after redirection
+                }
+    
+                // Handle API errors based on response
                 if (axiosError.response) {
                     console.error('Error submitting bid:', axiosError.response.data);
-                    const errorMessage = axiosError.response.data.amount?.[0]; // Access with correct type
+                    const errorMessage = axiosError.response.data.amount?.[0]; // Access error message if present
                     if (errorMessage) {
-                        alert(errorMessage);
+                        alert(errorMessage); // Display the error message from the server
                     } else {
-                        alert('An error occurred. Please try again.');
+                        alert('An error occurred. Please try again.'); // Generic error message
                     }
                 } else if (axiosError.request) {
                     console.error('No response from server:', axiosError.request);
-                    alert('No response from server. Please try again later.');
+                    alert('No response from the server. Please try again later.');
                 } else {
                     console.error('Error', axiosError.message);
                     alert('An error occurred while submitting your bid.');
                 }
             }
         } else {
-            alert('Unesite cenu vecu od trenutne!');
+            alert('Please enter a bid amount greater than the current price!');
         }
     };
+    
     
 
     const handleBidConfirmation = () => {
@@ -170,8 +207,9 @@ const AuctionItem: React.FC<AuctionItemProps> = ({ auction, onDelete }) => {
                 <a className="prev" onClick={prevSlide}>&#10094;</a>
                 <a className="next" onClick={nextSlide}>&#10095;</a>
             </div>
-            <div className="timer">
-                {timeLeft > 0 ? '⌛ ' + formatTimeLeft(timeLeft) : 'Auction ended'}
+            <div className="timer-bidding">
+                <span title='broj ponuda' className="offer-count"> ponude: {offerCount} |     </span>
+                {timeLeft > 0 ? formatTimeLeft(timeLeft) + '⌛ ': 'Auction ended'}
             </div>
             <hr />
             <p className='current-price-par'>
@@ -186,7 +224,9 @@ const AuctionItem: React.FC<AuctionItemProps> = ({ auction, onDelete }) => {
                         id='new_offer'
                         value={newOffer}
                         onChange={(e) => setNewOffer(e.target.value)}
-                        placeholder='Licitiraj ovde...'
+                        placeholder={placeholder}
+                        onFocus={handleFocus} 
+                        onBlur={handleBlur}   
                     />
                     <button
                         type='button'

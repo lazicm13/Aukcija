@@ -11,8 +11,10 @@
 .form-group label {
     display: block;
     font-size: 16px;
-    font-weight: 500;
+    font-weight: bold;
     margin-bottom: 5px; /* Space between label and input */
+    text-align: left;
+    color: #333;
 }
 
 .form-group input {
@@ -27,4 +29,62 @@
 .form-group input:focus {
     border-color: #007bff; /* Highlight border on focus */
     outline: none;
+}
+
+.success-animation {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 5px;
+    position: relative;
+}
+
+.success-animation .checkmark {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 2px solid green;
+    position: relative;
+    animation: showCheckmark 1s ease forwards;
+}
+
+.success-animation .checkmark::before {
+    content: '';
+    position: absolute;
+    width: 10px;
+    height: 5px;
+    border: solid green;
+    border-width: 0 0 2px 2px;
+    top: 6px;
+    left: 5px;
+    transform: rotate(-45deg);
+    opacity: 0;
+}
+
+@keyframes showCheckmark {
+    0% {
+        opacity: 0;
+        transform: scale(0);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(1.2);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.success-animation .checkmark::before {
+    animation: checkmarkFadeIn 0.5s ease forwards 0.5s;
+}
+
+@keyframes checkmarkFadeIn {
+    to {
+        opacity: 1;
+    }
+}
+
+.success-message{
+    color: green;
 }

@@ -32,10 +32,12 @@
 }
 
 .auction-item img {
-    width: 80%; /* Make image responsive */
-    height: auto; /* Maintain aspect ratio */
+    max-width: 80%; /* Make image responsive */
+    max-height: auto; /* Maintain aspect ratio */
     border-radius: 5px; /* Slightly round the image corners */
     margin: 10px 0; /* Space around the image */
+    object-fit: contain;
+
 }
 
 .auction-item p {
@@ -230,7 +232,15 @@
     border-radius: 5px;
 }
 
-.timer {
+
+
+.auction-item hr{
+    background-color: gray ;
+    height: 0.5px;
+    width: 200px;
+}
+
+.timer-bidding {
     margin-bottom: 0px;
     border-radius: 5px; /* Zaobljeni uglovi */
     font-weight: bold;
@@ -238,8 +248,7 @@
  /* Povećava težinu fonta */
 }
 
-.auction-item hr{
-    background-color: gray ;
-    height: 0.5px;
-    width: 200px;
+.offer-count{
+    color: green;
+    font-size: 14px !important;
 }
