@@ -246,6 +246,7 @@
     font-weight: bold;
     font-size: 13px;
  /* Povećava težinu fonta */
+    color: gray;
 }
 
 .offer-count{

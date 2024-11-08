@@ -1,6 +1,6 @@
 from .models import CustomUser
 from rest_framework import serializers
-from .models import AuctionItem, AuctionImage
+from .models import AuctionItem, AuctionImage, Comment
 from datetime import timedelta
 
 class UserSerializer(serializers.ModelSerializer):
@@ -126,4 +126,29 @@ class UserUpdateSerializer(serializers.ModelSerializer):
         model = CustomUser
         fields = ['first_name', 'phone_number', 'city']
         
-   
+class CommentSerializer(serializers.ModelSerializer):
+    user = serializers.StringRelatedField(read_only=True)  # Display the username as a string
+    auction_item_id = serializers.IntegerField(write_only=True)
+
+    class Meta:
+        model = Comment
+        fields = ['id', 'auction_item_id', 'user', 'content', 'created_at']
+        read_only_fields = ['id', 'user', 'created_at']
+
+    def create(self, validated_data):
+        user = self.context['request'].user  # Get the currently authenticated user
+        auction_item_id = validated_data.pop('auction_item_id')
+        auction_item = AuctionItem.objects.get(id=auction_item_id)
+        
+        # Create the comment associated with the user and auction item
+        comment = Comment.objects.create(
+            user=user,
+            auction_item=auction_item,
+            **validated_data
+        )
+        return comment
+
+    def validate(self, attrs):
+        if not attrs.get('content'):
+            raise serializers.ValidationError({'content': 'Komentar ne sme biti prazan.'})
+        return attrs

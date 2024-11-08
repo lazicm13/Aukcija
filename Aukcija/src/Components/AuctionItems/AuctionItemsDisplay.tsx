@@ -36,7 +36,6 @@ function AuctionItemsDisplay() {
             const data: AuctionItem[] = response.data;
             setItems(data);
         } catch (err) {
-            //alert(err);
             console.log(err);
         }
     };
@@ -46,7 +45,6 @@ function AuctionItemsDisplay() {
             const data: AuctionItem[] = response.data;
             setItems(data);
         } catch (err) {
-            //alert(err);
             console.log(err);
         }
     };
@@ -73,6 +71,8 @@ function AuctionItemsDisplay() {
         .sort((a, b) => {
             if (sortOption === "priceAsc") return a.current_price - b.current_price;
             if (sortOption === "priceDesc") return b.current_price - a.current_price;
+            if (sortOption === "endDateAsc") return new Date(a.end_date).getTime() - new Date(b.end_date).getTime();
+            if (sortOption === "endDateDesc") return new Date(b.end_date).getTime() - new Date(a.end_date).getTime();
             return 0;
         });
 
@@ -106,6 +106,8 @@ function AuctionItemsDisplay() {
                 >
                     <option value="priceAsc">Sortiraj po ceni: Niže ka višim</option>
                     <option value="priceDesc">Sortiraj po ceni: Više ka nižim</option>
+                    <option value="endDateAsc">Sortiraj po vremenu isteka: Najranije ka najkasnije</option>
+                    <option value="endDateDesc">Sortiraj po vremenu isteka: Najkasnije ka najranije</option>
                 </select>
             </div>
             <div className="auction-list">

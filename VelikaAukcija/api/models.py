@@ -1,6 +1,7 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from datetime import timedelta
+from django.contrib.auth import get_user_model
 
 class CustomUser(AbstractUser):
     verification_code = models.CharField(max_length=100, blank=True, null=True)
@@ -59,3 +60,12 @@ class Bid(models.Model):
     
     def __str__(self):
         return f"Bid of {self.amount} by {self.bidder.username} on {self.auction_item.title}"
+
+class Comment(models.Model):
+    auction_item = models.ForeignKey(AuctionItem, related_name='comments', on_delete=models.CASCADE)
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='comments')
+    content = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Comment by {self.user.username} on {self.auction_item.title}"

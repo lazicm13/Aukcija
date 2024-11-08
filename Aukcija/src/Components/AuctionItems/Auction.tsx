@@ -5,6 +5,7 @@ import api from '../../api';
 import { AxiosError } from 'axios';
 import Modal from 'react-modal';
 import ConfirmationModal from '../ConfirmationModal'; // Import your modal component
+import CommentSection from './CommentSection';
 
 interface AuctionImage {
     id: number;
@@ -317,6 +318,8 @@ const Auction: React.FC = () => {
                 onConfirm={handleBidConfirmation}
                 onCancel={() => setIsConfirmDialogOpen(false)}
             />
+            <hr></hr>
+            <CommentSection auctionItemId={auction.id}/>
         </div>
     );
     

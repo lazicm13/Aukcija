@@ -1,7 +1,7 @@
 from rest_framework import generics, status, serializers
-from .serializers import UserSerializer, AuctionItemSerializer, AuctionImageSerializer, BidSerializer, UserUpdateSerializer
+from .serializers import UserSerializer, AuctionItemSerializer, AuctionImageSerializer, BidSerializer, UserUpdateSerializer, CommentSerializer
 from rest_framework.permissions import IsAuthenticated, AllowAny
-from .models import AuctionItem, AuctionImage, Bid
+from .models import AuctionItem, AuctionImage, Bid, Comment
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.contrib.auth import authenticate, login, logout
@@ -409,3 +409,25 @@ class UpdateUserProfileView(generics.UpdateAPIView):
         self.perform_update(serializer)
         
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    # View to list all comments for a specific auction item
+class CommentListView(generics.ListAPIView):
+    serializer_class = CommentSerializer
+    permission_classes = [AllowAny]  # Adjust this based on your app's permissions
+    
+    def get_queryset(self):
+        auction_item_id = self.kwargs['auction_item_id']
+        return Comment.objects.filter(auction_item__id=auction_item_id).order_by('-created_at')
+
+# View to create a new comment for a specific auction item
+class CommentCreateView(APIView):
+    permission_classes = [IsAuthenticated]
+    
+    def post(self, request, *args, **kwargs):
+        serializer = CommentSerializer(data=request.data, context={'request': request})
+        
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
