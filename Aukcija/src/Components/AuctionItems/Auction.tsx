@@ -268,7 +268,7 @@ const Auction: React.FC = () => {
                 <a className="next1" onClick={nextSlide}>&#10095;</a>
             </div>
                 <p className="current-price">
-                    <b>Trenutna cena: {Number(currentPrice).toFixed(0)} Dinara</b>
+                    <b>Trenutna cena: {new Intl.NumberFormat('sr-RS').format(Number(currentPrice))} RSD</b>
                 </p>
             <Modal isOpen={isModalOpen} onRequestClose={closeModal} className="ReactModal_Content" overlayClassName="ReactModal__Overlay">
                 <button className="close-button" onClick={closeModal}>&times;</button>
@@ -317,6 +317,8 @@ const Auction: React.FC = () => {
                 isOpen={isConfirmDialogOpen}
                 onConfirm={handleBidConfirmation}
                 onCancel={() => setIsConfirmDialogOpen(false)}
+                title='Potvrda licitacije'
+                message={`Da li ste sigurni da želite da licitirate ${newOffer} dinara za ovu aukciju?`}
             />
             <hr></hr>
             <CommentSection auctionItemId={auction.id}/>

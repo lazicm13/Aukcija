@@ -111,6 +111,7 @@ function AuctionItemsDisplay() {
                 </select>
             </div>
             <div className="auction-list">
+                <div className="auction-list-inner">
                 {paginatedItems.map((item) => (
                     <AuctionItem
                         auction={item}
@@ -118,12 +119,13 @@ function AuctionItemsDisplay() {
                         onDelete={deleteAuctionItem}
                     />
                 ))}
+                </div>
             </div>
             <div className="pagination-controls">
                 <button onClick={handlePrevPage} disabled={page === 1}>
                     Prethodna
                 </button>
-                <span>Page {page}</span>
+                <span>Stranica {page}</span>
                 <button onClick={handleNextPage} disabled={endIndex >= filteredAndSortedItems.length}>
                     Sledeća
                 </button>

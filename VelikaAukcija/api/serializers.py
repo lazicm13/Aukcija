@@ -11,6 +11,11 @@ class UserSerializer(serializers.ModelSerializer):
             'password': {'write_only': True},
         }
 
+    def validate_email(self, value):
+        if CustomUser.objects.filter(email=value).exists():
+            raise serializers.ValidationError("Korisnik sa ovim emailom već postoji.")
+        return value
+
     def create(self, validated_data):
         user = CustomUser(
             first_name = validated_data['first_name'],
@@ -44,6 +49,11 @@ class AuctionImageSerializer(serializers.ModelSerializer):
         model = AuctionImage
         fields = ["id", "image"]
 
+from rest_framework import serializers
+from django.utils import timezone
+from datetime import timedelta
+from .models import AuctionItem, AuctionImage
+
 class AuctionItemSerializer(serializers.ModelSerializer):
     images = AuctionImageSerializer(many=True, required=False)
     auction_duration = serializers.IntegerField(write_only=True)
@@ -57,17 +67,22 @@ class AuctionItemSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = ["id", "created_at", "end_date"]
 
+    def validate_title(self, value):
+        # Check if an auction with the same title exists for the same user
+        user = self.context['request'].user
+        if AuctionItem.objects.filter(title=value, seller=user).exists():
+            raise serializers.ValidationError("You already have an auction with this title.")
+        return value
+
     def create(self, validated_data):
         images_data = validated_data.pop('images', [])
         auction_duration = validated_data.pop('auction_duration', 1)  # Default to 1 day if not specified
-
-        # Get the current time to set the created_at and end_date
         current_time = timezone.now()
-        
+
         # Create auction item and set the end_date based on the current time
         auction_item = AuctionItem.objects.create(
             **validated_data,
-            created_at=current_time,  # Manually set created_at if necessary (optional)
+            created_at=current_time,
             end_date=current_time + timedelta(days=auction_duration)
         )
 
@@ -76,7 +91,6 @@ class AuctionItemSerializer(serializers.ModelSerializer):
             AuctionImage.objects.create(auction_item=auction_item, **image_data)
 
         return auction_item
-
 
 from .models import Bid
 

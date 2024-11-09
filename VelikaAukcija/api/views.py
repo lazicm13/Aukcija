@@ -36,13 +36,20 @@ def send_verification_email(user):
     # Kreiraj link za potvrdu
     verification_link = f"http://127.0.0.1:8000/api/verify/{verification_code}/"
     
+    # Kreiraj HTML sadržaj email-a
+    html_message = f'''
+        <p>Hvala što ste se registrovali! Da biste potvrdili svoju registraciju, kliknite na sledeći link:</p>
+        <p><a href="{verification_link}" target="_blank">Kliknite ovde za verifikaciju naloga</a></p>
+    '''
+    
     # Pošaljite email
     send_mail(
         'Verifikacija naloga',
-        f'Kliknite na sledeći link da biste potvrdili svoju registraciju: {verification_link}',
+        'Kliknite na sledeći link da biste potvrdili svoju registraciju.',  # plain-text verzija, može ostati kao fallback
         settings.DEFAULT_FROM_EMAIL,
         [user.email],
         fail_silently=False,
+        html_message=html_message  # Prosleđivanje HTML sadržaja
     )
 
 def send_email_new_auction(id, user):
@@ -147,10 +154,10 @@ class LoginView(APIView):
         if user is not None:
             # Provera da li je korisnik verifikovan
             if not user.is_verified:
-                return Response({"detail": "User account is not verified"}, status=status.HTTP_403_FORBIDDEN)
+                return Response({"detail": "Vaš nalog nije verifikovan. Proverite vaš email."}, status=status.HTTP_403_FORBIDDEN)
             
             login(request, user)
-            return Response({"detail": "Logged in successfully"}, status=status.HTTP_200_OK)
+            return Response({"detail": "Uspešno ste se ulogovali"}, status=status.HTTP_200_OK)
         
         return Response({"detail": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
 

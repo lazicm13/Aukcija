@@ -5,16 +5,17 @@ interface ConfirmationModalProps {
     isOpen: boolean;
     onConfirm: () => void;
     onCancel: () => void;
+    message: string;
+    title: string;
 }
 
-const ConfirmationModal: React.FC<ConfirmationModalProps> = ({ isOpen, onConfirm, onCancel }) => {
+const ConfirmationModal: React.FC<ConfirmationModalProps> = ({ isOpen, onConfirm, onCancel, message, title }) => {
     if (!isOpen) return null;
-
     return (
         <div className="modal-overlay">
             <div className="modal-content">
-                <h2>Potvrdi licitaciju</h2>
-                <p>Da li ste sigurni da želite da licitirate?</p>
+                <h2>{title}</h2>
+                <p>{message}</p>
                 <button onClick={onConfirm}>Da</button>
                 <button onClick={onCancel}>Ne</button>
             </div>

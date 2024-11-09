@@ -34,6 +34,7 @@ const AuctionItem: React.FC<AuctionItemProps> = ({ auction, onDelete }) => {
     const [bidError, setBidError] = useState('');
     const [placeholder, setPlaceholder] = useState('Licitiraj ovde...');
     const [offerCount, setOfferCount] = useState<number>(0);
+    const [isDeleteConfirmDialogOpen, setIsDeleteConfirmDialogOpen] = useState<boolean>(false);
     
     const handleFocus = () => {       
         setPlaceholder('');
@@ -44,6 +45,8 @@ const AuctionItem: React.FC<AuctionItemProps> = ({ auction, onDelete }) => {
             setPlaceholder('Licitiraj ovde...');
         }
     };
+
+    
 
     useEffect(() => {
         const endTime = new Date(end_date).getTime();
@@ -112,7 +115,12 @@ const AuctionItem: React.FC<AuctionItemProps> = ({ auction, onDelete }) => {
     };
 
     const handleDelete = () => {
+        setIsDeleteConfirmDialogOpen(true); // Open delete confirmation modal
+    };
+
+    const confirmDelete = () => {
         onDelete(id);
+        setIsDeleteConfirmDialogOpen(false); // Close the modal after confirming deletion
     };
 
     const getFirstWords = (text: string, wordCount: number) => {
@@ -213,7 +221,7 @@ const AuctionItem: React.FC<AuctionItemProps> = ({ auction, onDelete }) => {
             </div>
             <hr />
             <p className='current-price-par'>
-                <b>Trenutna cena: {Number(currentPrice).toFixed(0)} Din.</b>
+                <b>Trenutna cena: {new Intl.NumberFormat('sr-RS').format(Number(currentPrice))} RSD</b>
             </p>
 
             {location.pathname !== '/moje-aukcije' && (
@@ -248,7 +256,18 @@ const AuctionItem: React.FC<AuctionItemProps> = ({ auction, onDelete }) => {
         isOpen={isConfirmDialogOpen}
         onConfirm={handleBidConfirmation}
         onCancel={() => setIsConfirmDialogOpen(false)}
+        title='Potvrdi licitaciju'
+        message={`Da li ste sigurni da želite da licitirate ${newOffer} dinara za ovu aukciju?`}
     />
+
+        {/* Confirmation modal for deleting the auction */}
+        <ConfirmationModal
+                isOpen={isDeleteConfirmDialogOpen}
+                onConfirm={confirmDelete}
+                onCancel={() => setIsDeleteConfirmDialogOpen(false)}
+                title='Obriši aukciju'
+                message="Da li ste sigurni da želite da obrišete ovu aukciju?"
+            />
     </>
     );
 };

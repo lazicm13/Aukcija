@@ -17,6 +17,7 @@ function CommentSection({ auctionItemId }: CommentSectionProps) {
     const [comments, setComments] = useState<Comment[]>([]);
     const [newComment, setNewComment] = useState("");
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(""); 
 
     useEffect(() => {
         fetchComments();
@@ -35,7 +36,16 @@ function CommentSection({ auctionItemId }: CommentSectionProps) {
 
     const handleCommentSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!newComment.trim()) return;
+
+        if (!newComment.trim()) {
+            setError("Komentar ne može biti prazan.");  
+            return;
+        }
+
+        if (newComment.length > 300) {
+            setError("Komentar ne može biti duži od 300 karaktera.");
+            return;
+        }
 
         try {
             const response = await api.post("/api/comments/create/", {
@@ -44,8 +54,10 @@ function CommentSection({ auctionItemId }: CommentSectionProps) {
             });
             setComments((prevComments) => [...prevComments, response.data]);
             setNewComment(""); // Clear input field after submitting
+            setError("");
         } catch (error) {
             console.error("Failed to submit comment:", error);
+
         }
     };
 
@@ -79,12 +91,12 @@ function CommentSection({ auctionItemId }: CommentSectionProps) {
                 <textarea
                     value={newComment}
                     onChange={(e) => setNewComment(e.target.value)}
-                    placeholder="Write your comment here..."
+                    placeholder="Napišite svoj komentar ovde..."
                     rows={3}
-                    required
                 />
                 <button type="submit">Postavi komentar</button>
             </form>
+            {error && <p className="error-message">{error}</p>} 
         </div>
     );
 }

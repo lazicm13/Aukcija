@@ -11,50 +11,71 @@ function RegistrationComponent() {
         password: '',
         confirmPassword: ''
     });
-    const [error, setError] = useState('');
+    const [error, setError] = useState({
+        first_name: '',
+        email: '',
+        password: '',
+        confirmPassword: '',
+        general: ''
+    });
     const [successMessage, setSuccessMessage] = useState('');
     const navigate = useNavigate();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [userEmail, setUserEmail] = useState('');
 
-    // Funkcija za rukovanje promenama u input poljima
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
         setFormData({
             ...formData,
-            [e.target.name]: e.target.value
+            [name]: value
+        });
+        setError({
+            ...error,
+            [name]: '',  // Clear specific field error on input change
+            general: ''  // Clear general error on input change
         });
     };
 
-    // Funkcija za validaciju lozinki
-    const validatePassword = () => {
-        const { password, confirmPassword } = formData;
-        const passwordRegex = /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,}$/; // Minimum 8 znakova, barem jedan broj i jedan specijalni znak
+    const validateFields = () => {
+        let isValid = true;
+        const errors: any = { first_name: '', email: '', password: '', confirmPassword: '', general: '' };
 
-        if (password !== confirmPassword) {
-            setError('Lozinke se ne poklapaju.');
-            return false;
+        if (!formData.first_name) {
+            errors.first_name = 'Ime je obavezno.';
+            isValid = false;
+        }
+        if (!formData.email) {
+            errors.email = 'Email je obavezan.';
+            isValid = false;
+        } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+            errors.email = 'Email nije validan.';
+            isValid = false;
+        }
+        if (!formData.password) {
+            errors.password = 'Lozinka je obavezna.';
+            isValid = false;
+        } else if (!/^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,}$/.test(formData.password)) {
+            errors.password = 'Lozinka mora imati minimum 8 znakova, barem jedan broj i jedan specijalni znak.';
+            isValid = false;
+        }
+        if (!formData.confirmPassword) {
+            errors.confirmPassword = 'Potvrda lozinke je obavezna.';
+            isValid = false;
+        } else if (formData.password !== formData.confirmPassword) {
+            errors.confirmPassword = 'Lozinke se ne poklapaju.';
+            isValid = false;
         }
 
-        if (!passwordRegex.test(password)) {
-            setError('Lozinka mora imati minimum 8 znakova, barem jedan broj i jedan specijalni znak.');
-            return false;
-        }
-
-        setError(''); // Resetovanje greške ako je sve u redu
-        return true;
+        setError(errors);
+        return isValid;
     };
 
-    // Funkcija za slanje forme
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        // Validacija lozinki
-        if (!validatePassword()) {
-            return; // Ako validacija ne uspe, ne šaljemo zahtev
-        }
+        if (!validateFields()) return;
 
         try {
-            // Slanje POST zahteva ka API-u za registraciju
             const response = await api.post('/api/user/register/', {
                 first_name: formData.first_name,
                 email: formData.email,
@@ -63,8 +84,7 @@ function RegistrationComponent() {
 
             if (response.status === 201) {
                 setSuccessMessage('Registracija je uspešna!');
-                setIsModalOpen(true); // Otvori modal
-                // Resetovanje forme
+                setIsModalOpen(true);
                 setUserEmail(formData.email);
                 setFormData({
                     first_name: '',
@@ -73,15 +93,27 @@ function RegistrationComponent() {
                     confirmPassword: ''
                 });
             }
-        } catch (error) {
-            console.error("Registracija nije uspela:", error);
-            setError('Došlo je do greške prilikom registracije.');
+        } catch (err: any) {
+            console.error("Registracija nije uspela:", err);
+            
+            // Ako backend vraća specifičnu grešku za email, prikažite je korisniku
+            if (err.response && err.response.data && err.response.data.email) {
+                setError((prevError) => ({
+                    ...prevError,
+                    email: err.response.data.email[0],  // Na primer, "Email već postoji."
+                    general: ''
+                }));
+            } else {
+                setError((prevError) => ({
+                    ...prevError,
+                    general: 'Došlo je do greške prilikom registracije. Pokušajte ponovo.'
+                }));
+            }
             setSuccessMessage('');
         }
     };
 
     const handleGoogleSuccess = async (credentialResponse: any) => {
-        // Here you can send the token to your backend for validation
         const { credential } = credentialResponse;
         try {
             const response = await api.post("/api/auth/google/", { id_token: credential });
@@ -91,12 +123,18 @@ function RegistrationComponent() {
             }
         } catch (error) {
             console.error("Google login failed:", error);
-            setError('Google login failed. Please try again.');
+            setError((prevError) => ({
+                ...prevError,
+                general: 'Google login failed. Please try again.'
+            }));
         }
     };
 
     const handleGoogleError = () => {
-        setError('Google login failed. Please try again.');
+        setError((prevError) => ({
+            ...prevError,
+            general: 'Google login failed. Please try again.'
+        }));
     };
 
     return (
@@ -108,8 +146,7 @@ function RegistrationComponent() {
                     onError={handleGoogleError}
                     locale='sr-Latn'
                 />
-                <form onSubmit={handleSubmit}>
-                    {/* Polje za email */}
+                <form onSubmit={handleSubmit} noValidate>
                     <div>
                         <label htmlFor="name">Ime i prezime:</label>
                         <input
@@ -118,8 +155,8 @@ function RegistrationComponent() {
                             name="first_name"
                             value={formData.first_name}
                             onChange={handleInputChange}
-                            required
                         />
+                        {error.first_name && <p className="error-message">{error.first_name}</p>}
                     </div>
                     <div>
                         <label htmlFor="email">Email:</label>
@@ -129,10 +166,9 @@ function RegistrationComponent() {
                             name="email"
                             value={formData.email}
                             onChange={handleInputChange}
-                            required
                         />
+                        {error.email && <p className="error-message">{error.email}</p>}
                     </div>
-                    {/* Polje za lozinku */}
                     <div>
                         <label htmlFor="password">Lozinka:</label>
                         <input
@@ -141,8 +177,8 @@ function RegistrationComponent() {
                             name="password"
                             value={formData.password}
                             onChange={handleInputChange}
-                            required
                         />
+                        {error.password && <p className="error-message">{error.password}</p>}
                     </div>
                     <div>
                         <label htmlFor='confirmPassword'>Potvrdi lozinku:</label>
@@ -152,11 +188,11 @@ function RegistrationComponent() {
                             name='confirmPassword'
                             value={formData.confirmPassword}
                             onChange={handleInputChange}
-                            required
                         />
+                        {error.confirmPassword && <p className="error-message">{error.confirmPassword}</p>}
                     </div>
 
-                    {error && <p className="error-message">{error}</p>}
+                    {error.general && <p className="error-message">{error.general}</p>}
                     {successMessage && <p className="success-message">{successMessage}</p>}
                     <button type="submit">Registrujte se</button>
                 </form>
@@ -169,7 +205,7 @@ function RegistrationComponent() {
                         <p>Email za verifikaciju je poslat na vašu adresu: {userEmail}</p>
                         <button onClick={() => {
                             setIsModalOpen(false);
-                            navigate('/login'); // Preusmeri na login
+                            navigate('/login');
                         }}>
                             Zatvori
                         </button>

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import api from "../../api";
 import './../../Styles/createAuction.css';
 import axios from "axios";
@@ -9,24 +9,88 @@ function CreateAuction() {
     const [title, setTitle] = useState("");
     const [current_price, setCurrentPrice] = useState<string>('');
     const [images, setImages] = useState<File[]>([]);
-    const [auctionDuration, setAuctionDuration] = useState<number>(1);
+    const [auctionDuration, setAuctionDuration] = useState<number>(4);
     const [city, setCity] = useState("");
     const [phoneNumber, setPhoneNumber] = useState("");
+    const [errors, setErrors] = useState<{ [key: string]: string }>({});
     const navigate = useNavigate();
+
+    useEffect(() => {
+        const fetchUserData = async () => {
+            try {
+                const response = await api.get('/api/current_user_data');
+                setPhoneNumber(response.data.phone_number);
+                setCity(response.data.city);
+            } catch (error) {
+                console.error('Error fetching user data:', error);
+            }
+        };
+
+        fetchUserData();
+    }, []);
 
     const createAuctionItem = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-    
-        if (Number(current_price) <= 0) { 
-            alert("Please enter a valid positive integer price.");
-            return;
+
+        // Reset errors before validation
+        setErrors({});
+
+        let isValid = true;
+
+        // Basic validations
+        const newErrors: { [key: string]: string } = {};
+
+        if (!title.trim()) {
+            newErrors.title = "Naslov je obavezan.";
+            isValid = false;
         }
-    
-        if (images.length > 6) { // Maksimalno 5 slika
-            alert("You can upload a maximum of 6 images.");
-            return;
+
+        if (!description.trim()) {
+            newErrors.description = "Opis je obavezan.";
+            isValid = false;
         }
-    
+
+        if (Number(current_price) <= 0) {
+            newErrors.current_price = "Početna cena mora biti pozitivna.";
+            isValid = false;
+        }
+
+        if (city === '') {
+            newErrors.city = "Grad je obavezan.";
+            isValid = false;
+        }
+
+        if (phoneNumber === '' || !/^\d{10}$/.test(phoneNumber)) {
+            newErrors.phoneNumber = "Broj telefona nije validan. Mora imati 10 cifara.";
+            isValid = false;
+        }
+        
+
+        // Validate image count and size
+        if (images.length === 0) {
+            newErrors.images = "Morate odabrati barem jednu sliku.";
+            isValid = false;
+        }
+
+        if (images.length > 6) {
+            newErrors.images = "Maksimalno možete odabrati 6 slika.";
+            isValid = false;
+        }
+
+        const fileSizeLimit = 5 * 1024 * 1024; // 5 MB
+        for (const image of images) {
+            if (image.size > fileSizeLimit) {
+                newErrors.images = `${image.name} prelazi ograničenje veličine od 5 MB.`;
+                isValid = false;
+                break;
+            }
+        }
+
+        setErrors(newErrors);
+
+        if (!isValid) return;
+
+        // Create auction item
         const formData = new FormData();
         formData.append("title", title);
         formData.append("description", description);
@@ -34,97 +98,94 @@ function CreateAuction() {
         formData.append("auction_duration", auctionDuration.toString());
         formData.append("city", city);
         formData.append("phone_number", phoneNumber);
-    
+
         try {
-            // Step 1: Create the auction item
             const response = await api.post("/api/auctionItems/", formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
             });
-    
+
             if (response.status === 201) {
                 try {
                     const auctionItemId = response.data.id;
-                    // Step 2: Prepare to upload images
+
                     const imageFormData = new FormData();
                     images.forEach((image) => {
-                        imageFormData.append('image', image);  // Append each image to FormData
+                        imageFormData.append('image', image);
                     });
-                    console.log("ImageFormData:", [...images.entries()]);
-                
-                    // Step 3: Upload images to the newly created auction item
+
                     const imageResponse = await api.post(`/api/auction-items/${auctionItemId}/images/`, imageFormData, {
                         headers: {
                             'Content-Type': 'multipart/form-data',
                         },
                     });
-                
+
                     if (imageResponse.status === 201) {
-                        alert("Auction item and images created successfully!");
-                        // Reset form fields
+                        alert("Aukcija i slike uspešno kreirani!");
                         setTitle("");
                         setDescription("");
                         setCurrentPrice('');
-                        setImages([]); // Reset images
+                        setImages([]);
                         navigate('/');
                     } else {
-                        alert("Failed to upload images");
+                        alert("Neuspešno učitavanje slika.");
                     }
                 } catch (err) {
-                    if (axios.isAxiosError(err)) {
-                        const errorMessage = err.response?.data || 'An unknown error occurred';
-                        console.error("Error response:", errorMessage);
-                        alert(`Error: ${JSON.stringify(errorMessage)}`);
-                    } else {
-                        alert('An unknown error occurred');
-                    }
+                    console.error("Greška pri dodavanju slika:", err);
+                    alert("Greška pri dodavanju slika.");
                 }
             } else {
-                alert("Failed to create the auction item");
+                alert("Neuspešno kreiranje aukcije.");
             }
         } catch (err) {
-            if (axios.isAxiosError(err)) {
-                const errorMessage = err.response?.data?.detail || 'An unknown error occurred';
-                const statusCode = err.response?.status;
-                alert(`Error ${statusCode}: ${errorMessage}`);
-            } else {
-                alert('An unknown error occurred');
-            }
+            console.error("Greška pri kreiranju aukcije:", err);
+            alert("Greška pri kreiranju aukcije.");
         }
     };
-    
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>, field: string) => {
+        const { value } = e.target;
+        
+        // Remove the error for the specific field when the user changes the value
+        setErrors((prevErrors) => ({ ...prevErrors, [field]: "" }));
+
+        if (field === 'title') setTitle(value);
+        if (field === 'current_price') setCurrentPrice(value);
+        if (field === 'city') setCity(value);
+        if (field === 'phoneNumber') setPhoneNumber(value);
+    };
+
+    const handleDescriptionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+        const { value } = e.target;
+        setErrors((prevErrors) => ({ ...prevErrors, description: "" }));
+        setDescription(value);
+    };
 
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const selectedFiles = Array.from(e.target.files || []);
         
-        // Check if the total number of images exceeds the limit
         if (selectedFiles.length + images.length > 6) {
-            alert("You can upload a maximum of 6 images.");
+            alert("Možete odabrati maksimalno 6 slika.");
             return;
         }
-    
-        // Optionally, check file size here
-        const fileSizeLimit = 5 * 1024 * 1024; // 5 MB example limit
+
+        const fileSizeLimit = 5 * 1024 * 1024; // 5 MB limit
         for (const file of selectedFiles) {
             if (file.size > fileSizeLimit) {
-                alert(`${file.name} exceeds the size limit of 5 MB.`);
+                alert(`${file.name} prelazi veličinu ograničenja od 5 MB.`);
                 return;
             }
         }
         setImages(prevImages => [...prevImages, ...selectedFiles]);
-    
-        // Clear the input (optional)
-        e.target.value = ''; // This allows the same file to be selected again if needed
+        e.target.value = ''; // Reset input to allow same file to be selected again
     };
-    
 
     const removeImage = (index: number) => {
-        setImages(prevImages => prevImages.filter((_, i) => i !== index)); // Uklanja sliku sa odabranog indeksa
+        setImages(prevImages => prevImages.filter((_, i) => i !== index));
     };
 
     return (
-        <>
         <div className="formContainer">
             <form onSubmit={createAuctionItem} style={{ display: 'flex' }}>
                 <div className="formLeft">
@@ -134,12 +195,12 @@ function CreateAuction() {
                             type="text"
                             id="title"
                             name="title"
-                            required
-                            onChange={(e) => setTitle(e.target.value)}
+                            onChange={(e) => handleInputChange(e, 'title')}
                             value={title}
                             maxLength={50}
                             className="naslov"
                         />
+                        {errors.title && <p className="error-message">{errors.title}</p>}
                     </div>
                     <div className="price-duration-container">
                         <div className="price-input-container">
@@ -148,14 +209,11 @@ function CreateAuction() {
                                 type="number"
                                 id="current_price"
                                 name="current_price"
-                                required
                                 value={current_price}
-                                onChange={(e) => {
-                                    const value = e.target.value;
-                                    setCurrentPrice(value);
-                                }}
+                                onChange={(e) => handleInputChange(e, 'current_price')}
                             />
                             <span id="din-span">Din.</span>
+                            {errors.current_price && <p className="error-message">{errors.current_price}</p>}
                         </div>
 
                         <div className="auction-duration">
@@ -166,29 +224,26 @@ function CreateAuction() {
                                 value={auctionDuration}
                                 onChange={(e) => setAuctionDuration(Number(e.target.value))}
                             >
-                                <option value={1}>1 dan</option>
-                                <option value={2}>2 dana</option>
-                                <option value={3}>3 dana</option>
                                 <option value={4}>4 dana</option>
+                                <option value={3}>3 dana</option>
+                                <option value={2}>2 dana</option>
+                                <option value={1}>1 dan</option>
                             </select>
                         </div>
                     </div>
-                    <hr></hr>
-                    <br></br>
-                    <label id='description-label'htmlFor="description">Opis oglasa:</label>
-                    <textarea 
+                    <hr />
+                    <br />
+                    <label htmlFor="description">Opis oglasa:</label>
+                    <textarea
                         id="description"
-                        name="description" 
-                        required 
-                        value={description} 
-                        maxLength={600}
-                        onChange={(e) => setDescription(e.target.value)}
+                        name="description"
+                        value={description}
+                        onChange={handleDescriptionChange}
                     />
-                    
+                    {errors.description && <p className="error-message">{errors.description}</p>}
                 </div>
-    
+
                 <div className="formRight">
-                    
                     <label htmlFor="images">Odaberi slike (maksimalno 6):</label>
                     <input
                         type="file"
@@ -210,38 +265,33 @@ function CreateAuction() {
                             </div>
                         ))}
                     </div>
-                    
 
-                    {/* Dodaj div za grad i broj telefona */}
                     <div className="contact-info">
                         <label htmlFor="city">Grad:</label>
                         <input
                             type="text"
                             id="city"
-                            value={city}
-                            onChange={(e) => setCity(e.target.value)}
+                            value={city || ''}
+                            onChange={(e) => handleInputChange(e, 'city')}
                         />
-                        </div>
-                        <div className="contact-info">
+                    </div>
+                    {errors.city && <p className="error-message">{errors.city}</p>}
+                    <div className="contact-info">
                         <label htmlFor="phone">Broj telefona:</label>
                         <input
                             type="text"
                             id="phone"
-                            value={phoneNumber}
-                            onChange={(e) => setPhoneNumber(e.target.value)}
+                            value={phoneNumber || ''}
+                            onChange={(e) => handleInputChange(e, 'phoneNumber')}
                         />
                     </div>
+                    {errors.phoneNumber && <p className="error-message">{errors.phoneNumber}</p>}
 
-                    <input 
-                        type="submit"
-                        value="Završi"
-                    />
+                    <input type="submit" value="Završi" />
                 </div>
             </form>
         </div>
-        </>
     );
-    
 }
 
 export default CreateAuction;

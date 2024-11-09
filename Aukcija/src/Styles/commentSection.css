@@ -15,17 +15,27 @@
 .comment-form {
     display: flex;
     flex-direction: column;
+    width: 60%;
+    max-width: 800px; /* Maksimalna širina za formu */
+    margin: 0 auto; /* Centriranje forme */
 }
 
 .comment-form textarea {
     resize: none;
     margin-bottom: 10px;
     padding: 8px;
+    width: 100%;
+    max-width: 100%; /* Osigurajte da textarea ne izlazi van svog roditelja */
+    box-sizing: border-box; /* Uključuje padding u ukupnu širinu */
+    overflow-wrap: break-word; /* Omogućava prelamanje reči da ne izlaze izvan linije */
+    word-wrap: break-word; /* Dodatna zaštita za prelamanje reči */
+    white-space: pre-wrap; /* Omogućava prelamanje linija i očuvanje praznina */
 }
 
 .comment-form button {
     align-self: flex-start;
     padding: 8px 16px;
+    width: auto; /* Dugme ostaje automatske širine */
 }
 
 .reply-list {
@@ -43,4 +53,10 @@
 
 .reply-item strong {
     color: #007BFF;
+}
+
+.error-message {
+    color: red;
+    font-size: 14px;
+    margin-top: 10px;
 }

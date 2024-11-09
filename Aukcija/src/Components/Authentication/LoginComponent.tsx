@@ -3,6 +3,7 @@ import './../../Styles/authentication.css';
 import api from '../../api';
 import { useNavigate } from 'react-router-dom';
 import { GoogleLogin } from '@react-oauth/google';
+import { AxiosError } from 'axios';
 
 
 function LoginComponent() {
@@ -22,39 +23,51 @@ function LoginComponent() {
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-
+    
         // Validation
         if (!formData.email || !formData.password) {
-            setError('Please fill in both fields.');
+            setError('Molim vas da unesete vaš email i lozinku!');
             return;
         }
-
+    
         try {
             // API call for login
             const response = await api.post("/api/login/", {
                 email: formData.email,
                 password: formData.password
             });
-
+    
             if (response.status === 200) {
                 setSuccessMessage('Login successful!');
-                setError('');
-
+                setError(''); // Clear any previous errors
+    
                 // Reset form (optional)
                 setFormData({
                     email: '',
                     password: ''
                 });
-                
+    
                 alert("Successful login!");
-                navigate('/');
+                navigate('/'); // Redirect to home page or dashboard
             }
         } catch (error) {
             console.error("Login failed:", error);
-            setError('Invalid credentials. Please try again.');
-            setSuccessMessage('');
+    
+            // Type assertion to AxiosError for proper type checking
+            const axiosError = error as AxiosError;
+    
+            // Check if the error is related to unverified account
+            if (axiosError.response && axiosError.response.status === 403) {
+                setError('Vaš nalog nije verifikovan. Proverite vaš email.\n');
+            } else {
+                setError('Email ili lozinka nisu tačni!');
+            }
+    
+            setSuccessMessage(''); // Clear success message
         }
     };
+    
+    
 
     const handleGoogleSuccess = async (credentialResponse: any) => {
         // Here you can send the token to your backend for validation
@@ -94,7 +107,6 @@ function LoginComponent() {
                             name="email"
                             value={formData.email}
                             onChange={handleChange}
-                            required
                         />
                     </div>
                     <div>
@@ -105,7 +117,6 @@ function LoginComponent() {
                             name="password"
                             value={formData.password}
                             onChange={handleChange}
-                            required
                         />
                     </div>
                     <button type="submit">Ulogujte se</button>

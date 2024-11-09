@@ -47,19 +47,6 @@
     margin-top: 20px;
 }
 
-.create-auction-btn {
-    background-color: yellow !important; /* Plava boja za dugme */
-    color: white; /* Bela boja teksta za kontrast */
-    border: none; /* Uklanja ivicu */
-    border-radius: 5px; /* Zaobljeni uglovi dugmeta */
-    padding: 10px 15px; /* Unutrašnje margine dugmeta */
-    cursor: pointer; /* Kursor pointer za dugme */
-    transition: background-color 0.3s; /* Glatka promena boje prilikom hover-a */
-}
-
-.create-auction-btn:hover {
-    background-color: #0056b3; /* Tamnija nijansa plave prilikom hover-a */
-}
 
 .user-profile {
     position: relative; /* Neophodno za apsolutno pozicioniranje dropdown-a */
@@ -88,7 +75,7 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Senka za dropdown */
     z-index: 100; /* Osigurava da dropdown bude iznad drugih elemenata */
     padding: 10px; /* Unutrašnje margine dropdown-a */
-    min-width: 115px;
+    min-width: 130px;
 }
 
 .dropdown-menu a {
