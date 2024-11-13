@@ -4,20 +4,27 @@ import './../../Styles/commentSection.css';
 
 interface Comment {
     id: number;
-    user: string; // Email address of the user
+    user: string; // User's full name
+    userId: number; // User ID for ownership check
     content: string;
     created_at: string;
+    replies?: Comment[];
 }
 
 interface CommentSectionProps {
-    auctionItemId: number; // ID of the auction item to load comments for
+    auctionItemId: number;
+    ownerId: number; // Owner ID for the auction item
+    currentUserId: number;
 }
 
-function CommentSection({ auctionItemId }: CommentSectionProps) {
+function CommentSection({ auctionItemId, ownerId }: CommentSectionProps) {
     const [comments, setComments] = useState<Comment[]>([]);
     const [newComment, setNewComment] = useState("");
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(""); 
+    const [reply, setReply] = useState<string>(""); 
+    const [replyToCommentId, setReplyToCommentId] = useState<number | null>(null); 
+    const [userId, setUserId] = useState(0);
 
     useEffect(() => {
         fetchComments();
@@ -38,7 +45,7 @@ function CommentSection({ auctionItemId }: CommentSectionProps) {
         e.preventDefault();
 
         if (!newComment.trim()) {
-            setError("Komentar ne može biti prazan.");  
+            setError("Komentar ne može biti prazan.");
             return;
         }
 
@@ -53,31 +60,53 @@ function CommentSection({ auctionItemId }: CommentSectionProps) {
                 content: newComment,
             });
             setComments((prevComments) => [...prevComments, response.data]);
-            setNewComment(""); // Clear input field after submitting
+            setNewComment("");
             setError("");
         } catch (error) {
             console.error("Failed to submit comment:", error);
-
         }
     };
 
-    // Function to get a "user-friendly" username from email
-    const getUserNameFromEmail = (email: string) => {
-        const username = email.split('@')[0]; // Get part before '@'
-        return username.charAt(0).toUpperCase() + username.slice(1); // Capitalize first letter
+    const deleteComment = async (commentId: number) => {
+        try {
+            await api.delete(`/api/comments/${commentId}/delete/`);
+            setComments((prevComments) => prevComments.filter((comment) => comment.id !== commentId));
+        } catch (error) {
+            console.error("Failed to delete comment:", error);
+        }
     };
+
+    useEffect(() => {
+        const fetchUserData = async () => {
+            try {
+                const response = await api.get('/api/current_user_data');
+                setUserId(response.data.id);
+            } catch (error) {
+                console.error('Error fetching user data:', error);
+            }
+        };
+
+        fetchUserData();
+    }, []);
 
     return (
         <div className="comment-section">
             <h3>Komentari</h3>
-            
+            <hr className="comment-hr" />
             {loading ? (
-                <p>učitavanje komentara...</p>
+                <p>Učitavanje komentara...</p>
             ) : comments.length > 0 ? (
                 <ul className="comment-list">
                     {comments.map((comment) => (
+                        
                         <li key={comment.id} className="comment-item">
-                            <strong>{getUserNameFromEmail(comment.user)}</strong> {/* Display username */}
+                            {(comment.userId === userId || userId === ownerId) && (
+                                <button onClick={() => deleteComment(comment.id)} className="delete-comment-btn">Obriši komentar</button>
+                            )}
+                            <strong>
+                                {comment.user}{" "}
+                                {comment.userId === ownerId && <span style={{color: "red"}}>(Prodavac)</span>}
+                            </strong>
                             <p>{comment.content}</p>
                             <small>{new Date(comment.created_at).toLocaleString()}</small>
                         </li>
@@ -96,9 +125,10 @@ function CommentSection({ auctionItemId }: CommentSectionProps) {
                 />
                 <button type="submit">Postavi komentar</button>
             </form>
-            {error && <p className="error-message">{error}</p>} 
+            {error && <p className="error-message">{error}</p>}
         </div>
     );
 }
 
 export default CommentSection;
+

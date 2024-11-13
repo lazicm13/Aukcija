@@ -24,18 +24,36 @@ class CustomUser(AbstractUser):
     def __str__(self):
         return self.username
 
+from django.db import models
 
 class AuctionItem(models.Model):
+    CATEGORY_CHOICES = [
+        ('electronics', 'Elektronika'),
+        ('appliances', 'Kućni aparati'),
+        ('jewelry', 'Nakit i Satovi'),
+        ('clothing', 'Odeća i Obuća'),
+        ('toys', 'Igračke i Video igre'),
+        ('furniture', 'Nameštaj'),
+        ('sports', 'Sport i Oprema'),
+        ('collectibles', 'Kolekcionarstvo i Antikviteti'),
+        ('media', 'Knjige, Filmovi i Muzika'),
+        ('tools', 'Alati i Oprema za rad'),
+        ('vehicles', 'Automobili i Motocikli'),
+        ('real-estate', 'Nekretnine'),
+        ('food', 'Hrana i Piće'),
+        ('other', 'Ostalo'),
+    ]
+
     title = models.CharField(max_length=100)
     description = models.TextField()
     seller = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="items")
     current_price = models.DecimalField(max_digits=10, decimal_places=2)  # Two decimal places for price
     auction_duration = models.IntegerField(default=1)  # Duration in days
     city = models.CharField(max_length=100, default='')
+    category = models.CharField(max_length=50, default='other')
     phone_number = models.CharField(max_length=15, default='')
     created_at = models.DateTimeField(auto_now_add=True)
     end_date = models.DateTimeField(null=True, blank=True)
-    
 
     def set_end_date(self, days: int):
         self.end_date = self.created_at + timedelta(days=days)
@@ -43,6 +61,7 @@ class AuctionItem(models.Model):
 
     def __str__(self):
         return self.title
+
 
 
 class AuctionImage(models.Model):
@@ -68,4 +87,4 @@ class Comment(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"Comment by {self.user.username} on {self.auction_item.title}"
+        return f"Comment by {self.user.first_name} on {self.auction_item.title}"

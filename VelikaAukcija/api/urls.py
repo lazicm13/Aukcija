@@ -2,7 +2,8 @@ from django.urls import path
 from . import views
 from .views import LoginView, LogoutView, user_status, FetchUsernamesView, BidListView, FetchAuctionOwnerView, AuctionCountView
 from .views import CSRFTokenView, google_login,AuctionImageListCreate, CurrentUserView, AuctionItemDetail, BidCreateView
-from .views import CurrentUserDataView, UpdateUserProfileView, CommentCreateView, CommentListView
+from .views import CurrentUserDataView, UpdateUserProfileView, CommentCreateView, CommentListView, report_auction_view
+from .views import FetchAuctionsByCategory, CommentDeleteView
 
 urlpatterns = [
     path('login/', LoginView.as_view(), name='login'),
@@ -26,4 +27,7 @@ urlpatterns = [
     path('update-profile/', UpdateUserProfileView.as_view(), name='update-profile'),
     path('comments/<int:auction_item_id>/', CommentListView.as_view(), name='comment-list'),
     path('comments/create/', CommentCreateView.as_view(), name='comment-create'),
+    path('report-auction/', report_auction_view, name='report_auction'),
+    path('auctions/', FetchAuctionsByCategory.as_view(), name='auctions-by-category'),
+    path('comments/<int:pk>/delete/', CommentDeleteView.as_view(), name='delete-comment'),
 ]

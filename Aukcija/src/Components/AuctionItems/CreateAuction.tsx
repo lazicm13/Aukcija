@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import api from "../../api";
 import './../../Styles/createAuction.css';
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { AxiosError } from "axios";
 
 function CreateAuction() {
     const [description, setDescription] = useState("");
@@ -12,6 +12,7 @@ function CreateAuction() {
     const [auctionDuration, setAuctionDuration] = useState<number>(4);
     const [city, setCity] = useState("");
     const [phoneNumber, setPhoneNumber] = useState("");
+    const [category, setCategory] = useState('');
     const [errors, setErrors] = useState<{ [key: string]: string }>({});
     const navigate = useNavigate();
 
@@ -28,6 +29,16 @@ function CreateAuction() {
 
         fetchUserData();
     }, []);
+
+
+    interface ApiResponse {
+        id: number;
+    }
+
+    interface ApiErrorResponse {
+        message: string;
+        // Dodajte ostale relevantne informacije koje očekujete od servera
+    }
 
     const createAuctionItem = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -64,7 +75,6 @@ function CreateAuction() {
             newErrors.phoneNumber = "Broj telefona nije validan. Mora imati 10 cifara.";
             isValid = false;
         }
-        
 
         // Validate image count and size
         if (images.length === 0) {
@@ -98,9 +108,11 @@ function CreateAuction() {
         formData.append("auction_duration", auctionDuration.toString());
         formData.append("city", city);
         formData.append("phone_number", phoneNumber);
+        formData.append("category", category);
+        console.log("Category:", category);
 
         try {
-            const response = await api.post("/api/auctionItems/", formData, {
+            const response = await api.post<ApiResponse>("/api/auctionItems/", formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
@@ -129,20 +141,35 @@ function CreateAuction() {
                         setImages([]);
                         navigate('/');
                     } else {
+                        console.error("Greška pri učitavanju slika: ", imageResponse);
                         alert("Neuspešno učitavanje slika.");
                     }
-                } catch (err) {
+                } catch (err: unknown) {
                     console.error("Greška pri dodavanju slika:", err);
-                    alert("Greška pri dodavanju slika.");
+                    if (err instanceof AxiosError && err.response) {
+                        const errorResponse: ApiErrorResponse = err.response.data;
+                        console.error("Server error details:", errorResponse);
+                        alert(`Greška pri dodavanju slika: ${errorResponse.message}`);
+                    } else {
+                        alert("Greška pri dodavanju slika.");
+                    }
                 }
             } else {
+                console.error("Greška pri kreiranju aukcije: ", response);
                 alert("Neuspešno kreiranje aukcije.");
             }
-        } catch (err) {
+        } catch (err: unknown) {
             console.error("Greška pri kreiranju aukcije:", err);
-            alert("Greška pri kreiranju aukcije.");
+            if (err instanceof AxiosError && err.response) {
+                const errorResponse: ApiErrorResponse = err.response.data;
+                console.error("Server error details:", errorResponse);
+                alert(`Greška pri kreiranju aukcije: ${errorResponse.message}`);
+            } else {
+                alert("Greška pri kreiranju aukcije.");
+            }
         }
     };
+
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>, field: string) => {
         const { value } = e.target;
@@ -241,6 +268,30 @@ function CreateAuction() {
                         onChange={handleDescriptionChange}
                     />
                     {errors.description && <p className="error-message">{errors.description}</p>}
+                    <div className="select-container">
+                        <label>Izaberite kategoriju proizvoda:</label>
+                            <select 
+                                id="product-category" 
+                                value={category}
+                                onChange={(e) => setCategory(e.target.value)}
+                                >
+                                <option value="" disabled>Izaberite kategoriju</option>
+                                <option value="electronics">Elektronika</option>
+                                <option value="appliances">Kućni aparati</option>
+                                <option value="jewelry">Nakit i Satovi</option>
+                                <option value="clothing">Odeća i Obuća</option>
+                                <option value="toys">Igračke i Video igre</option>
+                                <option value="furniture">Nameštaj</option>
+                                <option value="sports">Sport i Oprema</option>
+                                <option value="collectibles">Kolekcionarstvo i Antikviteti</option>
+                                <option value="media">Knjige, Filmovi i Muzika</option>
+                                <option value="tools">Alati i Oprema za rad</option>
+                                <option value="vehicles">Automobili i Motocikli</option>
+                                <option value="real-estate">Nekretnine</option>
+                                <option value="food">Hrana i Piće</option>
+                                <option value="other">Ostalo</option>
+                            </select>
+                        </div>
                 </div>
 
                 <div className="formRight">
@@ -287,7 +338,7 @@ function CreateAuction() {
                     </div>
                     {errors.phoneNumber && <p className="error-message">{errors.phoneNumber}</p>}
 
-                    <input type="submit" value="Završi" />
+                    <input type="submit" value="Završi" id="submit-btn" />
                 </div>
             </form>
         </div>

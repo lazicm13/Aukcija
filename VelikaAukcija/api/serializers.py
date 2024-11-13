@@ -62,8 +62,8 @@ class AuctionItemSerializer(serializers.ModelSerializer):
         model = AuctionItem
         fields = [
             "id", "title", "description", "current_price", 
-            "auction_duration", "city", "phone_number", 
-            "created_at", "end_date", "images",
+            "auction_duration", "city", "category", "phone_number", 
+            "created_at", "end_date", "images", "seller", 
         ]
         read_only_fields = ["id", "created_at", "end_date"]
 
@@ -141,19 +141,24 @@ class UserUpdateSerializer(serializers.ModelSerializer):
         fields = ['first_name', 'phone_number', 'city']
         
 class CommentSerializer(serializers.ModelSerializer):
-    user = serializers.StringRelatedField(read_only=True)  # Display the username as a string
+    user = serializers.SerializerMethodField()  # Use a method to display full name
     auction_item_id = serializers.IntegerField(write_only=True)
+    userId = serializers.IntegerField(source='user.id', read_only=True)
 
     class Meta:
         model = Comment
-        fields = ['id', 'auction_item_id', 'user', 'content', 'created_at']
+        fields = ['id', 'auction_item_id', 'user', 'content', 'created_at', 'userId']
         read_only_fields = ['id', 'user', 'created_at']
 
+    def get_user(self, obj):
+        # Retrieve the full name or a placeholder if the name is not available
+        return f"{obj.user.first_name}"
+
     def create(self, validated_data):
-        user = self.context['request'].user  # Get the currently authenticated user
+        user = self.context['request'].user
         auction_item_id = validated_data.pop('auction_item_id')
         auction_item = AuctionItem.objects.get(id=auction_item_id)
-        
+
         # Create the comment associated with the user and auction item
         comment = Comment.objects.create(
             user=user,

@@ -3,7 +3,9 @@ import './../../Styles/auction.css';
 import { useNavigate, useLocation } from 'react-router-dom';
 import api from '../../api';
 import { AxiosError } from 'axios';
-import ConfirmationModal from '../ConfirmationModal';
+import ConfirmationModal from '../Modals/ConfirmationModal';
+import Confetti from 'react-confetti';
+import InfoModal from '../Modals/infoModal';
 
 
 interface AuctionItemProps {
@@ -35,6 +37,9 @@ const AuctionItem: React.FC<AuctionItemProps> = ({ auction, onDelete }) => {
     const [placeholder, setPlaceholder] = useState('Licitiraj ovde...');
     const [offerCount, setOfferCount] = useState<number>(0);
     const [isDeleteConfirmDialogOpen, setIsDeleteConfirmDialogOpen] = useState<boolean>(false);
+    const [successMessage, setSuccessMessage] = useState('');
+    const [isConfettiVisible, setIsConfettiVisible] = useState(false);
+    const [isInfoModalOpen, setIsInfoModalOpen] = useState(false);
     
     const handleFocus = () => {       
         setPlaceholder('');
@@ -146,6 +151,7 @@ const AuctionItem: React.FC<AuctionItemProps> = ({ auction, onDelete }) => {
     
                 // Handle successful bid submission
                 setNewOffer(''); // Clear the input field
+                setPlaceholder('Licitiraj ovde...')
                 setCurrentPrice(Number(newOffer)); // Update the current price with the new bid
                 console.log('New bid submitted:', response.data);
                 setIsConfirmDialogOpen(false); // Close confirmation dialog
@@ -187,6 +193,14 @@ const AuctionItem: React.FC<AuctionItemProps> = ({ auction, onDelete }) => {
     const handleBidConfirmation = () => {
         handleNewBid();
         setIsConfirmDialogOpen(false); // Zatvori modal nakon potvrde
+        setIsConfettiVisible(true); // Pokretanje konfeta animacije
+        setIsInfoModalOpen(true);
+        setSuccessMessage('Uspesna licitacija!')
+        
+        setTimeout(() => {
+            setIsConfettiVisible(false); // Sakrij konfete nakon 5 sekundi
+            setIsInfoModalOpen(false);
+        }, 4000); // Konfete će trajati 5 sekundi
     };
 
     const openModal = () => {
@@ -198,10 +212,15 @@ const AuctionItem: React.FC<AuctionItemProps> = ({ auction, onDelete }) => {
         }
     };
     
+    const handleCancel = () => {
+        setIsInfoModalOpen(false);
+    }
 
     return (
         <>
         <div className="auction-item">
+        {isConfettiVisible && <Confetti width={window.innerWidth} height={window.innerHeight} />} {/* Konfeti */}
+            
             <span className="auction-city">🧭{city}</span>
             <h3 className='title'>{title}</h3>
             <button className="open-ad-btn" onClick={handleOpenAd}>Otvori oglas</button>
@@ -217,7 +236,7 @@ const AuctionItem: React.FC<AuctionItemProps> = ({ auction, onDelete }) => {
             </div>
             <div className="timer-bidding">
                 <span title='broj ponuda' className="offer-count"> ponude: {offerCount} |     </span>
-                {timeLeft > 0 ? formatTimeLeft(timeLeft) + '⌛ ': 'Auction ended'}
+                {timeLeft > 0 ? formatTimeLeft(timeLeft) + '⌛ ': 'Završena aukcija'}
             </div>
             <hr />
             <p className='current-price-par'>
@@ -259,6 +278,12 @@ const AuctionItem: React.FC<AuctionItemProps> = ({ auction, onDelete }) => {
         title='Potvrdi licitaciju'
         message={`Da li ste sigurni da želite da licitirate ${newOffer} dinara za ovu aukciju?`}
     />
+        <InfoModal
+            isOpen={isInfoModalOpen}
+            title='Čestitamo!'
+            message={successMessage}
+            onCancel={handleCancel}
+        />
 
         {/* Confirmation modal for deleting the auction */}
         <ConfirmationModal

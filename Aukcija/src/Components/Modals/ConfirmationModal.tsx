@@ -1,5 +1,5 @@
 import React from 'react';
-import './../Styles/modal.css'; // Stilovi za modal (možeš prilagoditi)
+import './../../Styles/modal.css'; // Stilovi za modal (možeš prilagoditi)
 
 interface ConfirmationModalProps {
     isOpen: boolean;

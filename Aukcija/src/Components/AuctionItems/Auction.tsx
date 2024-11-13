@@ -4,8 +4,11 @@ import './../../Styles/auctionPage.css';
 import api from '../../api';
 import { AxiosError } from 'axios';
 import Modal from 'react-modal';
-import ConfirmationModal from '../ConfirmationModal'; // Import your modal component
+import ConfirmationModal from '../Modals/ConfirmationModal'; // Import your modal component
 import CommentSection from './CommentSection';
+import ReportModal from '../Modals/ReportModal';
+import Confetti from 'react-confetti';
+import InfoModal from '../Modals/infoModal';
 
 interface AuctionImage {
     id: number;
@@ -27,6 +30,7 @@ interface Auction {
     phone_number: string;
     images: AuctionImage[];
     bids: Bid[];
+    seller: number;
 }
 
 const Auction: React.FC = () => {
@@ -38,12 +42,19 @@ const Auction: React.FC = () => {
     const [bidCount, setBidCount] = useState<number>(0);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [bids, setBids] = useState<Bid[]>([]);
+    const [seller, setSeller] = useState(0);
     const [auctionOwner, setAuctionOwner] = useState<string>('');
     const [usernames, setUsernames] = useState<string[]>([]);
     const [endDate, setEndDate] = useState<Date | null>(null);
     const [timeLeft, setTimeLeft] = useState<string>('');
     const [bidError, setBidError] = useState('');
     const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState<boolean>(false);
+    const [isReportModalOpen, setIsReportModalOpen] = useState<boolean>(false);
+    const [placeholder, setPlaceholder] = useState('Unesite novu ponudu...');
+    const [successMessage, setSuccessMessage] = useState('');
+    const [isConfettiVisible, setIsConfettiVisible] = useState(false);
+    const [isInfoModalOpen, setIsInfoModalOpen] = useState(false);
+    
     
     const fetchUsernames = async (userIds: number[]) => {
         try {
@@ -86,7 +97,7 @@ const Auction: React.FC = () => {
             
             if(response.status === 200){
                 console.log('Username fetched successfully!');
-                setAuctionOwner(response.data.username);
+                setAuctionOwner(response.data.first_name);
             }
             else{
                 console.error("Failed to fetch username!");
@@ -105,6 +116,8 @@ const Auction: React.FC = () => {
                 if (response.status === 200) {
                     setAuction(response.data);
                     setCurrentPrice(response.data.current_price); // Ažuriranje trenutne cene
+                    setSeller(response.data.seller);
+
                     if (response.data.end_date) {
                         setEndDate(new Date(response.data.end_date)); // Set end date
                         console.log('Datum:' + response.data.end_date);
@@ -137,7 +150,7 @@ const Auction: React.FC = () => {
                 const timeRemaining = endDate.getTime() - now.getTime();
     
                 if (timeRemaining <= 0) {
-                    setTimeLeft("Auction ended");
+                    setTimeLeft("Aukcija je završena");
                     clearInterval(countdownInterval);
                 } else {
                     const days = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
@@ -167,7 +180,16 @@ const Auction: React.FC = () => {
     }, [endDate])
     
         // Pozivamo funkciju odmah da bismo izbegli čekanje
+    const openReportModal = () => {
+        setIsReportModalOpen(true);
+    }
+
+    const closeReportModal = () => {
+        setIsReportModalOpen(false);
+    };
+
     
+
 
     const nextSlide = () => {
         setCurrentSlide((prev) => (auction && auction.images.length > 0) ? (prev + 1) % auction.images.length : 0);
@@ -186,9 +208,25 @@ const Auction: React.FC = () => {
         amount?: string[];
     }
 
+    const handleReportConfirmation = async (reportText: string) => {
+        try {
+            const response = await api.post('/api/report-auction/', { id: auction.id, reportText }, {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+    
+            setIsReportModalOpen(false);
+            console.log(response.data);
+        } catch (error) {
+            console.error("Error reporting auction:", error);
+        }
+    };
+    
+
     const handleNewBid = async () => {
         if (newOffer && Number(newOffer) > currentPrice) {
-            try {
+            try {   
                 const response = await api.post('/api/bids/', {
                     auction_item_id: id,
                     amount: newOffer,
@@ -224,6 +262,14 @@ const Auction: React.FC = () => {
     const handleBidConfirmation = () => {
         handleNewBid();
         setIsConfirmDialogOpen(false); // Zatvori modal nakon potvrde
+        setIsConfettiVisible(true); // Pokretanje konfeta animacije
+        setIsInfoModalOpen(true);
+        setSuccessMessage('Uspesna licitacija!')
+        
+        setTimeout(() => {
+            setIsConfettiVisible(false); // Sakrij konfete nakon 5 sekundi
+            setIsInfoModalOpen(false);
+        }, 4000); // Konfete će trajati 5 sekundi
     };
 
     const openConfirmationModal = () => {
@@ -251,9 +297,24 @@ const Auction: React.FC = () => {
         return date.toLocaleString(); // Adjust locale and options as needed
     };
 
+    const handleFocus = () => {
+        setPlaceholder('');
+    }
+
+    const handleBlur = () => {
+        setPlaceholder('Unesite novu ponudu...')
+    }
+    
+    const handleCancel = () => {
+        setIsInfoModalOpen(false);
+    }
+
     return (
+        <>
+            {isConfettiVisible && <Confetti width={window.innerWidth} height={window.innerHeight} />} {/* Konfeti */}
         <div className="auction-details">
             <div className="auction-header">
+                <button className="report-auction-btn" onClick={openReportModal}>Prijavi aukciju</button>
                 <p className="auction-city">🧭 {auction.city}</p>
                 <h2>{auction.title}</h2>
             </div>
@@ -290,7 +351,9 @@ const Auction: React.FC = () => {
                         name="new_offer"
                         value={newOffer}
                         onChange={(e) => setNewOffer(e.target.value)}
-                        placeholder="Unesite novu ponudu..."
+                        placeholder={placeholder}
+                        onFocus={handleFocus}
+                        onBlur={handleBlur}
                     />
                     <button className="new-bid-btn" onClick={openConfirmationModal}>Potvrdi</button>
                 </div>
@@ -320,9 +383,26 @@ const Auction: React.FC = () => {
                 title='Potvrda licitacije'
                 message={`Da li ste sigurni da želite da licitirate ${newOffer} dinara za ovu aukciju?`}
             />
+
+            <ReportModal
+                isOpen={isReportModalOpen}
+                onConfirm={handleReportConfirmation}  // Pass the function reference here
+                onCancel={closeReportModal}
+                title="Prijavi aukciju"
+                message="Unesite razlog za prijavu ove aukcije."
+            />
+
+            <InfoModal
+                isOpen={isInfoModalOpen}
+                title='Čestitamo!'
+                message={successMessage}
+                onCancel={handleCancel}
+            />
+            
             <hr></hr>
-            <CommentSection auctionItemId={auction.id}/>
+            <CommentSection auctionItemId={auction.id} ownerId={seller}/>
         </div>
+        </>
     );
     
 };

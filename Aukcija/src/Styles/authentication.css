@@ -1,8 +1,7 @@
 /* Glavni stil za formu */
 form {
-    max-width: 800px; /* Povećana širina forme */
-    min-width: 230px;
-    width: 200px;
+    max-width: 400px; /* Povećana širina forme */
+    min-width: 200px;
     margin: 50px auto;
     padding: 30px; /* Više prostora unutar forme */
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
@@ -96,8 +95,8 @@ p {
     border: solid #ccc 1px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     border-radius: 15px;
-    width: 350px;
     display: flex;
+    max-width: 350px;
     flex-direction: column;
     align-items: center;
 }
@@ -186,3 +185,85 @@ p {
     }
 }
 
+@media (max-width: 768px) {
+    /* Form-container na manjim ekranima */
+    .form-container {
+        width: 90%; /* Veća širina na manjim ekranima */
+        margin: 20px auto;
+    }
+
+    /* Smanjivanje fonta za naslove */
+    h2 {
+        font-size: 24px;
+    }
+
+    /* Input polja sa manje padding-a */
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    input[type="number"],
+    input[type="phone"] {
+        font-size: 12px;
+        padding: 8px;
+    }
+
+    /* Dužina dugmeta za prijavu */
+    button[type="submit"] {
+        padding: 12px;
+        font-size: 18px;
+    }
+
+    /* Veće margine između polja */
+    div {
+        margin-bottom: 15px;
+    }
+}
+
+/* Za mobilne uređaje */
+@media (max-width: 480px) {
+    /* Umanjivanje širine forme na mobilnim uređajima */
+    form {
+        width: 100%;
+        padding: 20px;
+        min-width: 100px;
+    }
+
+    .form-container {
+        width: 100%;
+        padding: 20px;
+    }
+
+    /* Smanjenje fonta za tekst */
+    h2 {
+        font-size: 20px;
+    }
+
+    /* Input polja još manja sa manje padding-a */
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    input[type="number"],
+    input[type="phone"] {
+        font-size: 14px;
+        padding: 6px;
+    }
+
+    button[type="submit"] {
+        padding: 12px;
+        font-size: 16px;
+    }
+
+    /* Modal content */
+    .modal-content {
+        width: 100%;
+        padding: 15px;
+    }
+
+    .modal-content h3 {
+        font-size: 1.2em;
+    }
+
+    .modal-content p {
+        font-size: 0.9em;
+    }
+}

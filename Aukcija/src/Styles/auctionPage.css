@@ -2,9 +2,9 @@
     max-width: 900px;
     margin: 100px auto;
     padding: 20px;
-    background: rgba(255, 255, 255, 0.9);
+    background: #f7f7f8;
     border-radius: 12px;
-    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
     position: relative;
     text-align: center; /* Centriraj sav tekst u kontejneru */
 }
@@ -12,7 +12,7 @@
 .auction-header {
     margin-bottom: 15px; /* Razmak između naslova i slike */
     padding: 10px;
-    background-color: rgba(255, 255, 255, 0.9);
+    background: #f7f7f8;
     border-radius: 8px;
 }
 
@@ -31,11 +31,13 @@
     text-align: center;
 }
 
+
+
 .current-price {
     font-size: 1.4em;
     font-weight: bold;
     text-align: center;
-    color: #007bff;
+    color: #0056b3;
     margin-top: 15px;
 }
 
@@ -49,7 +51,7 @@
 }
 
 .large-image {
-    max-width: 60%;
+    max-width: 100%;
     max-height: 400px;
     height: auto;
     border-radius: 10px;
@@ -105,13 +107,14 @@
 .new-bid-container input {
     padding: 12px;
     font-size: 1.2em;
-    border: 2px solid #007bff;
+    border: 2px solid #0056b3;
+    background-color: #f7f7f8;
     border-radius: 8px;
     width: 200px;
 }
 
 .new-bid-btn {
-    background-color: #007bff;
+    background-color: #0056b3;
     color: white;
     font-size: 1.1em;
     border: none;
@@ -140,7 +143,7 @@
 
 .contact-info .phone-number a {
     text-decoration: none;
-    color: #007bff;
+    color: #0056b3;
 }
 
 .contact-info .phone-number a:hover {
@@ -193,4 +196,26 @@
     position: absolute;
     top: 15px;
     right: 20px;
+}
+
+.report-auction-btn {
+    position: absolute; /* Use absolute positioning */
+    top: 20px;           /* Distance from the top of the container */
+    left: 20px;          /* Distance from the left of the container */  /* Add padding for size */ /* Button background color */
+    color: darkblue;        /* Button text color */
+    padding: 6px;
+    font-size: 1em;    /* Font size */
+    border: none;          /* Rounded corners */
+    cursor: pointer;     /* Pointer cursor on hover */
+    transition: background-color 0.3s ease; /* Smooth transition on hover */
+    text-decoration:underline;
+    background-color: #f7f7f8;
+}
+
+.report-auction-btn:hover {
+    background-color: #ccc; /* Darker background on hover */
+}
+
+.comment-hr{
+    width: 200px;
 }

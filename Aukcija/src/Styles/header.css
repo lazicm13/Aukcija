@@ -21,12 +21,15 @@
 }
 
 /* Optional media queries for responsiveness */
-@media (max-width: 768px) {
+@media (max-width: 900px) {
     .header-logo {
         margin-left: 10px; /* Reduces the left margin on smaller screens */
     }
     .header-right{
         margin-right: 5px;
+    }
+    .sticky-header{
+        height: 60px;
     }
 }
 
@@ -37,6 +40,7 @@
     .header-right{
         margin-right: 5px;
     }
+    
 }
 
 .header-right {
@@ -116,4 +120,9 @@
 .login-register-links a:hover {
     color: #007bff; /* Plava boja pri prelaženju mišem */
     background-color: rgba(0, 123, 255, 0.1); /* Blaga plava pozadina pri prelaženju mišem */
+}
+
+#product-category{
+    max-width: 300px;
+    min-width: 200px;
 }

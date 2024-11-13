@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import api from "../../api";
 import AuctionItem from "../../Components/AuctionItems/AuctionItem";
 import './../../Styles/auctionList.css';
@@ -12,38 +13,45 @@ interface AuctionItem {
     images: {
         id: number;
         image: string;
-    }[]; 
+    }[];
     end_date: string;
 }
 
 function AuctionItemsDisplay() {
-    const [items, setItems] = useState<AuctionItem[]>([]);
+    const location = useLocation();
     const [searchQuery, setSearchQuery] = useState("");
     const [sortOption, setSortOption] = useState("priceAsc");
     const [page, setPage] = useState(1); // Current page
     const pageLimit = 20; // Limit to 20 items per page
+    const [category, setCategory] = useState('');
+    const [auctions, setAuctions] = useState<AuctionItem[]>([]); // Type update here
+    const [placeholder, setPlaceholder] = useState('Pretražite aukcije...');
+    const [auctionCount, setAuctionCount] = useState(1);
 
     useEffect(() => {
-        if(location.pathname === '/')
+        if (location.pathname === '/') {
             getAuctionItems();
-        else if(location.pathname === '/moje-aukcije')
+        } else if (location.pathname === '/moje-aukcije') {
             getMyAuctionItems();
-    }, []);
+        }
+    }, [location.pathname]); // Add location.pathname as dependency
 
     const getAuctionItems = async () => {
         try {
             const response = await api.get("api/all-auction-items/");
-            const data: AuctionItem[] = response.data;
-            setItems(data);
+            setAuctions(response.data);
+            setAuctionCount(response.data.length);
+            console.log(auctionCount);
         } catch (err) {
             console.log(err);
         }
     };
+
     const getMyAuctionItems = async () => {
         try {
             const response = await api.get("api/auctionItems/");
-            const data: AuctionItem[] = response.data;
-            setItems(data);
+            setAuctions(response.data);
+            setAuctionCount(response.data.length);
         } catch (err) {
             console.log(err);
         }
@@ -54,19 +62,47 @@ function AuctionItemsDisplay() {
             const res = await api.delete(`api/auctionItems/delete/${id}/`);
             if (res.status === 204) {
                 alert("Auction item deleted!");
-                setItems((prevItems) => prevItems.filter((item) => item.id !== id));
+                setAuctions((prevItems) => prevItems.filter((item) => item.id !== id));
             } else {
                 alert("Failed to delete auction item");
             }
         } catch (error) {
-            alert(error);
+            console.log('Error deleting item:', error);
+            alert("Error deleting auction item");
         }
     };
 
+    const fetchAuctionsByCategory = async (selectedCategory: string) => {
+        try {
+            if(selectedCategory === 'all-auctions')
+            {
+                await getAuctionItems();
+                return;
+            }
+            const response = await api.get(`/api/auctions?category=${selectedCategory}`);
+            
+            if (response.status === 200) {
+                setAuctions(response.data);
+                setAuctionCount(response.data.length);
+            } else {
+                console.error('Failed to fetch auctions:', response.status);
+            }
+        } catch (error) {
+            console.error('Error fetching auctions:', error);
+        }
+    };
+
+    const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const selectedCategory = e.target.value;
+        setCategory(selectedCategory);
+        fetchAuctionsByCategory(selectedCategory); // Fetch auctions based on new category
+    };
+
     // Filter and sort items
-    const filteredAndSortedItems = items
+    const filteredAndSortedItems = (category ? auctions : auctions)
         .filter((item) =>
-            item.title.toLowerCase().includes(searchQuery.toLowerCase())
+            item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            item.description.toLowerCase().includes(searchQuery.toLowerCase())
         )
         .sort((a, b) => {
             if (sortOption === "priceAsc") return a.current_price - b.current_price;
@@ -89,16 +125,53 @@ function AuctionItemsDisplay() {
         if (page > 1) setPage(page - 1);
     };
 
+    const handleFocusChange = () => {
+        setPlaceholder('');
+    }
+
+    const handleBlur = () => {
+        setPlaceholder('Pretražite aukcije...');
+    }
+
     return (
         <div className="auction-container">
             <div className="search-sort-container">
+                
                 <input
                     type="text"
-                    placeholder="Pretraži aukcije..."
+                    placeholder={placeholder}
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     className="search-input"
+                    onFocus={handleFocusChange}
+                    onBlur={handleBlur}
                 />
+                {location.pathname === '/' &&
+                <div className="select-container">
+                    <select 
+                        id="product-category" 
+                        value={category}
+                        onChange={handleCategoryChange}
+                    >
+                        <option value="" disabled>Izaberite kategoriju</option>
+                        <option value="all-auctions">Sve aukcije</option>
+                        <option value="electronics">Elektronika</option>
+                        <option value="appliances">Kućni aparati</option>
+                        <option value="jewelry">Nakit i Satovi</option>
+                        <option value="clothing">Odeća i Obuća</option>
+                        <option value="toys">Igračke i Video igre</option>
+                        <option value="furniture">Nameštaj</option>
+                        <option value="sports">Sport i Oprema</option>
+                        <option value="collectibles">Kolekcionarstvo i Antikviteti</option>
+                        <option value="media">Knjige, Filmovi i Muzika</option>
+                        <option value="tools">Alati i Oprema za rad</option>
+                        <option value="vehicles">Automobili i Motocikli</option>
+                        <option value="real-estate">Nekretnine</option>
+                        <option value="food">Hrana i Piće</option>
+                        <option value="other">Ostalo</option>
+                    </select>
+                </div>
+                }
                 <select
                     value={sortOption}
                     onChange={(e) => setSortOption(e.target.value)}
@@ -111,14 +184,15 @@ function AuctionItemsDisplay() {
                 </select>
             </div>
             <div className="auction-list">
+                {auctionCount === 0 && <img src="/assets/sorry-emoji.png" className="sorry-emoji"></img>}
                 <div className="auction-list-inner">
-                {paginatedItems.map((item) => (
-                    <AuctionItem
-                        auction={item}
-                        key={item.id}
-                        onDelete={deleteAuctionItem}
-                    />
-                ))}
+                    {paginatedItems.map((item) => (
+                        <AuctionItem
+                            auction={item}
+                            key={item.id}
+                            onDelete={deleteAuctionItem}
+                        />
+                    ))}
                 </div>
             </div>
             <div className="pagination-controls">

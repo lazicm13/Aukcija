@@ -8,6 +8,7 @@ function Header() {
   const navigate = useNavigate();
   const [userName, setUserName] = useState(''); // Replace with actual user fetching logic
   
+  
   useEffect(() => {
     const fetchUsername = async () => {
       try{
@@ -72,6 +73,7 @@ function Header() {
         {(location.pathname === '/' && userName === '') && <div className='login-register-links'><a href='login'>Ulogujte se </a><a href='/registracija'> Registracija</a></div>}
         {(location.pathname !== '/' && location.pathname !== '/login' && location.pathname !== '/registracija') && 
         <a href='/'><img src='/assets/home.png' className='home-button'></img></a>}
+        
         {userName && (
           <div className="user-profile">
             <span className="user-name">{userName}</span>
