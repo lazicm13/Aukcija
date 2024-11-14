@@ -11,7 +11,6 @@ function Home() {
 
     return (
         <div>
-            <h2>Aktivne aukcije</h2>
             <AuctionItemsDisplay/>
         </div>
     );

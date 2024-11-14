@@ -131,107 +131,7 @@ input[type="submit"]:hover {
     height: 30px;
 }
 
-@media (max-width: 768px) {
-    .formContainer {
-        display: flex;
-        flex-direction: row; /* Horizontalno postavljanje na velikim ekranima */
-        justify-content: space-between;
-        align-items: flex-start;
-        max-width: 1000px;
-        margin: 150px auto;
-        padding: 30px;
-        background-color: #f9f9f9;
-        border: 1px solid #ccc;
-        border-radius: 15px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    }
-    
-    /* Forma unutar formContainer */
-    .formContainer form {
-        display: flex;
-        flex: 1;
-        flex-direction: column; /* Vertikalni raspored elemenata */
-    }
-    
-    /* Leva i desna strana forme */
-    .formLeft, .formRight {
-        flex: 1;
-        width: 100%; /* Omogućava punu širinu na manjim ekranima */
-    }
-    .formLeft {
-        margin-right: 20px;
-    }
-    
-    /* Stil za textarea */
-    .formLeft textarea {
-        height: 200px;
-        border-radius: 5px;
-        border: 1px solid #ccc;
-        padding: 10px;
-        width: 100%;
-        resize: none;
-        font-size: 16px;
-    }
-    
-    /* Stil za inpute */
-    input[type="text"],
-    input[type="number"] {
-        width: 100%; /* Prilagođavanje širine */
-        font-size: 16px;
-    }
-    
-    /* Stil za izabrane slike */
-    .selected-images {
-        display: flex;
-        flex-wrap: wrap;
-        margin-top: 10px;
-        margin-left: 0;
-        height: auto;
-        border: 1px solid black;
-        background-color: rgba(204, 204, 204, 0.5);
-        width: 100%; /* Puna širina */
-    }
-    
-    /* Stil za prikaz slika */
-    .image-preview {
-        position: relative;
-        margin: 5px;
-    }
-    .image-preview img {
-        width: 100px;
-        height: 100px;
-        object-fit: cover;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        object-fit: contain;
-    }
-    
-    
-    /* Dugme za potvrdu */
- .formRight   input[type="submit"] {
-        margin-top: 10px;
-        padding: 12px;
-        background-color: #4477E6;
-        color: white;
-        font-size: 18px;
-        border: none;
-        border-radius: 8px;
-        cursor: pointer;
-        transition: background-color 0.3s;
-        width: 100%;
-    }
-    input[type="submit"]:hover {
-        background-color: #518EFF;
-    }
-    
-}
 
-@media (max-width: 480px) {
-    .auction-item {
-        flex: 1 0 100%;
-        max-width: 100%;
-    }
-}
 
 .custom-file-upload {
     display: flex;
@@ -341,7 +241,135 @@ label{
     outline: none;
 }
 
-#submit-btn{
-    margin-top: 40px !important;
-    margin-left: 50px;
+@media (max-width: 768px) {
+    .formContainer {
+        display: flex;
+        flex-direction: row; /* Horizontalno postavljanje na velikim ekranima */
+        justify-content: space-between;
+        align-items: flex-start;
+        max-width: 1000px;
+        margin: 150px auto;
+        padding: 30px;
+        background-color: #f9f9f9;
+        border: 1px solid #ccc;
+        border-radius: 15px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    
+    /* Forma unutar formContainer */
+    .formContainer form {
+        display: flex;
+        flex: 1;
+        flex-direction: column; /* Vertikalni raspored elemenata */
+    }
+    
+    /* Leva i desna strana forme */
+    .formLeft, .formRight {
+        flex: 1;
+        width: 100%; /* Omogućava punu širinu na manjim ekranima */
+    }
+    .formLeft {
+        margin-right: 20px;
+    }
+    
+    /* Stil za textarea */
+    .formLeft textarea {
+        height: 200px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        padding: 10px;
+        width: 100%;
+        resize: none;
+        font-size: 16px;
+        margin-left: -10px;
+    }
+    
+    /* Stil za inpute */
+    input[type="text"],
+    input[type="number"] {
+        width: 100%; /* Prilagođavanje širine */
+        font-size: 16px;
+    }
+    
+    /* Stil za izabrane slike */
+    .selected-images {
+        display: flex;
+        flex-wrap: wrap;
+        margin-top: 10px;
+        margin-left: 0;
+        height: auto;
+        border: 1px solid black;
+        background-color: rgba(204, 204, 204, 0.5);
+        width: 100%; /* Puna širina */
+    }
+    
+    /* Stil za prikaz slika */
+    .image-preview {
+        position: relative;
+        margin: 5px;
+    }
+    .image-preview img {
+        width: 100px;
+        height: 100px;
+        object-fit: cover;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        object-fit: contain;
+    }
+    
+    
+    /* Dugme za potvrdu */
+ .formRight   input[type="submit"] {
+        margin-top: 10px;
+        padding: 12px;
+        background-color: #4477E6;
+        color: white;
+        font-size: 18px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        width: 100%;
+    }
+    input[type="submit"]:hover {
+        background-color: #518EFF;
+    }
+
+    #submit-btn{
+        margin-top: 0px !important;
+        margin-left: 0px;
+    }
+    
+}
+
+@media (max-width: 480px) {
+    .formContainer {
+        max-width: 95%;
+        padding: 15px;
+    }
+
+    .auction-duration select {
+        width: 100%;
+        font-size: 1rem;
+        padding: 10px;
+    }
+
+    .price-duration-container,
+    .contact-info {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .price-input-container .currency {
+        right: 10px; /* Da bude bliže desnoj ivici na malim ekranima */
+    }
+
+    .image-preview img {
+        width: 80px;
+        height: 80px;
+    }
+
+    .custom-file-upload button {
+        margin-left: -15px;
+    }
 }

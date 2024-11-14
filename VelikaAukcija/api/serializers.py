@@ -65,7 +65,7 @@ class AuctionItemSerializer(serializers.ModelSerializer):
             "auction_duration", "city", "category", "phone_number", 
             "created_at", "end_date", "images", "seller", 
         ]
-        read_only_fields = ["id", "created_at", "end_date"]
+        read_only_fields = ["id", "created_at", "end_date", "seller"]
 
     def validate_title(self, value):
         # Check if an auction with the same title exists for the same user
@@ -78,8 +78,12 @@ class AuctionItemSerializer(serializers.ModelSerializer):
         images_data = validated_data.pop('images', [])
         auction_duration = validated_data.pop('auction_duration', 1)  # Default to 1 day if not specified
         current_time = timezone.now()
+        owner = self.context['request'].user  # Get the current user from the request context
 
-        # Create auction item and set the end_date based on the current time
+        # Ensure 'seller' is not in validated_data to avoid conflict
+        validated_data['seller'] = owner
+
+        # Create auction item and set the end_date based on the auction_duration
         auction_item = AuctionItem.objects.create(
             **validated_data,
             created_at=current_time,

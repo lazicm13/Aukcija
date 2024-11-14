@@ -156,6 +156,10 @@
     color: #444;
 }
 
+.contact-info .auction-owner a{
+    color: #0056b3;
+}
+
 /* Modal za istoriju ponuda */
 .ReactModal__Overlay {
     background-color: rgba(0, 0, 0, 0.7); /* Semi-transparent background */
@@ -174,7 +178,7 @@
     background-color: white;
     padding: 30px;
     border-radius: 12px;
-    max-width: 600px;
+    max-width: 400px;
     margin: 50px auto;
 }
 
@@ -219,3 +223,15 @@
 .comment-hr{
     width: 200px;
 }
+
+@media (max-width: 768px) {
+    
+}
+
+@media (max-width: 480px) {
+    .ReactModal__Content{
+        max-width: 100px;
+    }
+
+}
+

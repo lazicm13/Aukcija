@@ -5,6 +5,7 @@
     min-width: 300px;
     max-width: 1200px;
     margin: 0 auto;
+    margin-top: 70px;
 }
 
 /* Lista aukcija */
@@ -16,7 +17,7 @@
     background-color: #f9f9fb;
     padding: 25px;
     border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
 }
 
 /* Kontejner za pojedinačne aukcije */
@@ -29,91 +30,66 @@
 }
 
 /* Kontejner za pretragu i sortiranje */
+
 .search-sort-container {
     display: flex;
     justify-content: space-between;
-    gap: 10px;
     align-items: center;
-    margin:auto;
+    gap: 10px;
+    margin: 20px auto;
     max-width: 800px;
     width: 100%;
-    padding: 0 0;
     box-sizing: border-box;
 }
 
-/* Input za pretragu */
-.search-input {
-    flex: 1;
-    padding: 12px 10px;
-    border: 1px solid #d0d0d5;
-    border-radius: 8px;
-    font-size: 1rem;
-    min-width: 200px;
-    box-sizing: border-box;
-    transition: all 0.3s ease;
-    margin-right: 25px;
+/* Stil za pretragu, odabir kategorije i sortiranje, da budu jednake širine */
+
+.search-input{
+    flex: 1 !important; /* Da zauzimaju jednaku širinu unutar kontejnera */
+    padding: 10px 10px !important;
+    border: 1px solid #d0d0d5 !important;
+    border-radius: 8px !important;
+    font-size: 1rem !important;
+    box-sizing: border-box !important;
+    transition: all 0.3s ease !important;
+    min-width: 160px !important;
 }
 
-.search-input:focus {
-    outline: none;
-    border-color: #007bff; /* Fokus efekat sa bojom */
-    box-shadow: 0 4px 8px rgba(0, 123, 255, 0.2);
-}
-
-/* Padajući meni za sortiranje */
-.sort-select {
-    padding: 8px 15px;
-    border: 1px solid #d0d0d5;
-    border-radius: 8px;
-    font-size: 1rem;
-    max-width: 220px;
-    min-width: 160px;
-    box-sizing: border-box;
-    transition: all 0.3s ease;
-}
-
-.sort-select:focus {
-    outline: none;
-    border-color: #007bff;
-    box-shadow: 0 4px 8px rgba(0, 123, 255, 0.2);
-}
-
-/* Select unutar specifičnog kontejnera */
-.select-container select {
-    width: 100%;
-    padding: 10px;
+.sort-select,
+select {
+    flex: 1; /* Da zauzimaju jednaku širinu unutar kontejnera */
+    padding: 10px 10px;
     border: 1px solid #d0d0d5;
     border-radius: 8px;
     font-size: 1rem;
     box-sizing: border-box;
     transition: all 0.3s ease;
+    min-width: 160px; /* Minimalna širina za male ekrane */
 }
 
+/* Fokus efekat za sve inpute */
+.search-input:focus,
+.sort-select:focus,
 .select-container select:focus {
     outline: none;
     border-color: #007bff;
     box-shadow: 0 4px 8px rgba(0, 123, 255, 0.2);
 }
 
-/* Optional: Add responsive design for small screens */
+/* Prilagođavanje za manje ekrane */
 @media (max-width: 768px) {
     .search-sort-container {
-        flex-direction: column; /* Stack elements vertically on small screens */
-        align-items: flex-start; /* Align items to the left */
+        flex-direction: column; /* Postavi elemente vertikalno na manjim ekranima */
+        align-items: stretch; /* Da svi elementi budu iste širine */
     }
 
     .search-input,
-    .sort-select {
-        width: 100%; /* Ensure input and select fill the container */
-        margin-bottom: 10px; /* Add space between them */
-    }
-
-    .search-input {
-        margin-right: 0; /* Remove right margin on small screens */
+    .sort-select,
+    .select-container select {
+        width: 100%; /* Ispunjavaju širinu kontejnera */
+        margin-bottom: 10px; /* Prostor između elemenata */
     }
 }
-
-
 .auction-item {
     flex: 1 0 21%;
     max-width: 21%;
@@ -133,23 +109,6 @@
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
-
-
-/* Button styles */
-button.create-auction-btn {
-    background-color: #2E7D32 !important;
-    color: #ffffff;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 5px;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-button.create-auction-btn:hover {
-    background-color: #328f10 !important;
-}
 
 .pagination-controls {
     display: flex;
@@ -203,12 +162,6 @@ button.create-auction-btn:hover {
         max-width: 100%;
     }
     
-    .sort-select {
-        width: 150px;
-    }
-    .sorry-emoji{
-        max-width: 200;
-    }
 }
 
 @media (max-width: 480px) {
@@ -226,12 +179,19 @@ button.create-auction-btn:hover {
 
     .auction-container{
         margin-left: -10px;
+        margin-top: 20px;
     }
     .sort-select {
-        width: 150px;
+        width: 100px;
+    }
+
+    .search-sort-container input, 
+    .search-sort-container select{
+        padding: 5px 10px !important;
     }
     .sorry-emoji{
         max-width: 200;
     }
+
 }
 

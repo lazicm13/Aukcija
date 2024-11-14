@@ -65,7 +65,7 @@ function Header() {
       <div className="header-right">
         {location.pathname === '/' && (
           <button className='create-auction-btn' onClick={handleCreateAuction}>
-            Kreiraj aukciju ⚒️
+            Kreiraj aukciju 💰
           </button>
         )}
         {location.pathname === '/registracija' && <p>Imate nalog? → <a href='login'>Ulogujte se</a></p>}

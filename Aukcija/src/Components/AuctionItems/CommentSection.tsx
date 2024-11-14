@@ -14,7 +14,6 @@ interface Comment {
 interface CommentSectionProps {
     auctionItemId: number;
     ownerId: number; // Owner ID for the auction item
-    currentUserId: number;
 }
 
 function CommentSection({ auctionItemId, ownerId }: CommentSectionProps) {

@@ -147,7 +147,6 @@ function AuctionItemsDisplay() {
                     onBlur={handleBlur}
                 />
                 {location.pathname === '/' &&
-                <div className="select-container">
                     <select 
                         id="product-category" 
                         value={category}
@@ -170,7 +169,6 @@ function AuctionItemsDisplay() {
                         <option value="food">Hrana i Piće</option>
                         <option value="other">Ostalo</option>
                     </select>
-                </div>
                 }
                 <select
                     value={sortOption}

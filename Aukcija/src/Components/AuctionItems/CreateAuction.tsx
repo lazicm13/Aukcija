@@ -43,12 +43,8 @@ function CreateAuction() {
     const createAuctionItem = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        // Reset errors before validation
         setErrors({});
-
         let isValid = true;
-
-        // Basic validations
         const newErrors: { [key: string]: string } = {};
 
         if (!title.trim()) {
@@ -76,7 +72,6 @@ function CreateAuction() {
             isValid = false;
         }
 
-        // Validate image count and size
         if (images.length === 0) {
             newErrors.images = "Morate odabrati barem jednu sliku.";
             isValid = false;
@@ -100,7 +95,6 @@ function CreateAuction() {
 
         if (!isValid) return;
 
-        // Create auction item
         const formData = new FormData();
         formData.append("title", title);
         formData.append("description", description);
@@ -112,7 +106,7 @@ function CreateAuction() {
         console.log("Category:", category);
 
         try {
-            const response = await api.post<ApiResponse>("/api/auctionItems/", formData, {
+            const response = await api.post("/api/auctionItems/", formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },

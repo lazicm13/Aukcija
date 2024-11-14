@@ -369,7 +369,7 @@ const Auction: React.FC = () => {
                 <p className='phone-number'>
                     Broj telefona: <a href={`tel:${auction.phone_number}`}><b>{auction.phone_number}</b></a>
                 </p>
-                <p className='auction-owner'>Prodavac: {auctionOwner}</p>
+                <p className='auction-owner'>Prodavac: <a><b>{auctionOwner}</b></a></p>
             </div>
     
             
