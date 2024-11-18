@@ -14,6 +14,9 @@ import UserPage from './Pages/UserPage'
 import MyAuctionsPage from './Pages/MyAuctionsPage'
 import ChangePasswordPage from './Pages/ChangePasswordPage'
 import Auction from './Components/AuctionItems/Auction'
+import AdminPage from './Pages/AdminPage'
+import AdminRoute from './Components/AdminRoute'
+import MyBids from './Pages/MyBids'
 
 const CLIENT_ID = '516726223486-ese1hmu3fmae12vgcv8b2tthgcnol316.apps.googleusercontent.com';
 
@@ -53,48 +56,71 @@ function Login(){
   return <LoginComponent/> 
 }
 
+
 function App() {
+  const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
+
+  useEffect(() => {
+      const fetchUserData = async () => {
+          try {
+              const response = await api.get('/api/current_user_data');
+              setIsAdmin(response.data.is_superuser);
+          } catch (error) {
+              console.error('Error fetching user data:', error);
+              setIsAdmin(false); // Postavi na false ako API poziv ne uspe
+          }
+      };
+
+      fetchUserData();
+  }, []);
+
+  if (isAdmin === null) {
+      // Loader dok se ne utvrdi da li je admin
+      return <div>Loading...</div>;
+  }
+
   return (
     <>
       <Router>
-      <Header />
+        <Header />
         <Routes>
           <Route
             path='/'
-            element={
-                <Home/>
-            }
+            element={<Home />}
           />
           <Route
             path='/login'
             element={
               <GoogleOAuthProvider clientId={CLIENT_ID}>
-              <Login/>
-            </GoogleOAuthProvider>}
+                <Login />
+              </GoogleOAuthProvider>
+            }
           />
           <Route
             path='/registracija'
-            element={<GoogleOAuthProvider clientId={CLIENT_ID}>
-            <Register/>
-            </GoogleOAuthProvider>}
+            element={
+              <GoogleOAuthProvider clientId={CLIENT_ID}>
+                <Register />
+              </GoogleOAuthProvider>
+            }
           />
           <Route
             path='/nova-aukcija'
             element={
-            <ProtectedRoute>
-              <CreateAuction/>
-            </ProtectedRoute>
+              <ProtectedRoute>
+                <CreateAuction />
+              </ProtectedRoute>
             }
           />
           <Route
             path='*'
-            element={<NotFound/>}
+            element={<NotFound />}
           />
           <Route
             path='/profil'
             element={
               <ProtectedRoute>
-                <UserPage/>
+                <UserPage />
               </ProtectedRoute>
             }
           />
@@ -102,7 +128,7 @@ function App() {
             path='/moje-aukcije'
             element={
               <ProtectedRoute>
-                <MyAuctionsPage/>
+                <MyAuctionsPage />
               </ProtectedRoute>
             }
           />
@@ -110,7 +136,7 @@ function App() {
             path='/promena-lozinke'
             element={
               <ProtectedRoute>
-                <ChangePasswordPage/>
+                <ChangePasswordPage />
               </ProtectedRoute>
             }
           />
@@ -118,14 +144,27 @@ function App() {
             path='/aukcija/:id'
             element={
               <ProtectedRoute>
-                <Auction/>
+                <Auction />
+              </ProtectedRoute>
+            }
+          />
+          <Route path='/admin' element={<AdminRoute isAdmin={isAdmin} />}>
+            <Route path='dashboard' element={<AdminPage />} />
+          </Route>
+
+          <Route
+            path='/moje-licitacije'
+            element={
+              <ProtectedRoute>
+                <MyBids />
               </ProtectedRoute>
             }
           />
         </Routes>
-      </Router>   
+      </Router>
     </>
-  )
+  );
 }
 
-export default App
+
+export default App;

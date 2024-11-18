@@ -11,3 +11,5 @@ requests
 google-auth
 Pillow
 django-email-verification
+celery
+redis

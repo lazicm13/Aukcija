@@ -38,17 +38,18 @@ function LoginComponent() {
             });
     
             if (response.status === 200) {
-                setSuccessMessage('Login successful!');
                 setError(''); // Clear any previous errors
-    
+                
                 // Reset form (optional)
-                setFormData({
-                    email: '',
-                    password: ''
-                });
+                console.log(response.data);
+                if(response.data.redirect_url)
+                    window.location.href = response.data.redirect_url;
     
-                alert("Successful login!");
-                navigate('/'); // Redirect to home page or dashboard
+                setSuccessMessage('Uspesno ste se ulogovali!');
+                setError('');
+                setTimeout(() => {
+                    navigate('/');
+                }, 1800); // Redirect to home page or dashboard
             }
         } catch (error) {
             console.error("Login failed:", error);
@@ -75,12 +76,26 @@ function LoginComponent() {
         try {
             const response = await api.post("/api/auth/google/", { id_token: credential });
             if (response.status === 200) {
-                alert("Google login successful!");
-                navigate('/');
+                setSuccessMessage('Uspesno ste se ulogovali!');
+                setError('');
+                setTimeout(() => {
+                    navigate('/');
+                }, 1800);
             }
         } catch (error) {
-            console.error("Google login failed:", error);
-            setError('Google login failed. Please try again.');
+            console.error("Login failed:", error);
+    
+            // Type assertion to AxiosError for proper type checking
+            const axiosError = error as AxiosError;
+    
+            // Check if the error is related to unverified account
+            if (axiosError.response && axiosError.response.status === 403) {
+                setError('Vaš nalog je blokiran.');
+            } else {
+                setError('Email ili lozinka nisu tačni!');
+            }
+    
+            setSuccessMessage(''); // Clear success message
         }
     };
 
@@ -122,7 +137,12 @@ function LoginComponent() {
                     <button type="submit">Ulogujte se</button>
                 </form>
                 {error && <p style={{ color: 'red' }}>{error}</p>}
-                {successMessage && <p style={{ color: 'green' }}>{successMessage}</p>}
+                {successMessage && (
+                    <div className="success-animation">
+                        <p className="success-message">{successMessage}</p>
+                        <div className="checkmark"></div>
+                    </div>
+                )}
             </div>
         </Fragment>
     );

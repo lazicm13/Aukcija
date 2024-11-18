@@ -8,6 +8,7 @@ class CustomUser(AbstractUser):
     is_verified = models.BooleanField(default=False)
     city = models.CharField(max_length=100, blank=True, null=True)  # New field for city
     phone_number = models.CharField(max_length=15, blank=True, null=True)  # New field for phone number
+    is_blocked = models.BooleanField(default=False)
 
     groups = models.ManyToManyField(
         'auth.Group',
@@ -24,7 +25,6 @@ class CustomUser(AbstractUser):
     def __str__(self):
         return self.username
 
-from django.db import models
 
 class AuctionItem(models.Model):
     CATEGORY_CHOICES = [
@@ -54,6 +54,8 @@ class AuctionItem(models.Model):
     phone_number = models.CharField(max_length=15, default='')
     created_at = models.DateTimeField(auto_now_add=True)
     end_date = models.DateTimeField(null=True, blank=True)
+    last_notified = models.DateTimeField(null=True, blank=True)
+    last_bid_notified = models.DateTimeField(null=True, blank=True)
 
     def set_end_date(self, days: int):
         self.end_date = self.created_at + timedelta(days=days)

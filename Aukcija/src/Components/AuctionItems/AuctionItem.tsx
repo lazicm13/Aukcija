@@ -20,6 +20,7 @@ interface AuctionItemProps {
             image: string;
         }[];
         end_date: string; // Add end_date to the auction prop
+        seller: number;
     };
     onDelete: (id: number) => void;
 }
@@ -40,7 +41,23 @@ const AuctionItem: React.FC<AuctionItemProps> = ({ auction, onDelete }) => {
     const [successMessage, setSuccessMessage] = useState('');
     const [isConfettiVisible, setIsConfettiVisible] = useState(false);
     const [isInfoModalOpen, setIsInfoModalOpen] = useState(false);
+    const [winner, setWinner] = useState('');
+    const [currentUser, setCurrentUser] = useState('');
     
+    useEffect(() => {
+        const fetchUserData = async () => {
+            try {
+                const response = await api.get('/api/current_user_data');
+                setCurrentUser(response.data.id);
+            } catch (error) {
+                console.error('Error fetching user data:', error);
+                setCurrentUser('');
+            }
+        };
+  
+        fetchUserData();
+    }, []);
+
     const handleFocus = () => {       
         setPlaceholder('');
     };
@@ -51,6 +68,22 @@ const AuctionItem: React.FC<AuctionItemProps> = ({ auction, onDelete }) => {
         }
     };
 
+    const handleAuctionEnded = () => {
+        api.get(`/api/auctions/${id}/winner`).then((response) => {
+            const winner = response.data;
+            setSuccessMessage(`Aukcija je završena! Pobednik je ${winner.first_name} sa ponudom od ${winner.amount} RSD.`);
+            setWinner(winner.first_name);
+        }).catch((error) => {
+            console.error('Error fetching winner:', error);
+        });
+    };
+
+    useEffect(() => {
+        if (timeLeft <= 0) {
+            handleAuctionEnded();
+        }
+    }, [timeLeft]);
+    
     
 
     useEffect(() => {
@@ -67,10 +100,11 @@ const AuctionItem: React.FC<AuctionItemProps> = ({ auction, onDelete }) => {
             if (distance < 0) {
                 clearInterval(interval);
                 setTimeLeft(0);
+
+                handleAuctionEnded();
             }
         };
     
-        // Calculate remaining time immediately
         updateRemainingTime();
     
         // Set the interval for further updates
@@ -243,7 +277,7 @@ const AuctionItem: React.FC<AuctionItemProps> = ({ auction, onDelete }) => {
                 <b>Trenutna cena: {new Intl.NumberFormat('sr-RS').format(Number(currentPrice))} RSD</b>
             </p>
 
-            {location.pathname !== '/moje-aukcije' && (
+            {((currentUser != auction.seller.toString()) && location.pathname !== '/moje-aukcije' && location.pathname !== '/admin/dashboard' && timeLeft > 0) && (
                 <div className='new-offer-container'>
                     <input
                         type='number'
@@ -252,8 +286,8 @@ const AuctionItem: React.FC<AuctionItemProps> = ({ auction, onDelete }) => {
                         value={newOffer}
                         onChange={(e) => setNewOffer(e.target.value)}
                         placeholder={placeholder}
-                        onFocus={handleFocus} 
-                        onBlur={handleBlur}   
+                        onFocus={handleFocus}
+                        onBlur={handleBlur}
                     />
                     <button
                         type='button'
@@ -265,19 +299,21 @@ const AuctionItem: React.FC<AuctionItemProps> = ({ auction, onDelete }) => {
                 </div>
             )}
             <span>{bidError}</span>
-            {location.pathname === '/moje-aukcije' && (
+            {((location.pathname === '/moje-aukcije' && offerCount === 0) || location.pathname === '/admin/dashboard') && (
                 <button className="delete-btn" onClick={handleDelete}>Obriši aukciju</button>
             )}
             {/* Modal za potvrdu licitacije */}
+
+            {timeLeft === 0 && <><b>{successMessage}</b></>}
             
         </div>
         <ConfirmationModal
-        isOpen={isConfirmDialogOpen}
-        onConfirm={handleBidConfirmation}
-        onCancel={() => setIsConfirmDialogOpen(false)}
-        title='Potvrdi licitaciju'
-        message={`Da li ste sigurni da želite da licitirate ${newOffer} dinara za ovu aukciju?`}
-    />
+            isOpen={isConfirmDialogOpen}
+            onConfirm={handleBidConfirmation}
+            onCancel={() => setIsConfirmDialogOpen(false)}
+            title='Potvrdi licitaciju'
+            message={`Da li ste sigurni da želite da licitirate ${newOffer} dinara za ovu aukciju?`}
+        />
         <InfoModal
             isOpen={isInfoModalOpen}
             title='Čestitamo!'

@@ -149,5 +149,7 @@ button.create-auction-btn:hover {
         gap: 0px;
         margin-right: 10px;
     }
-    
+    .register,.login{
+        margin-right: 20px;
+    }
 }

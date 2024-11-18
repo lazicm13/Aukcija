@@ -1,11 +1,7 @@
 
 import AuctionItemsDisplay from "../Components/AuctionItems/AuctionItemsDisplay";
 
-
-function Home() {
-    
-
-    
+function MyBids() {
 
     return (
         <div>
@@ -14,4 +10,4 @@ function Home() {
     );
 }
 
-export default Home;
+export default MyBids;

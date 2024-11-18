@@ -2,11 +2,12 @@ from .models import CustomUser
 from rest_framework import serializers
 from .models import AuctionItem, AuctionImage, Comment
 from datetime import timedelta
+from django.utils import timezone
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = ['id', 'first_name','email', 'password']  # Uklonjeno confirm_password
+        fields = ['id', 'first_name','email', 'password']  
         extra_kwargs = {
             'password': {'write_only': True},
         }
@@ -38,21 +39,6 @@ class AuctionImageSerializer(serializers.ModelSerializer):
             return attrs
         
 
-
-from rest_framework import serializers
-from datetime import timedelta
-from django.utils import timezone  # Import timezone to get the current time
-from .models import AuctionItem, AuctionImage
-
-class AuctionImageSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = AuctionImage
-        fields = ["id", "image"]
-
-from rest_framework import serializers
-from django.utils import timezone
-from datetime import timedelta
-from .models import AuctionItem, AuctionImage
 
 class AuctionItemSerializer(serializers.ModelSerializer):
     images = AuctionImageSerializer(many=True, required=False)
@@ -112,6 +98,7 @@ class BidSerializer(serializers.ModelSerializer):
         auction_item = AuctionItem.objects.get(id=auction_item_id)
         validated_data['auction_item'] = auction_item
         validated_data['bidder'] = user
+
         return super().create(validated_data)
 
     def validate(self, attrs):

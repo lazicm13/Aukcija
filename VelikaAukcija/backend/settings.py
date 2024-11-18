@@ -10,11 +10,13 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
+from __future__ import absolute_import, unicode_literals
 from pathlib import Path
 from datetime import timedelta
 from dotenv import load_dotenv
 from corsheaders.defaults import default_headers as cors_default_headers
 import os
+from celery import Celery
 
 load_dotenv()
 
@@ -50,6 +52,15 @@ DEFAULT_FROM_EMAIL = 'taxitracker2024@gmail.com'
 
 # Dozvoljena zaglavlja
 default_headers = list(cors_default_headers)
+
+# Celery Configuration
+
+
+
+CELERY_BROKER_URL = 'redis://redis:6379/0'
+CELERY_RESULT_BACKEND = 'redis://redis:6379/0'
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
 
 
 

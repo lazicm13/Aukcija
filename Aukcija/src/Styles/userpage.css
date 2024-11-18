@@ -1,7 +1,10 @@
+/* Base styles */
 .userpage-form {
     width: 100%;
     max-width: 400px; /* Adjust as needed */
     margin: 0 auto;
+    padding: 20px; /* Add some padding for better spacing */
+    box-sizing: border-box;
 }
 
 .form-group {
@@ -87,4 +90,46 @@
 
 .success-message{
     color: green;
+}
+
+/* Media Queries for responsiveness */
+@media (max-width: 768px) {
+    .userpage-form {
+        max-width: 90%;  /* Make form take up more space on smaller screens */
+        padding: 15px;  /* Adjust padding for smaller screens */
+    }
+
+    .form-group label {
+        font-size: 14px;  /* Reduce font size for smaller screens */
+    }
+
+    .form-group input {
+        font-size: 12px;  /* Reduce font size of input */
+        padding: 8px;  /* Make input padding smaller */
+    }
+
+    .success-animation {
+        font-size: 12px;  /* Adjust success animation font size */
+    }
+}
+
+/* For mobile screens */
+@media (max-width: 480px) {
+    .userpage-form {
+        max-width: 95%;  /* Make the form almost full width on very small screens */
+        padding: 10px;  /* Reduce padding for compact mobile screens */
+    }
+
+    .form-group label {
+        font-size: 12px;  /* Smaller label font size */
+    }
+
+    .form-group input {
+        font-size: 12px;  /* Smaller input font size */
+        padding: 6px;  /* Smaller padding */
+    }
+
+    .success-animation {
+        font-size: 10px;  /* Smaller font size for success message */
+    }
 }

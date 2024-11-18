@@ -224,14 +224,5 @@
     width: 200px;
 }
 
-@media (max-width: 768px) {
-    
-}
 
-@media (max-width: 480px) {
-    .ReactModal__Content{
-        max-width: 100px;
-    }
-
-}
 

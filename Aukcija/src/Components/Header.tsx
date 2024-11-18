@@ -68,8 +68,8 @@ function Header() {
             Kreiraj aukciju 💰
           </button>
         )}
-        {location.pathname === '/registracija' && <p>Imate nalog? → <a href='login'>Ulogujte se</a></p>}
-        {location.pathname === '/login' && <p>Nemate nalog? → <a href='registracija'>Registrujte se</a></p>}
+        {location.pathname === '/registracija' && <p className='register'>Imate nalog? → <a href='login'>Ulogujte se</a></p>}
+        {location.pathname === '/login' && <p className='login'>Nemate nalog? → <a href='registracija'>Registrujte se</a></p>}
         {(location.pathname === '/' && userName === '') && <div className='login-register-links'><a href='login'>Ulogujte se </a><a href='/registracija'> Registracija</a></div>}
         {(location.pathname !== '/' && location.pathname !== '/login' && location.pathname !== '/registracija') && 
         <a href='/'><img src='/assets/home.png' className='home-button'></img></a>}
@@ -87,7 +87,7 @@ function Header() {
               <div className="dropdown-menu">
                 <a href="/profil">Profil</a>
                 <a href="/moje-aukcije">Moje aukcije</a>
-                <a href='' title='Predmeti na kojima sam licitirao'>Moje licitacije</a>
+                <a href='/moje-licitacije' title='Predmeti na kojima sam licitirao'>Moje licitacije</a>
                 <a>Napiši primedbu</a>
                 <a href="#" onClick={handleLogout}>Odjava</a>
               </div>

@@ -1,0 +1,24 @@
+.all-auctions-button {
+    display: block; /* Osigurava da je dugme prikazano */
+    margin: 20px;
+    padding: 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 100px;
+}
+
+.block-user-button{
+    background-color: red;
+    padding: 10px;
+    color: white;
+}
+
+.unblock-user-button{
+    background-color: green;
+    padding: 10px;
+    color: white;
+}
+

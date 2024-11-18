@@ -21,77 +21,15 @@ from django.shortcuts import redirect
 from django.contrib import messages
 from django.contrib.auth import get_user_model
 from rest_framework.exceptions import ValidationError
-from rest_framework.decorators import action
-from rest_framework.viewsets import ModelViewSet
-from django.db import models
+from rest_framework.exceptions import AuthenticationFailed
+from datetime import timedelta
+from django.utils.timezone import now
+from celery import shared_task
 
-# Create your views here.
 
 User = get_user_model()
-
-def send_verification_email(user):
-    verification_code = secrets.token_urlsafe(20)
-    
-    # Spremaj kod u korisnikov model (ako želiš)
-    user.verification_code = verification_code
-    user.save()
-    
-    # Kreiraj link za potvrdu
-    verification_link = f"http://127.0.0.1:8000/api/verify/{verification_code}/"
-    
-    # Kreiraj HTML sadržaj email-a
-    html_message = f'''
-        <p>Hvala što ste se registrovali! Da biste potvrdili svoju registraciju, kliknite na sledeći link:</p>
-        <p><a href="{verification_link}" target="_blank">Kliknite ovde za verifikaciju naloga</a></p>
-    '''
-    
-    # Pošaljite email
-    send_mail(
-        'Verifikacija naloga',
-        'Kliknite na sledeći link da biste potvrdili svoju registraciju.',  # plain-text verzija, može ostati kao fallback
-        settings.DEFAULT_FROM_EMAIL,
-        [user.email],
-        fail_silently=False,
-        html_message=html_message  # Prosleđivanje HTML sadržaja
-    )
-
-def send_email_new_auction(id, user):
-    auction_link = f"http://localhost:5173/aukcija/{id}"
-
-    send_mail(
-        'Čestitamo, uspešno ste postavili aukciju!',
-        f'Pogledajte oglas ovde: {auction_link}',
-        settings.DEFAULT_FROM_EMAIL,
-        [user.email],
-        fail_silently=False,
-    )
-
-def send_report_email(id, reportText):
-    send_mail(
-        'Nova prijava aukcije',
-        f"Prijavljena aukcija: http://localhost:5173/aukcija/{id}\n\n Tekst prijave: {reportText}",
-        settings.DEFAULT_FROM_EMAIL,
-        ["taxitracker2024@gmail.com"],
-        fail_silently=False,
-    )
-
-
-def report_auction_view(request):
-    if request.method != "POST":
-        return JsonResponse({'error': 'Only POST requests are allowed'}, status=405)
-    
-    try:
-        data = json.loads(request.body)  # Parse JSON data from request body
-        id = data.get('id')
-        reportText = data.get('reportText')
-    except json.JSONDecodeError:
-        return JsonResponse({'error': 'Invalid JSON data'}, status=400)
-
-    if not id or not reportText:
-        return JsonResponse({'error': 'Missing auction ID or report text'}, status=400)
-    
-    send_report_email(id, reportText)
-    return JsonResponse({'status': 'Report sent successfully'})
+NOTIFICATION_DELAY = timedelta(hours=2) 
+#region authentication
 
 def verify_email(request, code):
     try:
@@ -124,47 +62,6 @@ class CreateUserView(generics.CreateAPIView):
         user = serializer.save()  
         send_verification_email(user)  
 
-
-from django.utils import timezone
-from rest_framework import serializers
-
-class AuctionItemListCreate(generics.ListCreateAPIView):
-    serializer_class = AuctionItemSerializer
-    permission_classes = [IsAuthenticated]
-
-    def get_queryset(self):
-        user = self.request.user  # Get the authenticated user
-        return AuctionItem.objects.filter(seller=user)  # Return all auctions for the current user
-
-    def perform_create(self, serializer):
-        try:
-            auction_item = serializer.save(seller=self.request.user)
-            send_email_new_auction(auction_item.id, self.request.user)
-        except serializers.ValidationError as e:
-            print("Validation error:", e.detail)
-            raise e
-
-
-
-class AuctionItemDelete(generics.DestroyAPIView):
-    serializer_class = AuctionItemSerializer
-    permission_classes = [IsAuthenticated]
-
-    def get_queryset(self):
-        user = self.request.user  # Get the authenticated user
-        return AuctionItem.objects.filter(seller=user)  # Return all auctions for the current user
-
-    def delete(self, request, *args, **kwargs):
-        auction_item = self.get_object()  # Get the auction item to delete
-        # Proveri da li aukcija ima ponude
-        if Bid.objects.filter(auction_item=auction_item).exists():
-            return Response({"detail": "You cannot delete the auction because there are bids on it."}, status=status.HTTP_400_BAD_REQUEST)
-
-        # Ako nema ponuda, dozvoliti brisanje
-        return super().delete(request, *args, **kwargs)
-
-
-
 class LoginView(APIView):
     permission_classes = [AllowAny]
 
@@ -180,7 +77,13 @@ class LoginView(APIView):
             if not user.is_verified:
                 return Response({"detail": "Vaš nalog nije verifikovan. Proverite vaš email."}, status=status.HTTP_403_FORBIDDEN)
             
+            if user.is_blocked:
+                return Response({"detail": "Vaš nalog je blokiran. Ne možete se ulogovati."}, status=status.HTTP_403_FORBIDDEN)
+            
             login(request, user)
+
+            if user.is_superuser:
+                return Response({"redirect_url": "http://localhost:5173/admin/dashboard"}, status=status.HTTP_200_OK)
             return Response({"detail": "Uspešno ste se ulogovali"}, status=status.HTTP_200_OK)
         
         return Response({"detail": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
@@ -225,7 +128,16 @@ def google_login(request):
 
             if created:
                 user.set_unusable_password()  # Disable password for Google-created users
+                user.is_verified = True      # Set is_verified to True for new users
                 user.save()
+            else:
+                # Update the is_verified field for existing users
+                if not user.is_verified:
+                    user.is_verified = True
+                    user.save()
+            
+            if user.is_blocked:
+                return JsonResponse({"detail": "Vaš nalog je blokiran. Ne možete se ulogovati."}, status=status.HTTP_403_FORBIDDEN)
 
             login(request, user)
             return JsonResponse({'message': 'Login successful!', 'email': email, 'name': name}, status=200)
@@ -238,9 +150,51 @@ def google_login(request):
             return JsonResponse({'error': 'An error occurred', 'details': str(e)}, status=500)
 
     return JsonResponse({'error': 'Method not allowed'}, status=405)
+#endregion
 
+#region auctions
+class AuctionItemListCreate(generics.ListCreateAPIView):
+    serializer_class = AuctionItemSerializer
+    permission_classes = [IsAuthenticated]
 
+    def get_queryset(self):
+        user = self.request.user  # Get the authenticated user
+        return AuctionItem.objects.filter(seller=user)  # Return all auctions for the current user
 
+    def send_email_new_auction(self, id, user):
+        auction_link = f"http://localhost:5173/aukcija/{id}"
+
+        subject = 'Čestitamo, uspešno ste postavili aukciju!'
+        message = f'Pogledajte oglas ovde: {auction_link}'
+        send_email_task.delay(subject, message, settings.DEFAULT_FROM_EMAIL, [user.email])
+        
+
+    def perform_create(self, serializer):
+        try:
+            auction_item = serializer.save(seller=self.request.user)
+            self.send_email_new_auction(auction_item.id, self.request.user)
+        except serializers.ValidationError as e:
+            print("Validation error:", e.detail)
+            raise e
+
+class AuctionItemDelete(generics.DestroyAPIView):
+    serializer_class = AuctionItemSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user  # Get the authenticated user
+        if not user.is_superuser:
+            return AuctionItem.objects.filter(seller=user)  # Return all auctions for the current user
+        else:
+            return AuctionItem.objects
+
+    def delete(self, request, *args, **kwargs):
+        auction_item = self.get_object()  # Get the auction item to delete
+
+        if Bid.objects.filter(auction_item=auction_item).exists() and not request.user.is_superuser:
+            return Response({"detail": "You cannot delete the auction because there are bids on it."}, status=status.HTTP_400_BAD_REQUEST)
+
+        return super().delete(request, *args, **kwargs)
 
 
 
@@ -287,18 +241,121 @@ class AuctionItemDetail(generics.RetrieveAPIView):
         except AuctionItem.DoesNotExist:
             raise NotFound({"error": "Auction item not found."})
 
-class CurrentUserView(APIView):
+class AuctionCountView(APIView):
+    permission_classes = [AllowAny]
+    def get(self, request, *args, **kwargs):
+        # Get the auction_item_id from the URL parameters
+        auction_item_id = self.kwargs.get('auction_item_id', None)
+        print(auction_item_id)
+
+        # If no specific auction_item_id is provided, return an error or count all bids
+        if auction_item_id is None:
+            return Response({"error": "Auction item ID is required."}, status=status.HTTP_400_BAD_REQUEST)
+        
+        try:
+            # Check if the auction item exists
+            auction_item = AuctionItem.objects.get(id=auction_item_id)
+
+            # Count the number of bids associated with the auction item
+            bid_count = Bid.objects.filter(auction_item=auction_item).count()
+
+            # Return the bid count in the response
+            return Response({"bid_count": bid_count}, status=status.HTTP_200_OK)
+        
+        except AuctionItem.DoesNotExist:
+            return Response({"error": "Auction item not found."}, status=status.HTTP_404_NOT_FOUND)
+        
+class FetchAuctionOwnerView(generics.RetrieveAPIView):
+    permission_classes = [AllowAny]  # Adjust permissions as needed
+
+    def get(self, request, auction_id):
+        try:
+            auction_item = AuctionItem.objects.get(id=auction_id)
+            first_name = auction_item.seller.first_name  # Assuming 'seller' is a ForeignKey to User
+            user_id = auction_item.seller.id
+            return Response({'first_name': first_name, 'id': user_id}, status=status.HTTP_200_OK)
+        except AuctionItem.DoesNotExist:
+            return Response({'detail': 'Auction item not found'}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({'detail': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+class AllAuctionItemsList(generics.ListAPIView):
+    serializer_class = AuctionItemSerializer
+    permission_classes = [AllowAny]
+
+    def get_queryset(self):
+        user = self.request.user
+
+        if user.is_superuser:
+            return AuctionItem.objects.all()
+
+        return AuctionItem.objects.filter(end_date__gt=timezone.now())
+    
+class FetchAuctionsByCategory(generics.ListAPIView):
+    serializer_class = AuctionItemSerializer
+    permission_classes = [AllowAny]
+
+    def get_queryset(self):
+        # Get the 'category' parameter from the query string (if it exists)
+        category = self.request.query_params.get('category', None)
+        
+        if category:
+            # Filter auctions by category if it is provided
+            return AuctionItem.objects.filter(category=category, end_date__gt=timezone.now())
+        else:
+            # If no category is provided, return all auctions
+            return AuctionItem.objects.all()
+        
+
+def report_auction_view(request):
+    if request.method != "POST":
+        return JsonResponse({'error': 'Only POST requests are allowed'}, status=405)
+    
+    try:
+        data = json.loads(request.body)  # Parse JSON data from request body
+        id = data.get('id')
+        reportText = data.get('reportText')
+    except json.JSONDecodeError:
+        return JsonResponse({'error': 'Invalid JSON data'}, status=400)
+
+    if not id or not reportText:
+        return JsonResponse({'error': 'Missing auction ID or report text'}, status=400)
+    
+    send_report_email(id, reportText)
+    return JsonResponse({'status': 'Report sent successfully'})
+
+class FetchAuctionWinner(APIView):
     permission_classes = [IsAuthenticated]
 
-    def get(selft, request):
-        if request.user.is_authenticated:
-            return Response({'username': request.user.first_name}, status=status.HTTP_200_OK)
-        else:
-            return Response({'error': 'User is not authenticated'}, status=status.HTTP_401_UNAUTHORIZED)
+    def get(self, request, auction_id):
+        try:
+            # Pronađi aukciju prema ID-u
+            auction_item = AuctionItem.objects.get(id=auction_id)
+            
+            # Pronađi sve ponude za ovu aukciju
+            bids = Bid.objects.filter(auction_item_id=auction_item.id).order_by('-amount')  # Sortiraj po iznosu u opadajućem redosledu
+
+            if not bids:
+                return Response({'error': 'No bids for this auction'}, status=status.HTTP_404_NOT_FOUND)
+            
+            # Pobednik je korisnik sa najvećom ponudom
+            winner_bid = bids.first()  # Najveća ponuda
+            winner = winner_bid.bidder  # Korisnik koji je dao najveću ponudu
+
+            # Vratimo podatke o pobedniku
+            winner_data = {
+                'first_name': winner.first_name,
+                'amount': winner_bid.amount,  # Najveća ponuda
+            }
+
+            return Response(winner_data, status=status.HTTP_200_OK)
+        except AuctionItem.DoesNotExist:
+            return Response({'error': 'Auction not found'}, status=status.HTTP_404_NOT_FOUND)
+#endregion
+
+
         
-from rest_framework.exceptions import AuthenticationFailed
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
+#region bids
 
 class BidCreateView(generics.CreateAPIView):
     queryset = Bid.objects.all()
@@ -306,20 +363,47 @@ class BidCreateView(generics.CreateAPIView):
     permission_classes = [IsAuthenticated]  # Only authenticated users can bid
 
     def perform_create(self, serializer):
-        bid = serializer.save(bidder=self.request.user)
-        auction_item_id = serializer.validated_data['auction_item_id']  # Use auction_item_id here
+        # Učitaj podatke o aukciji
+        auction_item_id = serializer.validated_data['auction_item_id']
         auction_item = AuctionItem.objects.get(id=auction_item_id)
 
+        # Proveri da li je aukcija završena
+        if auction_item.end_date <= now():
+            raise ValidationError({"detail": "Cannot place a bid. The auction has ended."})
+
+        # Sačuvaj novu ponudu
+        bid = serializer.save(bidder=self.request.user)
+
+        # Proveri da li je ponuda validna (veća od trenutne cene)
         if bid.amount > (auction_item.current_price + 9):
             auction_item.current_price = bid.amount
             auction_item.save()
-        else:
-            raise serializers.ValidationError({"detail": "Bid must be higher than the current price."})
 
-    def create(self, request, *args, **kwargs):
-        if not request.user.is_authenticated:
-            raise AuthenticationFailed("You must be logged in to place a bid.")
-        return super().create(request, *args, **kwargs)
+            # Pošalji obaveštenje vlasniku aukcije
+            auction_owner = auction_item.seller
+            if self.request.user != auction_owner:  # Vlasnik ne dobija obaveštenje za svoje ponude
+                time_since_last_notification = (
+                    now() - auction_item.last_bid_notified if auction_item.last_bid_notified else None
+                )
+                if not time_since_last_notification or time_since_last_notification > NOTIFICATION_DELAY:
+                    # Pozovi funkciju za slanje obaveštenja
+                    self.send_new_bid_email(auction_item, auction_owner)
+                    # Ažuriraj vreme poslednjeg obaveštenja
+                    auction_item.last_bid_notified = now()
+                    auction_item.save()
+        else:
+            raise ValidationError({"detail": "Bid must be higher than the current price."})
+
+    def send_new_bid_email(self, auction_item, auction_owner):
+        # Priprema podataka za mejl
+        auction_link = f"http://localhost:5173/aukcija/{auction_item.id}"
+        subject = "Nova ponuda na vašoj aukciji!"
+        message = f"Neko je ponudio novu cenu! Pogledajte detalje ovde: {auction_link}"
+
+        # Asinkrono slanje mejla
+        send_email_task.delay(subject, message, settings.DEFAULT_FROM_EMAIL, [auction_owner.email])
+
+
 
 
 class BidListView(generics.ListAPIView):
@@ -340,19 +424,30 @@ class BidListView(generics.ListAPIView):
         # Proceed to get bids for the auction item
         return super().get(request, *args, **kwargs)
     
+class FetchAllMyBiddings(generics.ListAPIView):
+    serializer_class = AuctionItemSerializer
+    permission_classes = [IsAuthenticated]
 
-class FetchAuctionOwnerView(generics.RetrieveAPIView):
-    permission_classes = [AllowAny]  # Adjust permissions as needed
+    def get_queryset(self):
+        user = self.request.user
 
-    def get(self, request, auction_id):
-        try:
-            auction_item = AuctionItem.objects.get(id=auction_id)
-            first_name = auction_item.seller.first_name  # Assuming 'seller' is a ForeignKey to User
-            return Response({'first_name': first_name}, status=status.HTTP_200_OK)
-        except AuctionItem.DoesNotExist:
-            return Response({'detail': 'Auction item not found'}, status=status.HTTP_404_NOT_FOUND)
-        except Exception as e:
-            return Response({'detail': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        my_biddings = Bid.objects.filter(bidder_id=user.id)
+
+        bidded_auctions = AuctionItem.objects.filter(id__in=my_biddings.values('auction_item_id'))
+        
+        return bidded_auctions
+    
+#endregion
+
+#region user
+class CurrentUserView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(selft, request):
+        if request.user.is_authenticated:
+            return Response({'username': request.user.first_name}, status=status.HTTP_200_OK)
+        else:
+            return Response({'error': 'User is not authenticated'}, status=status.HTTP_401_UNAUTHORIZED)
         
 class FetchUsernamesView(APIView):
     permission_classes = [AllowAny]  # Možeš prilagoditi dozvole prema potrebama
@@ -376,50 +471,6 @@ class FetchUsernamesView(APIView):
                 continue  # Ignoriši nepostojeće korisnike
         
         return Response(usernames, status=status.HTTP_200_OK)
-    
-class AuctionCountView(APIView):
-    def get(self, request, *args, **kwargs):
-        # Get the auction_item_id from the URL parameters
-        auction_item_id = self.kwargs.get('auction_item_id', None)
-        print(auction_item_id)
-
-        # If no specific auction_item_id is provided, return an error or count all bids
-        if auction_item_id is None:
-            return Response({"error": "Auction item ID is required."}, status=status.HTTP_400_BAD_REQUEST)
-        
-        try:
-            # Check if the auction item exists
-            auction_item = AuctionItem.objects.get(id=auction_item_id)
-
-            # Count the number of bids associated with the auction item
-            bid_count = Bid.objects.filter(auction_item=auction_item).count()
-
-            # Return the bid count in the response
-            return Response({"bid_count": bid_count}, status=status.HTTP_200_OK)
-        
-        except AuctionItem.DoesNotExist:
-            return Response({"error": "Auction item not found."}, status=status.HTTP_404_NOT_FOUND)
-
-class CurrentUserDataView(APIView):
-    permission_classes = [IsAuthenticated]  # Ensure only authenticated users can access
-
-    def get(self, request):
-        # Check if the user is authenticated
-        if request.user.is_authenticated:
-            # Return the user's data as a response
-            user_data = {
-                #'email': request.user.email,
-                'id': request.user.id,
-                'first_name': request.user.first_name,
-                'city': request.user.city,
-                'phone_number': request.user.phone_number,
-                #'username': request.user.username,
-                #'is_verified': request.user.is_verified,
-                #'date_joined': request.user.date_joined,
-            }
-            return Response(user_data, status=status.HTTP_200_OK)
-        else:
-            return Response({'error': 'User is not authenticated'}, status=status.HTTP_401_UNAUTHORIZED)
 
 class UpdateUserProfileView(generics.UpdateAPIView):
     serializer_class = UserUpdateSerializer
@@ -437,7 +488,95 @@ class UpdateUserProfileView(generics.UpdateAPIView):
         
         return Response(serializer.data, status=status.HTTP_200_OK)
     
-    # View to list all comments for a specific auction item
+def admin_required(view_func):
+    def _wrapped_view(request, *args, **kwargs):
+        if not request.user.is_authenticated or not request.user.is_staff:
+            return JsonResponse({'error': 'Access denied'}, status=403)
+        return view_func(request, *args, **kwargs)
+    return _wrapped_view
+
+class CurrentUserDataView(APIView):
+    permission_classes = [IsAuthenticated]  # Ensure only authenticated users can access
+
+    def get(self, request):
+        if request.user.is_authenticated:
+            # Return the user's data as a response
+            user_data = {
+                #'email': request.user.email,
+                'id': request.user.id,
+                'first_name': request.user.first_name,
+                'city': request.user.city,
+                'phone_number': request.user.phone_number,
+                'is_superuser': request.user.is_superuser,
+                #'username': request.user.username,
+                #'is_verified': request.user.is_verified,
+                #'date_joined': request.user.date_joined,
+            }
+            return Response(user_data, status=status.HTTP_200_OK)
+        else:
+            return Response({'error': 'User is not authenticated'}, status=status.HTTP_401_UNAUTHORIZED)
+
+class FetchUserDataByUsername(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, username):
+        try:
+            user = User.objects.get(username=username)
+
+            user_data = {
+                'username': user.username,
+                'first_name': user.first_name,
+                'is_active': user.is_active,
+                'city': user.city,
+                'phone_number': user.phone_number,
+                'is_verified': user.is_verified,
+                'is_blocked': user.is_blocked,
+            }
+
+            return Response(user_data, status=status.HTTP_200_OK)
+        except User.DoesNotExist:
+            return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+        
+class BlockUserView(APIView):
+    permission_classes = [IsAuthenticated]  # Samo admin može blokirati korisnike
+
+    def post(self, request):
+        username = request.data.get('username')
+        if not username:
+            return Response({'error': 'Username is required'}, status=400)
+
+        try:
+            user = User.objects.get(username=username)
+            if user.is_blocked:
+                return Response({'message': 'User is already blocked'}, status=400)
+            
+            user.is_blocked = True
+            user.save()
+            return Response({'message': 'User successfully blocked'}, status=200)
+        except User.DoesNotExist:
+            return Response({'error': 'User not found'}, status=404)
+
+class UnblockUserView(APIView):
+    permission_classes = [IsAuthenticated]  # Samo admin može blokirati korisnike
+
+    def post(self, request):
+        username = request.data.get('username')
+        if not username:
+            return Response({'error': 'Username is required'}, status=400)
+
+        try:
+            user = User.objects.get(username=username)
+            if not user.is_blocked:
+                return Response({'message': 'User cannot be unblocked because it is not blocked.'}, status=400)
+            
+            user.is_blocked = False
+            user.save()
+            return Response({'message': 'User successfully unblocked'}, status=200)
+        except User.DoesNotExist:
+            return Response({'error': 'User not found'}, status=404)
+#endregion
+
+#region comments
 class CommentListView(generics.ListAPIView):
     serializer_class = CommentSerializer
     permission_classes = [AllowAny]  # Adjust this based on your app's permissions
@@ -450,37 +589,40 @@ class CommentListView(generics.ListAPIView):
 class CommentCreateView(APIView):
     permission_classes = [IsAuthenticated]
     
+    def send_new_comment_email(self, id, user):
+        auction_link = f"http://localhost:5173/aukcija/{id}"
+
+        subject = "Novi komentar na vašoj aukciji"
+        message = f'Pogledajte novi komentar ovde: {auction_link}'
+        send_email_task.delay(subject, message, settings.DEFAULT_FROM_EMAIL, [user.email])
+
     def post(self, request, *args, **kwargs):
         serializer = CommentSerializer(data=request.data, context={'request': request})
-        
         if serializer.is_valid():
-            serializer.save()
+            # Sačuvaj komentar
+            comment = serializer.save()
+            
+            # Pristupi povezanoj aukciji
+            auction_item = comment.auction_item
+            
+            # Pretpostavljam da `AuctionItem` ima polje `owner` koje referencira korisnika (vlasnika aukcije)
+            auction_owner = auction_item.seller
+            
+            # Pošalji email vlasniku aukcije
+            if comment.user != auction_owner:  # Vlasnik ne dobija obaveštenje za svoje komentare
+                time_since_last_notification = now() - auction_item.last_notified if auction_item.last_notified else None
+                
+                if not time_since_last_notification or time_since_last_notification > NOTIFICATION_DELAY:
+                    self.send_new_comment_email(auction_item.id, auction_owner)
+                    auction_item.last_notified = now()  # Ažuriraj vreme poslednjeg obaveštenja
+                    auction_item.save()
+
+            
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
-class AllAuctionItemsList(generics.ListAPIView):
-    serializer_class = AuctionItemSerializer
-    permission_classes = [AllowAny]
 
-    def get_queryset(self):
-        return AuctionItem.objects.filter(end_date__gt=timezone.now())
 
-class FetchAuctionsByCategory(generics.ListAPIView):
-    serializer_class = AuctionItemSerializer
-    permission_classes = [AllowAny]
-
-    def get_queryset(self):
-        # Get the 'category' parameter from the query string (if it exists)
-        category = self.request.query_params.get('category', None)
-        
-        if category:
-            # Filter auctions by category if it is provided
-            return AuctionItem.objects.filter(category=category, end_date__gt=timezone.now())
-        else:
-            # If no category is provided, return all auctions
-            return AuctionItem.objects.all()
-        
     
 class CommentDeleteView(generics.DestroyAPIView):
     serializer_class = CommentSerializer
@@ -501,3 +643,50 @@ class CommentDeleteView(generics.DestroyAPIView):
             return Response({"detail": "Comment deleted successfully."}, status=status.HTTP_204_NO_CONTENT)
         except Comment.DoesNotExist:
             raise NotFound({"detail": "Comment not found."})
+
+#endregion
+
+        
+#region emails
+def send_verification_email(user):
+    verification_code = secrets.token_urlsafe(20)
+    
+    # Spremaj kod u korisnikov model (ako želiš)
+    user.verification_code = verification_code
+    user.save()
+    
+    # Kreiraj link za potvrdu
+    verification_link = f"http://127.0.0.1:8000/api/verify/{verification_code}/"
+    
+    # Kreiraj HTML sadržaj email-a
+    html_message = f'''
+        <p>Hvala što ste se registrovali! Da biste potvrdili svoju registraciju, kliknite na sledeći link:</p>
+        <p><a href="{verification_link}" target="_blank">Kliknite ovde za verifikaciju naloga</a></p>
+    '''
+    
+    # Pošaljite email
+    send_mail(
+        'Verifikacija naloga',
+        'Kliknite na sledeći link da biste potvrdili svoju registraciju.',  # plain-text verzija, može ostati kao fallback
+        settings.DEFAULT_FROM_EMAIL,
+        [user.email],
+        fail_silently=False,
+        html_message=html_message  # Prosleđivanje HTML sadržaja
+    )
+
+
+
+
+def send_report_email(id, reportText):
+    send_mail(
+        'Nova prijava aukcije',
+        f"Prijavljena aukcija: http://localhost:5173/aukcija/{id}\n\n Tekst prijave: {reportText}",
+        settings.DEFAULT_FROM_EMAIL,
+        ["taxitracker2024@gmail.com"],
+        fail_silently=False,
+    )
+
+@shared_task
+def send_email_task(subject, message, from_email, recipient_list):
+    send_mail(subject, message, from_email, recipient_list, fail_silently=False)
+#endregion

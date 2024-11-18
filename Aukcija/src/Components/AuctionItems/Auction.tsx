@@ -46,7 +46,7 @@ const Auction: React.FC = () => {
     const [auctionOwner, setAuctionOwner] = useState<string>('');
     const [usernames, setUsernames] = useState<string[]>([]);
     const [endDate, setEndDate] = useState<Date | null>(null);
-    const [timeLeft, setTimeLeft] = useState<string>('');
+    const [timeLeft, setTimeLeft] = useState<number | null>(null);
     const [bidError, setBidError] = useState('');
     const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState<boolean>(false);
     const [isReportModalOpen, setIsReportModalOpen] = useState<boolean>(false);
@@ -54,6 +54,8 @@ const Auction: React.FC = () => {
     const [successMessage, setSuccessMessage] = useState('');
     const [isConfettiVisible, setIsConfettiVisible] = useState(false);
     const [isInfoModalOpen, setIsInfoModalOpen] = useState(false);
+    const [auctionOwnerId, setAuctionOwnerId] = useState();
+    const [currentUser, setCurrentUser] = useState('');
     
     
     const fetchUsernames = async (userIds: number[]) => {
@@ -91,6 +93,7 @@ const Auction: React.FC = () => {
             console.error("Error fetching bids data:", error);
         }
     };
+
     const fetchAuctionOwner = async (id: number) => {
         try{
             const response = await api.get(`api/user/username/${id}/`);
@@ -98,6 +101,7 @@ const Auction: React.FC = () => {
             if(response.status === 200){
                 console.log('Username fetched successfully!');
                 setAuctionOwner(response.data.first_name);
+                setAuctionOwnerId(response.data.id);
             }
             else{
                 console.error("Failed to fetch username!");
@@ -107,6 +111,20 @@ const Auction: React.FC = () => {
             console.error("Error fetching username: ", error);
         }
     } 
+
+    useEffect(() => {
+        const fetchUserData = async () => {
+            try {
+                const response = await api.get('/api/current_user_data');
+                setCurrentUser(response.data.id);
+            } catch (error) {
+                console.error('Error fetching user data:', error);
+                setCurrentUser('');
+            }
+        };
+  
+        fetchUserData();
+    }, []);
 
     useEffect(() => {
         // Fetch auction data by ID
@@ -150,34 +168,36 @@ const Auction: React.FC = () => {
                 const timeRemaining = endDate.getTime() - now.getTime();
     
                 if (timeRemaining <= 0) {
-                    setTimeLeft("Aukcija je završena");
+                    setTimeLeft(0); // Aukcija je završena
                     clearInterval(countdownInterval);
                 } else {
-                    const days = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
-                    const hours = Math.floor((timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                    const minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
-                    const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
-    
-                    if (days > 0) {
-                        setTimeLeft(`${days}d ${hours}h ${minutes}m ${seconds}s`);
-                    } else if (hours > 0) {
-                        setTimeLeft(`${hours}h ${minutes}m ${seconds}s`);
-                    } else if (minutes > 0) {
-                        setTimeLeft(`${minutes}m ${seconds}s`);
-                    } else {
-                        setTimeLeft(`${seconds}s`);
-                    }
+                    setTimeLeft(timeRemaining); // Postavi preostalo vreme u milisekundama
                 }
             }
         };
     
-        // Call the function immediately to avoid waiting
         updateCountdown();
-    
         countdownInterval = setInterval(updateCountdown, 1000);
     
-        return () => clearInterval(countdownInterval); // Cleanup on unmount
-    }, [endDate])
+        return () => clearInterval(countdownInterval);
+    }, [endDate]);
+
+    const formattedTimeLeft = () => {
+        if (timeLeft === null || timeLeft <= 0) {
+            return "Aukcija je završena";
+        }
+    
+        const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+    
+        if (days > 0) return `${days}d ${hours}h ${minutes}m ${seconds}s`;
+        if (hours > 0) return `${hours}h ${minutes}m ${seconds}s`;
+        if (minutes > 0) return `${minutes}m ${seconds}s`;
+        return `${seconds}s`;
+    };
+    
     
         // Pozivamo funkciju odmah da bismo izbegli čekanje
     const openReportModal = () => {
@@ -344,25 +364,27 @@ const Auction: React.FC = () => {
                 <button onClick={closeModal}>Close</button>
             </Modal>
     
-            <div className="bid-section">
-                <div className="new-bid-container">
-                    <input
-                        type="number"
-                        name="new_offer"
-                        value={newOffer}
-                        onChange={(e) => setNewOffer(e.target.value)}
-                        placeholder={placeholder}
-                        onFocus={handleFocus}
-                        onBlur={handleBlur}
-                    />
-                    <button className="new-bid-btn" onClick={openConfirmationModal}>Potvrdi</button>
+            {timeLeft && timeLeft > 0 && currentUser !== auctionOwnerId && (
+                <div className="bid-section">
+                    <div className="new-bid-container">
+                        <input
+                            type="number"
+                            name="new_offer"
+                            value={newOffer}
+                            onChange={(e) => setNewOffer(e.target.value)}
+                            placeholder={placeholder}
+                            onFocus={handleFocus}
+                            onBlur={handleBlur}
+                        />
+                        <button className="new-bid-btn" onClick={openConfirmationModal}>Potvrdi</button>
+                    </div>
+                    <span className="bid-error">{bidError}</span>
                 </div>
-                <span className="bid-error">{bidError}</span>
-    
+            )}
+
                 <div className="countdown-container">
-                    <p className="countdown-timer">Završava se za: {timeLeft}</p>
+                    <p className="countdown-timer">Završava se za: {formattedTimeLeft()}</p>
                 </div>
-            </div>
             <a onClick={openModal} className="bid-history-link">Broj ponuda: {bidCount}</a>
     
             <div className="contact-info">

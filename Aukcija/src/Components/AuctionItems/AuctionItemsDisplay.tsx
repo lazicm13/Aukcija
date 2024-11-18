@@ -3,6 +3,7 @@ import { useLocation } from "react-router-dom";
 import api from "../../api";
 import AuctionItem from "../../Components/AuctionItems/AuctionItem";
 import './../../Styles/auctionList.css';
+import { AxiosError } from "axios";
 
 interface AuctionItem {
     id: number;
@@ -15,6 +16,7 @@ interface AuctionItem {
         image: string;
     }[];
     end_date: string;
+    seller: number;
 }
 
 function AuctionItemsDisplay() {
@@ -29,11 +31,14 @@ function AuctionItemsDisplay() {
     const [auctionCount, setAuctionCount] = useState(1);
 
     useEffect(() => {
-        if (location.pathname === '/') {
+        if (location.pathname === '/' || location.pathname === '/admin/dashboard') {
             getAuctionItems();
         } else if (location.pathname === '/moje-aukcije') {
             getMyAuctionItems();
+        }else if(location.pathname === '/moje-licitacije'){
+            getMyBiddings();
         }
+        
     }, [location.pathname]); // Add location.pathname as dependency
 
     const getAuctionItems = async () => {
@@ -57,20 +62,68 @@ function AuctionItemsDisplay() {
         }
     };
 
-    const deleteAuctionItem = async (id: number) => {
-        try {
-            const res = await api.delete(`api/auctionItems/delete/${id}/`);
-            if (res.status === 204) {
-                alert("Auction item deleted!");
-                setAuctions((prevItems) => prevItems.filter((item) => item.id !== id));
-            } else {
-                alert("Failed to delete auction item");
-            }
-        } catch (error) {
-            console.log('Error deleting item:', error);
-            alert("Error deleting auction item");
+    const getMyBiddings = async () => {
+        try{
+            const response = await api.get("api/all-my-biddings/");
+            setAuctions(response.data);
+            setAuctionCount(response.data.length);
+        }catch(err){
+            console.log(err);
         }
-    };
+    }
+
+    
+
+const deleteAuctionItem = async (id: number) => {
+    try {
+        const res = await api.delete(`api/auctionItems/delete/${id}/`);
+        
+        // Provera statusa odgovora
+        if (res.status === 204) {
+            alert("Auction item deleted!");
+            setAuctions((prevItems) => prevItems.filter((item) => item.id !== id));
+        } else {
+            alert("Failed to delete auction item");
+        }
+    } catch (error) {
+        // Provera tipa greške i dodela precizne poruke
+        if (error instanceof AxiosError) {
+            // Ako je greška vezana za Axios
+            if (error.response) {
+                // Ako server vraća odgovor sa statusom
+                const statusCode = error.response.status;
+                const errorMessage = error.response.data?.detail || "An unexpected error occurred";
+
+                // Prikazivanje greške prema statusnom kodu
+                switch (statusCode) {
+                    case 400:
+                        alert(`Bad Request: ${errorMessage}`);
+                        break;
+                    case 403:
+                        alert(`Forbidden: ${errorMessage}`);
+                        break;
+                    case 404:
+                        alert(`Not Found: ${errorMessage}`);
+                        break;
+                    case 500:
+                        alert(`Server Error: ${errorMessage}`);
+                        break;
+                    default:
+                        alert(`Unexpected Error: ${errorMessage}`);
+                        break;
+                }
+            } else {
+                // Ako nema odgovora (npr. mrežna greška)
+                alert("Network error: Please check your internet connection.");
+            }
+        } else {
+            // Ako greška nije vezana za Axios
+            console.error('Error deleting item:', error);
+            alert("Error deleting auction item. Please try again later.");
+        }
+    }
+};
+
 
     const fetchAuctionsByCategory = async (selectedCategory: string) => {
         try {
