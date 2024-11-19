@@ -13,3 +13,6 @@ Pillow
 django-email-verification
 celery
 redis
+django-celery-beat
+channels
+channels_redis

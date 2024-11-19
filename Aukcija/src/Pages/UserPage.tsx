@@ -10,7 +10,8 @@ function UserPage() {
     const [userData, setUserData] = useState({
         first_name: '',
         phone_number: '',
-        city: ''
+        city: '',
+        email: ''
     });
     const [successMessage, setSuccessMessage] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
@@ -22,7 +23,8 @@ function UserPage() {
                 setUserData({
                     first_name: response.data.first_name || '',
                     phone_number: response.data.phone_number || '',
-                    city: response.data.city || ''
+                    city: response.data.city || '',
+                    email: response.data.email || '',
                 });
             } catch (error) {
                 console.error('Error fetching user data:', error);
@@ -65,6 +67,10 @@ function UserPage() {
 
                 <form onSubmit={handleSubmit}>
                     <div className="userpage-form">
+                        <div className='form-group'>
+                            <label>Email adresa:</label>
+                            <input type='text' disabled readOnly value={userData.email}></input>
+                        </div>
                         <div className="form-group">
                             <label htmlFor="name">Ime i prezime</label>
                             <input

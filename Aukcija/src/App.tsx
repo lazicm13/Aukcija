@@ -17,6 +17,8 @@ import Auction from './Components/AuctionItems/Auction'
 import AdminPage from './Pages/AdminPage'
 import AdminRoute from './Components/AdminRoute'
 import MyBids from './Pages/MyBids'
+import ChatPage from './Pages/ChatRoom'
+import ChatListPage from './Components/Chat/ChatListPage'
 
 const CLIENT_ID = '516726223486-ese1hmu3fmae12vgcv8b2tthgcnol316.apps.googleusercontent.com';
 
@@ -160,6 +162,8 @@ function App() {
               </ProtectedRoute>
             }
           />
+          <Route path="/chat/:chatroomId" element={<ChatPage/>} />
+          <Route path="/moje-poruke" element={<ChatListPage />} />
         </Routes>
       </Router>
     </>

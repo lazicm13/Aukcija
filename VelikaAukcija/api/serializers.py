@@ -1,6 +1,6 @@
 from .models import CustomUser
 from rest_framework import serializers
-from .models import AuctionItem, AuctionImage, Comment
+from .models import AuctionItem, AuctionImage, Comment, Message, ChatRoom
 from datetime import timedelta
 from django.utils import timezone
 
@@ -73,7 +73,7 @@ class AuctionItemSerializer(serializers.ModelSerializer):
         auction_item = AuctionItem.objects.create(
             **validated_data,
             created_at=current_time,
-            end_date=current_time + timedelta(days=auction_duration)
+            end_date=current_time + timedelta(minutes=auction_duration)
         )
 
         # Save images associated with this auction item
@@ -162,3 +162,18 @@ class CommentSerializer(serializers.ModelSerializer):
         if not attrs.get('content'):
             raise serializers.ValidationError({'content': 'Komentar ne sme biti prazan.'})
         return attrs
+
+
+class MessageSerializer(serializers.ModelSerializer):
+    sender = serializers.StringRelatedField()
+
+    class Meta:
+        model = Message
+        fields = ['sender', 'content', 'timestamp']
+
+class ChatRoomSerializer(serializers.ModelSerializer):
+    users = serializers.StringRelatedField(many=True)
+
+    class Meta:
+        model = ChatRoom
+        fields = ['users']

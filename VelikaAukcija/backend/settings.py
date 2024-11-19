@@ -61,8 +61,17 @@ CELERY_BROKER_URL = 'redis://redis:6379/0'
 CELERY_RESULT_BACKEND = 'redis://redis:6379/0'
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
+CELERY_TIMEZONE = 'Europe/Belgrade'
 
 
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('127.0.0.1', 6379)],  # Redis server
+        },
+    },
+}
 
 # Sada dodaj svoj header
 CORS_ALLOW_HEADERS = default_headers + [
@@ -123,9 +132,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_celery_beat',
     'rest_framework',
     'corsheaders',
     'api',
+    'channels',
 ]
 
 MIDDLEWARE = [
@@ -158,7 +169,7 @@ TEMPLATES = [
 ]
 AUTH_USER_MODEL = 'api.CustomUser'
 
-WSGI_APPLICATION = 'backend.wsgi.application'
+ASGI_APPLICATION = 'backend.asgi.application'
 
 
 # Database

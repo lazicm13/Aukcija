@@ -56,6 +56,8 @@ class AuctionItem(models.Model):
     end_date = models.DateTimeField(null=True, blank=True)
     last_notified = models.DateTimeField(null=True, blank=True)
     last_bid_notified = models.DateTimeField(null=True, blank=True)
+    is_finished = models.BooleanField(default=False)
+    is_sold = models.BooleanField(default=False)
 
     def set_end_date(self, days: int):
         self.end_date = self.created_at + timedelta(days=days)
@@ -90,3 +92,12 @@ class Comment(models.Model):
 
     def __str__(self):
         return f"Comment by {self.user.first_name} on {self.auction_item.title}"
+    
+class ChatRoom(models.Model):
+    users = models.ManyToManyField(CustomUser)
+
+class Message(models.Model):
+    chatroom = models.ForeignKey(ChatRoom, related_name='messages', on_delete=models.CASCADE)
+    sender = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    content = models.TextField()
+    timestamp = models.DateTimeField(auto_now_add=True)

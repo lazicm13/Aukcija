@@ -43,6 +43,7 @@ const AuctionItem: React.FC<AuctionItemProps> = ({ auction, onDelete }) => {
     const [isInfoModalOpen, setIsInfoModalOpen] = useState(false);
     const [winner, setWinner] = useState('');
     const [currentUser, setCurrentUser] = useState('');
+    const [winnerPrice, setWinnerPrice] = useState(0);
     
     useEffect(() => {
         const fetchUserData = async () => {
@@ -58,6 +59,19 @@ const AuctionItem: React.FC<AuctionItemProps> = ({ auction, onDelete }) => {
         fetchUserData();
     }, []);
 
+    useEffect(() => {
+        const fetchOfferCount = async () => {
+            try {
+                const response = await api.get(`/api/auctions/${id}/offer_count`); // Pretpostavljeni API endpoint
+                setOfferCount(response.data.bid_count); // Postavljanje broja ponuda
+            } catch (error) {
+                console.error('Error fetching offer count:', error);
+            }
+        };
+
+        fetchOfferCount();
+    }, [id]);
+
     const handleFocus = () => {       
         setPlaceholder('');
     };
@@ -71,20 +85,45 @@ const AuctionItem: React.FC<AuctionItemProps> = ({ auction, onDelete }) => {
     const handleAuctionEnded = () => {
         api.get(`/api/auctions/${id}/winner`).then((response) => {
             const winner = response.data;
-            setSuccessMessage(`Aukcija je završena! Pobednik je ${winner.first_name} sa ponudom od ${winner.amount} RSD.`);
-            setWinner(winner.first_name);
+
+            if(offerCount > 0){
+                setSuccessMessage(`Aukcija je završena! Pobednik je ${winner.first_name} sa ponudom od ${winner.amount} RSD.`);
+                setWinner(winner.first_name);
+                setWinnerPrice(winner.amount);
+                // handleFinishAuction(winner.id);
+            }
+            else{
+                setSuccessMessage('Vaša aukcija nažalost nije prodata! Možete je postaviti ponovo!');
+                // handleEndAuction();
+            }
         }).catch((error) => {
             console.error('Error fetching winner:', error);
         });
+
+        
     };
 
-    useEffect(() => {
-        if (timeLeft <= 0) {
-            handleAuctionEnded();
-        }
-    }, [timeLeft]);
-    
-    
+    // const handleFinishAuction = (winnerId: number) => {
+    //     try{
+    //         const response = api.post(`/api/finish-auction/`, {
+    //             auction_id: id,
+    //             winnerId: winnerId,
+    //             amount: winnerPrice,
+    //         });
+    //         console.log(response);
+    //     }catch(error){
+    //         console.error(error);
+    //     }
+    // }
+
+    // const handleEndAuction = () => {
+    //     try{
+    //         const response = api.post(`/api/end-auction/${id}`);
+    //         console.log(response);
+    //     }catch(error){
+    //         console.error(error);
+    //     }
+    // }
 
     useEffect(() => {
         const endTime = new Date(end_date).getTime();
@@ -112,20 +151,8 @@ const AuctionItem: React.FC<AuctionItemProps> = ({ auction, onDelete }) => {
     
         return () => clearInterval(interval);
     }, [end_date]);
+
     
-    useEffect(() => {
-        const fetchOfferCount = async () => {
-            try {
-                const response = await api.get(`/api/auctions/${id}/offer_count`); // Pretpostavljeni API endpoint
-                setOfferCount(response.data.bid_count); // Postavljanje broja ponuda
-            } catch (error) {
-                console.error('Error fetching offer count:', error);
-            }
-        };
-
-        fetchOfferCount();
-    }, [id]);
-
     const formatTimeLeft = (time: number) => {
         const seconds = Math.floor((time / 1000) % 60);
         const minutes = Math.floor((time / 1000 / 60) % 60);
@@ -142,8 +169,14 @@ const AuctionItem: React.FC<AuctionItemProps> = ({ auction, onDelete }) => {
             return `${seconds}s`;
         }
     };
-    
 
+    useEffect(() => {
+        if (timeLeft <= 0) {
+            handleAuctionEnded();
+            
+        }
+    }, [timeLeft]);
+    
 
     const nextSlide = () => {
         setCurrentSlide((prev) => (prev + 1) % images.length);

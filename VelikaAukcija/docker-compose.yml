@@ -44,3 +44,12 @@ services:
     depends_on:
       - redis
       - db
+
+  celery-beat:
+    build: .
+    command: celery -A backend beat --loglevel=info
+    volumes:
+      - .:/code
+    depends_on:
+      - redis
+      - db

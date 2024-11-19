@@ -88,7 +88,7 @@ function Header() {
                 <a href="/profil">Profil</a>
                 <a href="/moje-aukcije">Moje aukcije</a>
                 <a href='/moje-licitacije' title='Predmeti na kojima sam licitirao'>Moje licitacije</a>
-                <a>Napiši primedbu</a>
+                <a href='/moje-poruke'>Poruke</a>
                 <a href="#" onClick={handleLogout}>Odjava</a>
               </div>
             )}

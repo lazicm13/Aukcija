@@ -1,7 +1,7 @@
 from rest_framework import generics, status, serializers
-from .serializers import UserSerializer, AuctionItemSerializer, AuctionImageSerializer, BidSerializer, UserUpdateSerializer, CommentSerializer
+from .serializers import UserSerializer, AuctionItemSerializer, AuctionImageSerializer, BidSerializer, UserUpdateSerializer, CommentSerializer, MessageSerializer, ChatRoomSerializer
 from rest_framework.permissions import IsAuthenticated, AllowAny
-from .models import AuctionItem, AuctionImage, Bid, Comment
+from .models import AuctionItem, AuctionImage, Bid, Comment, Message, ChatRoom
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.contrib.auth import authenticate, login, logout
@@ -344,6 +344,7 @@ class FetchAuctionWinner(APIView):
 
             # Vratimo podatke o pobedniku
             winner_data = {
+                'id': winner.id,
                 'first_name': winner.first_name,
                 'amount': winner_bid.amount,  # Najveća ponuda
             }
@@ -351,6 +352,14 @@ class FetchAuctionWinner(APIView):
             return Response(winner_data, status=status.HTTP_200_OK)
         except AuctionItem.DoesNotExist:
             return Response({'error': 'Auction not found'}, status=status.HTTP_404_NOT_FOUND)
+        
+
+class FinishAuction(APIView):
+    permission_classes = [IsAuthenticated]
+
+    
+        
+        
 #endregion
 
 
@@ -508,6 +517,7 @@ class CurrentUserDataView(APIView):
                 'city': request.user.city,
                 'phone_number': request.user.phone_number,
                 'is_superuser': request.user.is_superuser,
+                'email': request.user.email,
                 #'username': request.user.username,
                 #'is_verified': request.user.is_verified,
                 #'date_joined': request.user.date_joined,
@@ -686,7 +696,50 @@ def send_report_email(id, reportText):
         fail_silently=False,
     )
 
+def send_auction_finished_email(auction_id, winnerId, amount):
+        # Priprema podataka za mejl
+        auction_link = f"http://localhost:5173/aukcija/{auction_id}"
+
+        # Dohvat korisnika koji je pobedio na aukciji
+        auction = AuctionItem.objects.get(id=auction_id);
+
+        User = get_user_model()
+        try:
+            winner = User.objects.get(id=winnerId)
+        except User.DoesNotExist:
+            raise NotFound("Pobednik aukcije nije pronađen.")
+
+        subject = f"Čestitamo {winner.first_name}. Pobedili ste na aukciji \"{auction.title}\"!"
+        message = f"Aukciju možete pogledati ovde: {auction_link}\nProdavca možete kontaktirati na broj telefona: {auction.phone_number}"
+        # Validacija da korisnik ima e-mail
+        if not winner.email:
+            raise ValueError("Pobednik nema podešenu e-mail adresu.")
+
+        # Asinkrono slanje mejla koristeći Celery task
+        send_email_task.delay(subject, message, settings.DEFAULT_FROM_EMAIL, [winner.email])
+
 @shared_task
 def send_email_task(subject, message, from_email, recipient_list):
     send_mail(subject, message, from_email, recipient_list, fail_silently=False)
+#endregion
+
+#region Messages
+class MessageView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, chatroom_id):
+        messages = Message.objects.filter(chatroom_id=chatroom_id)
+        serializer = MessageSerializer(messages, many=True)
+        return Response(serializer.data)
+
+    def post(self, request, chatroom_id):
+        content = request.data.get('content')
+        chatroom = ChatRoom.objects.get(id=chatroom_id)
+        message = Message.objects.create(
+            chatroom=chatroom,
+            sender=request.user,
+            content=content
+        )
+        serializer = MessageSerializer(message)
+        return Response(serializer.data)
 #endregion
