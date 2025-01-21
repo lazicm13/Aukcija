@@ -40,6 +40,7 @@ CORS_ALLOW_CREDENTIALS = True
 CORS_ORIGIN_WHITELIST = [
     "http://localhost:5173",
     'http://localhost',
+    'http://192.168.0.33'
 ]
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
@@ -104,7 +105,7 @@ CSRF_TRUSTED_ORIGINS = [
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", "192.168.0.33"]
 
 REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES":(
@@ -122,6 +123,7 @@ CSRF_COOKIE_SECURE = False  # Set to True in production with HTTPS
 CSRF_COOKIE_HTTPONLY = False
 CSRF_COOKIE_AGE = 31449600  # 1 year in seconds
 
+AUTH_USER_MODEL = 'api.CustomUser'
 
 # Application definition
 
@@ -167,7 +169,6 @@ TEMPLATES = [
         },
     },
 ]
-AUTH_USER_MODEL = 'api.CustomUser'
 
 ASGI_APPLICATION = 'backend.asgi.application'
 

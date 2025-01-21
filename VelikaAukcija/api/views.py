@@ -1,7 +1,7 @@
 from rest_framework import generics, status, serializers
-from .serializers import UserSerializer, AuctionItemSerializer, AuctionImageSerializer, BidSerializer, UserUpdateSerializer, CommentSerializer, MessageSerializer, ChatRoomSerializer
+from .serializers import UserSerializer, AuctionItemSerializer, AuctionImageSerializer, BidSerializer, UserUpdateSerializer, CommentSerializer
 from rest_framework.permissions import IsAuthenticated, AllowAny
-from .models import AuctionItem, AuctionImage, Bid, Comment, Message, ChatRoom
+from .models import AuctionItem, AuctionImage, Bid, Comment
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.contrib.auth import authenticate, login, logout
@@ -723,23 +723,23 @@ def send_email_task(subject, message, from_email, recipient_list):
     send_mail(subject, message, from_email, recipient_list, fail_silently=False)
 #endregion
 
-#region Messages
-class MessageView(APIView):
-    permission_classes = [IsAuthenticated]
+# #region Messages
+# class MessageView(APIView):
+#     permission_classes = [IsAuthenticated]
 
-    def get(self, request, chatroom_id):
-        messages = Message.objects.filter(chatroom_id=chatroom_id)
-        serializer = MessageSerializer(messages, many=True)
-        return Response(serializer.data)
+#     def get(self, request, chatroom_id):
+#         messages = Message.objects.filter(chatroom_id=chatroom_id)
+#         serializer = MessageSerializer(messages, many=True)
+#         return Response(serializer.data)
 
-    def post(self, request, chatroom_id):
-        content = request.data.get('content')
-        chatroom = ChatRoom.objects.get(id=chatroom_id)
-        message = Message.objects.create(
-            chatroom=chatroom,
-            sender=request.user,
-            content=content
-        )
-        serializer = MessageSerializer(message)
-        return Response(serializer.data)
-#endregion
+#     def post(self, request, chatroom_id):
+#         content = request.data.get('content')
+#         chatroom = ChatRoom.objects.get(id=chatroom_id)
+#         message = Message.objects.create(
+#             chatroom=chatroom,
+#             sender=request.user,
+#             content=content
+#         )
+#         serializer = MessageSerializer(message)
+#         return Response(serializer.data)
+# #endregion

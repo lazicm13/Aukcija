@@ -62,24 +62,24 @@ function Login(){
 function App() {
   const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
 
-  useEffect(() => {
-      const fetchUserData = async () => {
-          try {
-              const response = await api.get('/api/current_user_data');
-              setIsAdmin(response.data.is_superuser);
-          } catch (error) {
-              console.error('Error fetching user data:', error);
-              setIsAdmin(false); // Postavi na false ako API poziv ne uspe
-          }
-      };
+  // useEffect(() => {
+  //     const fetchUserData = async () => {
+  //         try {
+  //             const response = await api.get('/api/current_user_data');
+  //             setIsAdmin(response.data.is_superuser);
+  //         } catch (error) {
+  //             console.error('Error fetching user data:', error);
+  //             setIsAdmin(false); // Postavi na false ako API poziv ne uspe
+  //         }
+  //     };
 
-      fetchUserData();
-  }, []);
+  //     fetchUserData();
+  // }, []);
 
-  if (isAdmin === null) {
-      // Loader dok se ne utvrdi da li je admin
-      return <div>Loading...</div>;
-  }
+  // if (isAdmin === null) {
+  //     // Loader dok se ne utvrdi da li je admin
+  //     return <div>Loading...</div>;
+  // }
 
   return (
     <>
@@ -150,9 +150,9 @@ function App() {
               </ProtectedRoute>
             }
           />
-          <Route path='/admin' element={<AdminRoute isAdmin={isAdmin} />}>
+          {/* <Route path='/admin' element={<AdminRoute isAdmin={isAdmin} />}>
             <Route path='dashboard' element={<AdminPage />} />
-          </Route>
+          </Route> */}
 
           <Route
             path='/moje-licitacije'
@@ -162,8 +162,8 @@ function App() {
               </ProtectedRoute>
             }
           />
-          <Route path="/chat/:chatroomId" element={<ChatPage/>} />
-          <Route path="/moje-poruke" element={<ChatListPage />} />
+          {/* <Route path="/chat/:chatroomId" element={<ChatPage/>} />
+          <Route path="/moje-poruke" element={<ChatListPage />} /> */}
         </Routes>
       </Router>
     </>

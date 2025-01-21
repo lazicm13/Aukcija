@@ -4,7 +4,7 @@ from .views import LoginView, LogoutView, user_status, FetchUsernamesView, BidLi
 from .views import CSRFTokenView, google_login,AuctionImageListCreate, CurrentUserView, AuctionItemDetail, BidCreateView, BlockUserView
 from .views import CurrentUserDataView, UpdateUserProfileView, CommentCreateView, CommentListView, report_auction_view, FetchUserDataByUsername
 from .views import FetchAuctionsByCategory, CommentDeleteView, AuctionItemDelete, AuctionItemListCreate, AllAuctionItemsList, verify_email
-from .views import FetchAllMyBiddings, FetchAuctionWinner, FinishAuction, MessageView
+from .views import FetchAllMyBiddings, FetchAuctionWinner, FinishAuction
 
 urlpatterns = [
     path('login/', LoginView.as_view(), name='login'),
@@ -37,5 +37,5 @@ urlpatterns = [
     path('all-my-biddings/', FetchAllMyBiddings.as_view(), name='my-biddings'),
     path('auctions/<int:auction_id>/winner/', FetchAuctionWinner.as_view(), name='fetch_auction_winner'),
     path('finish-auction/', FinishAuction.as_view(), name='finish-auction'),
-    path('chat/<int:chatroom_id>/messages/', MessageView.as_view(), name='messages'),
+    # path('chat/<int:chatroom_id>/messages/', MessageView.as_view(), name='messages'),
 ]

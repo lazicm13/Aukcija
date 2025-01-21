@@ -1,6 +1,6 @@
 from .models import CustomUser
 from rest_framework import serializers
-from .models import AuctionItem, AuctionImage, Comment, Message, ChatRoom
+from .models import AuctionItem, AuctionImage, Comment
 from datetime import timedelta
 from django.utils import timezone
 
@@ -164,16 +164,16 @@ class CommentSerializer(serializers.ModelSerializer):
         return attrs
 
 
-class MessageSerializer(serializers.ModelSerializer):
-    sender = serializers.StringRelatedField()
+# class MessageSerializer(serializers.ModelSerializer):
+#     sender = serializers.StringRelatedField()
 
-    class Meta:
-        model = Message
-        fields = ['sender', 'content', 'timestamp']
+#     class Meta:
+#         model = Message
+#         fields = ['sender', 'content', 'timestamp']
 
-class ChatRoomSerializer(serializers.ModelSerializer):
-    users = serializers.StringRelatedField(many=True)
+# class ChatRoomSerializer(serializers.ModelSerializer):
+#     users = serializers.StringRelatedField(many=True)
 
-    class Meta:
-        model = ChatRoom
-        fields = ['users']
+#     class Meta:
+#         model = ChatRoom
+#         fields = ['users']

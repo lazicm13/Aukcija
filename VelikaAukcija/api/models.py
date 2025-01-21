@@ -86,18 +86,18 @@ class Bid(models.Model):
 
 class Comment(models.Model):
     auction_item = models.ForeignKey(AuctionItem, related_name='comments', on_delete=models.CASCADE)
-    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='comments')
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='comments')
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"Comment by {self.user.first_name} on {self.auction_item.title}"
     
-class ChatRoom(models.Model):
-    users = models.ManyToManyField(CustomUser)
+# class ChatRoom(models.Model):
+#     users = models.ManyToManyField(CustomUser)
 
-class Message(models.Model):
-    chatroom = models.ForeignKey(ChatRoom, related_name='messages', on_delete=models.CASCADE)
-    sender = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
-    content = models.TextField()
-    timestamp = models.DateTimeField(auto_now_add=True)
+# class Message(models.Model):
+#     chatroom = models.ForeignKey(ChatRoom, related_name='messages', on_delete=models.CASCADE)
+#     sender = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+#     content = models.TextField()
+#     timestamp = models.DateTimeField(auto_now_add=True)
