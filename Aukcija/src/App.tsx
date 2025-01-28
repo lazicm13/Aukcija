@@ -14,11 +14,11 @@ import UserPage from './Pages/UserPage'
 import MyAuctionsPage from './Pages/MyAuctionsPage'
 import ChangePasswordPage from './Pages/ChangePasswordPage'
 import Auction from './Components/AuctionItems/Auction'
-import AdminPage from './Pages/AdminPage'
-import AdminRoute from './Components/AdminRoute'
+// import AdminPage from './Pages/AdminPage'
+// import AdminRoute from './Components/AdminRoute'
 import MyBids from './Pages/MyBids'
-import ChatPage from './Pages/ChatRoom'
-import ChatListPage from './Components/Chat/ChatListPage'
+// import ChatPage from './Pages/ChatRoom'
+// import ChatListPage from './Components/Chat/ChatListPage'
 
 const CLIENT_ID = '516726223486-ese1hmu3fmae12vgcv8b2tthgcnol316.apps.googleusercontent.com';
 
