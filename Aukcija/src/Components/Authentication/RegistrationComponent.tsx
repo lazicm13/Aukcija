@@ -8,12 +8,14 @@ function RegistrationComponent() {
     const [formData, setFormData] = useState({
         first_name: '',
         email: '',
+        phone_number: '',
         password: '',
         confirmPassword: ''
     });
     const [error, setError] = useState({
         first_name: '',
         email: '',
+        phone_number: '',
         password: '',
         confirmPassword: '',
         general: ''
@@ -51,6 +53,13 @@ function RegistrationComponent() {
             errors.email = 'Email nije validan.';
             isValid = false;
         }
+        if(!formData.phone_number){
+            errors.phone = 'Broj telefona je obavezan';
+            isValid = false;
+        }else if (!/^\+?[0-9]\d{1,14}$/.test(formData.phone_number)) {
+            errors.phone = 'Broj telefona nije validan.';
+            isValid = false;
+        }
         if (!formData.password) {
             errors.password = 'Lozinka je obavezna.';
             isValid = false;
@@ -79,6 +88,7 @@ function RegistrationComponent() {
             const response = await api.post('/api/user/register/', {
                 first_name: formData.first_name,
                 email: formData.email,
+                phone_number: formData.phone_number,
                 password: formData.password
             });
 
@@ -89,6 +99,7 @@ function RegistrationComponent() {
                 setFormData({
                     first_name: '',
                     email: '',
+                    phone_number: '',
                     password: '',
                     confirmPassword: ''
                 });
@@ -168,6 +179,17 @@ function RegistrationComponent() {
                             onChange={handleInputChange}
                         />
                         {error.email && <p className="error-message">{error.email}</p>}
+                    </div>
+                    <div>
+                        <label htmlFor="phone">Broj telefona:</label>
+                        <input
+                            type="phone"
+                            id="phone"
+                            name="phone_number"
+                            value={formData.phone_number}
+                            onChange={handleInputChange}
+                        />
+                        {error.phone_number && <p className="error-message">{error.phone_number}</p>}
                     </div>
                     <div>
                         <label htmlFor="password">Lozinka:</label>

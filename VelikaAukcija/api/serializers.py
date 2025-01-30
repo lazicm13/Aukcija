@@ -7,7 +7,7 @@ from django.utils import timezone
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = ['id', 'first_name','email', 'password']  
+        fields = ['id', 'first_name', 'phone_number','email', 'password']  
         extra_kwargs = {
             'password': {'write_only': True},
         }
@@ -16,11 +16,17 @@ class UserSerializer(serializers.ModelSerializer):
         if CustomUser.objects.filter(email=value).exists():
             raise serializers.ValidationError("Korisnik sa ovim emailom već postoji.")
         return value
+    
+    def validate_phone(self, value):
+        if CustomUser.objects.filter(phone_number=value).exists():
+            raise serializers.ValidationError("Korisnik sa ovim brojem telefona već postoji.")
+        return value
 
     def create(self, validated_data):
         user = CustomUser(
             first_name = validated_data['first_name'],
             email=validated_data['email'],
+            phone_number = validated_data['phone_number'],
             username=validated_data['email']  # Koristimo email kao username
         )
         user.set_password(validated_data['password'])  # Hashujemo lozinku

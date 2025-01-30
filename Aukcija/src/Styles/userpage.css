@@ -1,7 +1,7 @@
 /* Base styles */
 .userpage-form {
     width: 100%;
-    max-width: 400px; /* Adjust as needed */
+    max-width: 600px; /* Adjust as needed */
     margin: 0 auto;
     padding: 20px; /* Add some padding for better spacing */
     box-sizing: border-box;
@@ -49,6 +49,7 @@
     border: 2px solid green;
     position: relative;
     animation: showCheckmark 1s ease forwards;
+    margin-top: 20px;
 }
 
 .success-animation .checkmark::before {

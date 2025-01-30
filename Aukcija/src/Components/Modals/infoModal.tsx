@@ -15,7 +15,7 @@ const InfoModal: React.FC<InfoModalProps> = ({ isOpen, message, title, onCancel 
             <div className="modal-content">
                 <h2>{title}</h2>
                 <p>{message}</p>
-                <img src='/assets/maxbidding.gif'></img>
+                {/* <img src='/assets/maxbidding.gif'></img> */}
                 <br></br>
                 <button onClick={onCancel}>OK</button>
             </div>

@@ -76,6 +76,18 @@ function LoginComponent() {
         try {
             const response = await api.post("/api/auth/google/", { id_token: credential });
             if (response.status === 200) {
+                const userData = response.data; // Pretpostavljamo da backend vraća podatke o korisniku
+                setSuccessMessage('Uspesno ste se ulogovali!');
+                // Provera da li korisnik ima unet broj telefona
+                if (userData.is_new_user) {
+                    setTimeout(() => {
+                        
+                        setError('');
+                        navigate('/profil');
+                    }, 1800); // Preusmeravanje na stranicu za unos broja telefona
+                    return;  // Zaustavlja dalje izvršavanje funkcije
+                }
+
                 setSuccessMessage('Uspesno ste se ulogovali!');
                 setError('');
                 setTimeout(() => {

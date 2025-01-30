@@ -65,7 +65,7 @@ function Header() {
       <div className="header-right">
         {location.pathname === '/' && (
           <button className='create-auction-btn' onClick={handleCreateAuction}>
-            Kreiraj aukciju 💰
+            Postavi Aukciju
           </button>
         )}
         {location.pathname === '/registracija' && <p className='register'>Imate nalog? → <a href='login'>Ulogujte se</a></p>}
@@ -88,7 +88,7 @@ function Header() {
                 <a href="/profil">Profil</a>
                 <a href="/moje-aukcije">Moje aukcije</a>
                 <a href='/moje-licitacije' title='Predmeti na kojima sam licitirao'>Moje licitacije</a>
-                <a href='/moje-poruke'>Poruke</a>
+                {/* <a href='/moje-poruke'>Poruke</a> */}
                 <a href="#" onClick={handleLogout}>Odjava</a>
               </div>
             )}

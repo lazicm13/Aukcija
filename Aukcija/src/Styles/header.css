@@ -122,19 +122,20 @@
 
 /* Button styles */
 button.create-auction-btn {
-    background-color:cadetblue !important;
-    color: #ffffff;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 5px;
+    background-color:gold !important;
+    color: black;
+    border: 1px solid orange;
+    padding: 10px !important;
+    border-radius: 10px;
     font-size: 1rem;
+    font-weight: bolder;
     cursor: pointer;
     transition: background-color 0.3s ease;
     min-width: 157px;
 }
 
 button.create-auction-btn:hover {
-    background-color: #328f10 !important;
+    background-color: goldenrod !important;
 }
 
 @media (max-width: 480px) {

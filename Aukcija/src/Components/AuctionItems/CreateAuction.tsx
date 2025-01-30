@@ -3,6 +3,7 @@ import api from "../../api";
 import './../../Styles/createAuction.css';
 import { useNavigate } from "react-router-dom";
 import { AxiosError } from "axios";
+import InfoModal from '../Modals/infoModal';
 
 function CreateAuction() {
     const [description, setDescription] = useState("");
@@ -15,6 +16,8 @@ function CreateAuction() {
     const [category, setCategory] = useState('');
     const [errors, setErrors] = useState<{ [key: string]: string }>({});
     const navigate = useNavigate();
+    const [successMessage, setSuccessMessage] = useState('');
+    const [isInfoModalOpen, setIsInfoModalOpen] = useState(false);
 
     // useEffect(() => {
     //     const fetchUserData = async () => {
@@ -128,12 +131,11 @@ function CreateAuction() {
                     });
 
                     if (imageResponse.status === 201) {
-                        alert("Aukcija i slike uspešno kreirani!");
-                        setTitle("");
-                        setDescription("");
-                        setCurrentPrice('');
-                        setImages([]);
-                        navigate('/');
+                        setIsInfoModalOpen(true);
+                        setTimeout(() => { 
+                            setIsInfoModalOpen(false);
+                            navigate('/')
+                        }, 4000);
                     } else {
                         console.error("Greška pri učitavanju slika: ", imageResponse);
                         alert("Neuspešno učitavanje slika.");
@@ -164,6 +166,9 @@ function CreateAuction() {
         }
     };
 
+    const handleCancel = () => {
+        setIsInfoModalOpen(false);
+    }
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>, field: string) => {
         const { value } = e.target;
@@ -233,7 +238,7 @@ function CreateAuction() {
                                 value={current_price}
                                 onChange={(e) => handleInputChange(e, 'current_price')}
                             />
-                            <span id="din-span">Din.</span>
+                            <span id="din-span">RSD</span>
                             {errors.current_price && <p className="error-message">{errors.current_price}</p>}
                         </div>
 
@@ -331,10 +336,22 @@ function CreateAuction() {
                         />
                     </div>
                     {errors.phoneNumber && <p className="error-message">{errors.phoneNumber}</p>}
-
+                    
                     <input type="submit" value="Završi" id="submit-btn" />
+                        {successMessage && (
+                        <div className="success-anim">
+                            <p className="success-message">{successMessage}</p>
+                            <div className="checkmark"></div>
+                        </div>
+                )}
                 </div>
             </form>
+            <InfoModal
+            isOpen={isInfoModalOpen}
+            title='Čestitamo!'
+            message='Uspešno ste postavili aukciju.'
+            onCancel={handleCancel}
+        />
         </div>
     );
 }

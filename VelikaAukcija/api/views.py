@@ -140,7 +140,13 @@ def google_login(request):
                 return JsonResponse({"detail": "Vaš nalog je blokiran. Ne možete se ulogovati."}, status=status.HTTP_403_FORBIDDEN)
 
             login(request, user)
-            return JsonResponse({'message': 'Login successful!', 'email': email, 'name': name}, status=200)
+            return JsonResponse({
+                'message': 'Login successful!',
+                'email': email,
+                'name': name,
+                'is_new_user': created  # This will indicate if the user is new or existing
+            }, status=200)
+
 
         except ValueError as e:
             return JsonResponse({'error': 'Invalid token', 'details': str(e)}, status=400)

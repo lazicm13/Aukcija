@@ -15,8 +15,11 @@ function UserPage() {
     });
     const [successMessage, setSuccessMessage] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
+    const [phoneErrorMessage, setPhoneErrorMessage] = useState('');
 
     useEffect(() => {
+
+
         const fetchUserData = async () => {
             try {
                 const response = await api.get('/api/current_user_data');
@@ -33,6 +36,13 @@ function UserPage() {
 
         fetchUserData();
     }, []);
+    useEffect(() => {
+        if (userData.phone_number === '') {
+            setPhoneErrorMessage("Molimo vas da unesete broj telefona.");
+        } else {
+            setPhoneErrorMessage(''); // Ako broj postoji, očisti poruku o grešci
+        }
+    }, [userData.phone_number]);
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -92,6 +102,7 @@ function UserPage() {
                                 onChange={handleChange}
                             />
                         </div>
+                        {phoneErrorMessage && <p className="error-message">{phoneErrorMessage}</p>}
                         <div className="form-group">
                             <label htmlFor="city">Grad</label>
                             <input
