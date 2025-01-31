@@ -154,3 +154,7 @@ button.create-auction-btn:hover {
         margin-right: 20px;
     }
 }
+
+.notification-logo{
+    cursor: pointer;
+}

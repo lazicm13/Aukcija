@@ -168,6 +168,7 @@ function CreateAuction() {
 
     const handleCancel = () => {
         setIsInfoModalOpen(false);
+        navigate('/')
     }
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>, field: string) => {

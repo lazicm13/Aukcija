@@ -235,7 +235,7 @@ const deleteAuctionItem = async (id: number) => {
                 </select>
             </div>
             <div className="auction-list">
-                {auctionCount === 0 && <img src="/assets/sorry-emoji.png" className="sorry-emoji"></img>}
+                {auctionCount === 0 && <h1>Trenutno nema aukcija za izabranu kategoriju!</h1>}
                 <div className="auction-list-inner">
                     {paginatedItems.map((item) => (
                         <AuctionItem

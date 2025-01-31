@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import './../Styles/header.css';
 import api from '../api';
+import Bellfrom from './Bell';
+import { Bell } from 'lucide-react';
+
 
 function Header() {
   const location = useLocation();
@@ -57,6 +60,10 @@ function Header() {
     }
   };
 
+  const handleNavigate = () =>{
+    navigate('/notifikacije');
+  } 
+
 
   return (
     <header className='sticky-header'>
@@ -65,7 +72,7 @@ function Header() {
       <div className="header-right">
         {location.pathname === '/' && (
           <button className='create-auction-btn' onClick={handleCreateAuction}>
-            Postavi Aukciju
+            Postavi Aukciju 
           </button>
         )}
         {location.pathname === '/registracija' && <p className='register'>Imate nalog? → <a href='login'>Ulogujte se</a></p>}
@@ -73,10 +80,10 @@ function Header() {
         {(location.pathname === '/' && userName === '') && <div className='login-register-links'><a href='login'>Ulogujte se </a><a href='/registracija'> Registracija</a></div>}
         {(location.pathname !== '/' && location.pathname !== '/login' && location.pathname !== '/registracija') && 
         <a href='/'><img src='/assets/home.png' className='home-button'></img></a>}
-        
+        {userName && (<Bell onClick={handleNavigate} className='notification-logo'/>)}
         {userName && (
           <div className="user-profile">
-            <span className="user-name">{userName}</span>
+            {/* <span className="user-name">{userName}</span> */}
             <img 
               src='/assets/user-icon.png' 
               className='user-icon' 

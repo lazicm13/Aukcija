@@ -1,6 +1,6 @@
 from .models import CustomUser
 from rest_framework import serializers
-from .models import AuctionItem, AuctionImage, Comment
+from .models import AuctionItem, AuctionImage, Comment, Notification
 from datetime import timedelta
 from django.utils import timezone
 
@@ -169,7 +169,25 @@ class CommentSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError({'content': 'Komentar ne sme biti prazan.'})
         return attrs
 
+class NotificationSerializer(serializers.ModelSerializer):
+    sender = serializers.SerializerMethodField()
+    auction_item_id = serializers.IntegerField(write_only=True)
+    
+    class Meta:
+        model = Notification
+        fields = ['id', 'recipient', 'sender', 'message', 'is_read', 'created_at', 'auction_item_id']
+        read_only_fields = ['id', 'sender', 'created_at']
 
+    def get_sender(self, obj):
+        """Vraća ime korisnika koji je poslao notifikaciju ili None ako je sistemska notifikacija."""
+        return obj.sender.first_name if obj.sender else None
+
+    def create(self, validated_data):
+        auction_item_id = validated_data.pop('auction_item_id')
+        auction_item = AuctionItem.objects.get(id=auction_item_id)
+        validated_data['auction_item'] = auction_item
+
+        return super().create(validated_data)
 # class MessageSerializer(serializers.ModelSerializer):
 #     sender = serializers.StringRelatedField()
 

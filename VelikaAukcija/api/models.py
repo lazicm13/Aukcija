@@ -93,6 +93,33 @@ class Comment(models.Model):
     def __str__(self):
         return f"Comment by {self.user.first_name} on {self.auction_item.title}"
     
+class Notification(models.Model):
+    NOTIFICATION_TYPES = [
+        ('bid', 'Bid Placed'),
+        ('comment', 'New Comment'),
+        ('auction_end', 'Auction Ended'),
+        ('other', 'Other'),
+    ]
+
+    recipient = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="notifications")
+    sender = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True, blank=True, related_name="sent_notifications")
+    auction_item = models.ForeignKey('AuctionItem', on_delete=models.CASCADE, null=True, blank=True, related_name="notifications")
+    notification_type = models.CharField(max_length=20, choices=NOTIFICATION_TYPES, default='other')
+    message = models.TextField()
+    is_read = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def mark_as_read(self):
+        """Mark notification as read."""
+        self.is_read = True
+        self.save()
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"Notification for {self.recipient.username}: {self.message[:30]}"
+    
 # class ChatRoom(models.Model):
 #     users = models.ManyToManyField(CustomUser)
 

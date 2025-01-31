@@ -1,7 +1,7 @@
 from rest_framework import generics, status, serializers
-from .serializers import UserSerializer, AuctionItemSerializer, AuctionImageSerializer, BidSerializer, UserUpdateSerializer, CommentSerializer
+from .serializers import UserSerializer, AuctionItemSerializer, AuctionImageSerializer, BidSerializer, UserUpdateSerializer, CommentSerializer, NotificationSerializer
 from rest_framework.permissions import IsAuthenticated, AllowAny
-from .models import AuctionItem, AuctionImage, Bid, Comment
+from .models import AuctionItem, AuctionImage, Bid, Comment, Notification
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.contrib.auth import authenticate, login, logout
@@ -727,6 +727,16 @@ def send_auction_finished_email(auction_id, winnerId, amount):
 @shared_task
 def send_email_task(subject, message, from_email, recipient_list):
     send_mail(subject, message, from_email, recipient_list, fail_silently=False)
+#endregion
+class NotificationListView(generics.ListAPIView):
+    serializer_class = NotificationSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        # Filtriraj notifikacije prema korisniku (prikazuje samo notifikacije koje su vezane za korisnika)
+        return Notification.objects.filter(user=self.request.user).order_by('-created_at')
+#region Notifications
+
 #endregion
 
 # #region Messages

@@ -14,6 +14,7 @@ import UserPage from './Pages/UserPage'
 import MyAuctionsPage from './Pages/MyAuctionsPage'
 import ChangePasswordPage from './Pages/ChangePasswordPage'
 import Auction from './Components/AuctionItems/Auction'
+import NotificationsPage from './Pages/NotificationsPage'
 // import AdminPage from './Pages/AdminPage'
 // import AdminRoute from './Components/AdminRoute'
 import MyBids from './Pages/MyBids'
@@ -159,6 +160,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <MyBids />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path='/notifikacije'
+            element={
+              <ProtectedRoute>
+                <NotificationsPage/>
               </ProtectedRoute>
             }
           />
