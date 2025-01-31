@@ -15,9 +15,10 @@
 }
 
 .header-logo {
-    width: 120px; /* Keeps the logo responsive by limiting its width */
-    height: auto; /* Maintains the original aspect ratio */
+    width: 150px; /* Keeps the logo responsive by limiting its width */
+    height: 150px; /* Maintains the original aspect ratio */
     margin-left: 450px; /* Shifts logo slightly to the right */
+    margin-bottom: 0px;
 }
 
 /* Optional media queries for responsiveness */
