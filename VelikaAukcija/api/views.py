@@ -703,26 +703,41 @@ def send_report_email(id, reportText):
     )
 
 def send_auction_finished_email(auction_id, winnerId, amount):
-        # Priprema podataka za mejl
-        auction_link = f"http://localhost:5173/aukcija/{auction_id}"
+    # Priprema podataka za mejl
+    auction_link = f"http://localhost:5173/aukcija/{auction_id}"
 
-        # Dohvat korisnika koji je pobedio na aukciji
-        auction = AuctionItem.objects.get(id=auction_id);
+    # Dohvat korisnika koji je pobedio na aukciji
+    auction = AuctionItem.objects.get(id=auction_id);
 
-        User = get_user_model()
-        try:
-            winner = User.objects.get(id=winnerId)
-        except User.DoesNotExist:
-            raise NotFound("Pobednik aukcije nije pronađen.")
+    User = get_user_model()
+    try:
+        winner = User.objects.get(id=winnerId)
+    except User.DoesNotExist:
+        raise NotFound("Pobednik aukcije nije pronađen.")
 
-        subject = f"Čestitamo {winner.first_name}. Pobedili ste na aukciji \"{auction.title}\"!"
-        message = f"Aukciju možete pogledati ovde: {auction_link}\nProdavca možete kontaktirati na broj telefona: {auction.phone_number}"
-        # Validacija da korisnik ima e-mail
-        if not winner.email:
-            raise ValueError("Pobednik nema podešenu e-mail adresu.")
+    subject = f"Čestitamo {winner.first_name}. Pobedili ste na aukciji \"{auction.title}\"!"
+    message = f"Aukciju možete pogledati ovde: {auction_link}\nProdavca možete kontaktirati na broj telefona: {auction.phone_number}"
+    # Validacija da korisnik ima e-mail
+    if not winner.email:
+        raise ValueError("Pobednik nema podešenu e-mail adresu.")
 
-        # Asinkrono slanje mejla koristeći Celery task
-        send_email_task.delay(subject, message, settings.DEFAULT_FROM_EMAIL, [winner.email])
+    # Asinkrono slanje mejla koristeći Celery task
+    send_email_task.delay(subject, message, settings.DEFAULT_FROM_EMAIL, [winner.email])
+
+    Notification.objects.create(
+        recipient=winner,
+        sender=auction.user,  # Pošiljalac može biti vlasnik aukcije
+        message=f"Čestitamo! Osvojili ste aukciju '{auction.title}' sa ponudom od {amount} RSD.",
+        notification_type="AUCTION_WON"
+    )
+
+    # Kreiranje notifikacije za prodavca (vlasnika aukcije)
+    Notification.objects.create(
+        recipient=auction.user,
+        sender=winner,
+        message=f"Vaša aukcija '{auction.title}' je završena! Pobednik je {winner.first_name} {winner.last_name} sa ponudom od {amount} RSD.",
+        notification_type="AUCTION_FINISHED"
+    )
 
 @shared_task
 def send_email_task(subject, message, from_email, recipient_list):
@@ -734,7 +749,15 @@ class NotificationListView(generics.ListAPIView):
 
     def get_queryset(self):
         # Filtriraj notifikacije prema korisniku (prikazuje samo notifikacije koje su vezane za korisnika)
-        return Notification.objects.filter(user=self.request.user).order_by('-created_at')
+        return Notification.objects.filter(recipient=self.request.user).order_by('-created_at')
+
+class CreateNotificationView(generics.CreateAPIView):
+    serializer_class = NotificationSerializer
+    permission_classes = [IsAuthenticated]
+
+    def perform_create(self, serializer):
+        serializer.save()    
+        
 #region Notifications
 
 #endregion
