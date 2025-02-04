@@ -102,7 +102,6 @@ class Notification(models.Model):
     ]
 
     recipient = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="notifications")
-    sender = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True, blank=True, related_name="sent_notifications")
     auction_item = models.ForeignKey('AuctionItem', on_delete=models.CASCADE, null=True, blank=True, related_name="notifications")
     notification_type = models.CharField(max_length=20, choices=NOTIFICATION_TYPES, default='other')
     message = models.TextField()

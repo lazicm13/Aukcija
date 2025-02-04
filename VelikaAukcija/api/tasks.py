@@ -3,6 +3,7 @@ from django.conf import settings
 from datetime import datetime
 import importlib
 from celery import shared_task
+from .models import Notification
 
 @shared_task
 def check_auctions_status():
@@ -33,6 +34,21 @@ def check_auctions_status():
             subject_winner = "Čestitamo, pobedili ste u aukciji!"
             message_winner = f"Čestitamo! Pobedili ste u aukciji '{auction.title}'."
             send_mail(subject_winner, message_winner, settings.DEFAULT_FROM_EMAIL, [winner.email])
+            
+            Notification.objects.create(
+                recipient=winner,
+                auction_item = auction,
+                message=f"Čestitamo! Osvojili ste aukciju '{auction.title}'",
+                notification_type="auction_end"
+            )
+
+            # Kreiranje notifikacije za prodavca (vlasnika aukcije)
+            Notification.objects.create(
+                recipient=auction.seller,
+                auction_item = auction,
+                message=f"Vaša aukcija '{auction.title}' je završena! Pobednik je {winner.first_name} {winner.last_name} sa ponudom od RSD.",
+                notification_type="auction_end"
+            )
 
         else:
             # Ako nema ponuda, označi aukciju kao neuspešnu i obavesti prodavca
@@ -44,3 +60,10 @@ def check_auctions_status():
             message = f"Vaša aukcija '{auction.title}' nije uspela jer nije bilo ponuda."
             recipient = auction.seller.email
             send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [recipient])
+
+            Notification.objects.create(
+            recipient=auction.seller,
+            auction_item=auction,
+            message=f"Vaša aukcija '{auction.title}' nije uspela jer nije bilo ponuda.",
+            notification_type="auction_end"
+            )
