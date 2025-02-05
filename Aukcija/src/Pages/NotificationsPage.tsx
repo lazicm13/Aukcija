@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import api from '../api';
+import './../Styles/notifications.css';
 
 interface Notification {
   id: number;
@@ -24,7 +25,7 @@ function NotificationsPage() {
 
   const markAsRead = async (id: number) => {
     try {
-      await api.post(`/api/notifications/${id}/mark-as-read/`);
+      await api.patch(`/api/notifications/${id}/mark-as-read/`);
       setNotifications(prevNotifications =>
         prevNotifications.map(notification =>
           notification.id === id ? { ...notification, is_read: true } : notification
@@ -35,17 +36,17 @@ function NotificationsPage() {
     }
   };
 
-  // Funkcija za brisanje notifikacije
-  const deleteNotification = async (id: number) => {
-    try {
-      await api.delete(`/api/notifications/${id}/`);
-      setNotifications(prevNotifications =>
-        prevNotifications.filter(notification => notification.id !== id)
-      );
-    } catch (error) {
-      console.error('Error deleting notification:', error);
-    }
-  };
+  // // Funkcija za brisanje notifikacije
+  // const deleteNotification = async (id: number) => {
+  //   try {
+  //     await api.delete(`/api/notifications/${id}/`);
+  //     setNotifications(prevNotifications =>
+  //       prevNotifications.filter(notification => notification.id !== id)
+  //     );
+  //   } catch (error) {
+  //     console.error('Error deleting notification:', error);
+  //   }
+  // };
 
   useEffect(() => {
     fetchNotifications(); // Učitaj notifikacije kada se komponenta učita
@@ -64,11 +65,10 @@ function NotificationsPage() {
           {notifications.map((notification) => (
             <li key={notification.id} className={notification.is_read ? 'read' : 'unread'}>
               <p>{notification.message}</p>
-              <div>
+              <div className='button-container'>
                 {!notification.is_read && (
-                  <button onClick={() => markAsRead(notification.id)}>Mark as Read</button>
+                  <button onClick={() => markAsRead(notification.id)}>Označi kao pročitano</button>
                 )}
-                <button onClick={() => deleteNotification(notification.id)}>Delete</button>
               </div>
             </li>
           ))}

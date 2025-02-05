@@ -1,16 +1,33 @@
 import { Bell } from "lucide-react";
 
-const NotificationBell = ({ count }: { count: number }) => {
+interface NotificationBellProps {
+    count: number;
+    onClick: () => void;
+    className?: string;
+}
 
-
+const NotificationBell = ({ count, onClick, className }: NotificationBellProps) => {
     return (
-        <div className="relative">
-        <Bell  size={24} className="text-gray-600" />
-        {count > 0 && (
-            <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold px-1.5 py-0.5 rounded-full">
-            {count}
-            </span>
-        )}
+        <div className="relative inline-block">
+            <Bell size={24} className={`text-gray-600 ${className}`} onClick={onClick} />
+            {count > 0 && (
+                <span
+                    style={{
+                        position: "relative",
+                        bottom: "20px",
+                        right: "10px",
+                        backgroundColor: "red",
+                        color: "white",
+                        fontSize: "12px",
+                        fontWeight: "bold",
+                        padding: "2px 6px",
+                        borderRadius: "9999px",
+                        zIndex: 100,
+                    }}
+                >
+                    {count}
+                </span>
+            )}
         </div>
     );
 };

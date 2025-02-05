@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import './../Styles/header.css';
 import api from '../api';
-import Bellfrom from './Bell';
+import NotificationBell from './Bell';
 import { Bell } from 'lucide-react';
 
 
@@ -10,7 +10,20 @@ function Header() {
   const location = useLocation();
   const navigate = useNavigate();
   const [userName, setUserName] = useState(''); // Replace with actual user fetching logic
+    const [count, setUnreadCount] = useState<number>(0);
   
+    useEffect(() => {
+      const fetchUnreadNotificationsCount = async () => {
+        try {
+          const response = await api.get('/api/notifications/unread-count/');
+          setUnreadCount(response.data.unread_notifications_count); // Ažurira broj notifikacija
+        } catch (error) {
+          console.error('Error fetching unread notifications count:', error);
+        }
+      };
+  
+      fetchUnreadNotificationsCount(); // Poziv API-ja prilikom učitavanja komponente
+    }, []);
   
   useEffect(() => {
     const fetchUsername = async () => {
@@ -64,6 +77,8 @@ function Header() {
     navigate('/notifikacije');
   } 
 
+  
+
 
   return (
     <header className='sticky-header'>
@@ -80,7 +95,7 @@ function Header() {
         {(location.pathname === '/' && userName === '') && <div className='login-register-links'><a href='login'>Ulogujte se </a><a href='/registracija'> Registracija</a></div>}
         {(location.pathname !== '/' && location.pathname !== '/login' && location.pathname !== '/registracija') && 
         <a href='/'><img src='/assets/home.png' className='home-button'></img></a>}
-        {userName && (<Bell onClick={handleNavigate} className='notification-logo'/>)}
+        {userName && (<NotificationBell count={count} onClick={handleNavigate} className='notification-logo'/>)}
         {userName && (
           <div className="user-profile">
             {/* <span className="user-name">{userName}</span> */}

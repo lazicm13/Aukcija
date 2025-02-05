@@ -730,6 +730,10 @@ def send_report_email(id, reportText):
 def send_email_task(subject, message, from_email, recipient_list):
     send_mail(subject, message, from_email, recipient_list, fail_silently=False)
 #endregion
+
+        
+#region Notifications
+
 class NotificationListView(generics.ListAPIView):
     serializer_class = NotificationSerializer
     permission_classes = [IsAuthenticated]
@@ -744,8 +748,36 @@ class CreateNotificationView(generics.CreateAPIView):
 
     def perform_create(self, serializer):
         serializer.save()    
-        
-#region Notifications
+
+class MarkAsReadNotificationView(generics.UpdateAPIView):
+    serializer_class = NotificationSerializer
+    permission_classes = [IsAuthenticated]
+    queryset = Notification.objects.all()
+
+    http_method_names = ['get', 'patch']  # Ensure 'patch' is allowed if needed
+
+    def get_object(self):
+        notification = super().get_object()
+        if notification.recipient != self.request.user:
+            raise PermissionDenied("You do not have permission to mark this notification as read.")
+        return notification
+
+    def update(self, request, *args, **kwargs):
+        notification = self.get_object()
+        notification.mark_as_read()
+        return Response(NotificationSerializer(notification).data, status=status.HTTP_200_OK)
+
+class UnreadNotificationsCountView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        # Prebroj nepregledane notifikacije za trenutnog korisnika
+        unread_count = Notification.objects.filter(
+            recipient=request.user,
+            is_read=False
+        ).count()
+
+        return Response({"unread_notifications_count": unread_count}, status=status.HTTP_200_OK)
 
 #endregion
 

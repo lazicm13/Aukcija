@@ -4,7 +4,7 @@ from .views import LoginView, LogoutView, user_status, FetchUsernamesView, BidLi
 from .views import CSRFTokenView, google_login,AuctionImageListCreate, CurrentUserView, AuctionItemDetail, BidCreateView, BlockUserView
 from .views import CurrentUserDataView, UpdateUserProfileView, CommentCreateView, CommentListView, report_auction_view, FetchUserDataByUsername
 from .views import FetchAuctionsByCategory, CommentDeleteView, AuctionItemDelete, AuctionItemListCreate, AllAuctionItemsList, verify_email
-from .views import FetchAllMyBiddings, FetchAuctionWinner, FinishAuction, NotificationListView
+from .views import FetchAllMyBiddings, FetchAuctionWinner, FinishAuction, NotificationListView, MarkAsReadNotificationView, UnreadNotificationsCountView
 
 urlpatterns = [
     path('login/', LoginView.as_view(), name='login'),
@@ -38,5 +38,7 @@ urlpatterns = [
     path('auctions/<int:auction_id>/winner/', FetchAuctionWinner.as_view(), name='fetch_auction_winner'),
     path('finish-auction/', FinishAuction.as_view(), name='finish-auction'),
     path('notifications/', NotificationListView.as_view(), name='notifications-list'),
+    path('notifications/<int:pk>/mark-as-read/', MarkAsReadNotificationView.as_view(), name='mark-as-read-notification'),
+    path('notifications/unread-count/', UnreadNotificationsCountView.as_view(), name='unread-notifications-count'),
     # path('chat/<int:chatroom_id>/messages/', MessageView.as_view(), name='messages'),
 ]
