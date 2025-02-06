@@ -146,9 +146,7 @@ function App() {
           <Route
             path='/aukcija/:id'
             element={
-              <ProtectedRoute>
                 <Auction />
-              </ProtectedRoute>
             }
           />
           {/* <Route path='/admin' element={<AdminRoute isAdmin={isAdmin} />}>

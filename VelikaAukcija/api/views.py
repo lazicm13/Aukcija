@@ -40,10 +40,10 @@ def verify_email(request, code):
         messages.success(request, "Uspešno ste verifikovali svoj nalog.")
         
         # Redirect na login stranicu klijentskog sajta
-        return redirect(f'http://localhost:5173/login')
+        return redirect(f'http://192.168:5173/login')
     except get_user_model().DoesNotExist:
         messages.error(request, "Verifikacioni kod nije validan.")
-        return redirect(f'http://localhost:5173/login')
+        return redirect(f'http://192.168.0.34:5173/login')
 
 @method_decorator(ensure_csrf_cookie, name='dispatch')
 class CSRFTokenView(APIView):
@@ -83,7 +83,7 @@ class LoginView(APIView):
             login(request, user)
 
             if user.is_superuser:
-                return Response({"redirect_url": "http://localhost:5173/admin/dashboard"}, status=status.HTTP_200_OK)
+                return Response({"redirect_url": "http://192.168.0.34:5173/admin/dashboard"}, status=status.HTTP_200_OK)
             return Response({"detail": "Uspešno ste se ulogovali"}, status=status.HTTP_200_OK)
         
         return Response({"detail": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
@@ -168,7 +168,7 @@ class AuctionItemListCreate(generics.ListCreateAPIView):
         return AuctionItem.objects.filter(seller=user)  # Return all auctions for the current user
 
     def send_email_new_auction(self, id, user):
-        auction_link = f"http://localhost:5173/aukcija/{id}"
+        auction_link = f"http://192.168.0.34:5173/aukcija/{id}"
 
         subject = 'Čestitamo, uspešno ste postavili aukciju!'
         message = f'Pogledajte oglas ovde: {auction_link}'
@@ -402,21 +402,18 @@ class BidCreateView(generics.CreateAPIView):
                 )
                 if not time_since_last_notification or time_since_last_notification > NOTIFICATION_DELAY:
                     # Pozovi funkciju za slanje obaveštenja
-                    self.send_new_bid_email(auction_item, auction_owner)
+                    Notification.objects.create(
+                        recipient=auction_owner,  # Korisnik koji je vlasnik aukcije
+                        auction_item=auction_item,
+                        message=f"Nova ponuda na vašoj aukciji '{auction_item.title}'! "
+                                f"Ponuda je sada {auction_item.current_price} RSD.\n"
+                    )
+
                     # Ažuriraj vreme poslednjeg obaveštenja
                     auction_item.last_bid_notified = now()
                     auction_item.save()
         else:
             raise ValidationError({"detail": "Bid must be higher than the current price."})
-
-    def send_new_bid_email(self, auction_item, auction_owner):
-        # Priprema podataka za mejl
-        auction_link = f"http://localhost:5173/aukcija/{auction_item.id}"
-        subject = "Nova ponuda na vašoj aukciji!"
-        message = f"Neko je ponudio novu cenu! Pogledajte detalje ovde: {auction_link}"
-
-        # Asinkrono slanje mejla
-        send_email_task.delay(subject, message, settings.DEFAULT_FROM_EMAIL, [auction_owner.email])
 
 
 
@@ -606,8 +603,8 @@ class CommentCreateView(APIView):
     permission_classes = [IsAuthenticated]
     
     def send_new_comment_email(self, id, user):
-        auction_link = f"http://localhost:5173/aukcija/{id}"
-
+        auction_link = f"http://192.168.0.34:5173/aukcija/{id}"
+        
         subject = "Novi komentar na vašoj aukciji"
         message = f'Pogledajte novi komentar ovde: {auction_link}'
         send_email_task.delay(subject, message, settings.DEFAULT_FROM_EMAIL, [user.email])
@@ -672,7 +669,7 @@ def send_verification_email(user):
     user.save()
     
     # Kreiraj link za potvrdu
-    verification_link = f"http://127.0.0.1:8000/api/verify/{verification_code}/"
+    verification_link = f"http://192.168.0.34:8000/api/verify/{verification_code}/"
     
     # Kreiraj HTML sadržaj email-a
     html_message = f'''
@@ -696,7 +693,7 @@ def send_verification_email(user):
 def send_report_email(id, reportText):
     send_mail(
         'Nova prijava aukcije',
-        f"Prijavljena aukcija: http://localhost:5173/aukcija/{id}\n\n Tekst prijave: {reportText}",
+        f"Prijavljena aukcija: http://192.168.0.34:5173/aukcija/{id}\n\n Tekst prijave: {reportText}",
         settings.DEFAULT_FROM_EMAIL,
         ["taxitracker2024@gmail.com"],
         fail_silently=False,

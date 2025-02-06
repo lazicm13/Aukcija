@@ -79,7 +79,7 @@ class AuctionItemSerializer(serializers.ModelSerializer):
         auction_item = AuctionItem.objects.create(
             **validated_data,
             created_at=current_time,
-            end_date=current_time + timedelta(minutes=auction_duration)
+            end_date=current_time + timedelta(hours=auction_duration)
         )
 
         # Save images associated with this auction item

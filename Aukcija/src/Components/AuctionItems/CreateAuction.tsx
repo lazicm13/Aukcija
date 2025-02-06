@@ -19,19 +19,19 @@ function CreateAuction() {
     const [successMessage, setSuccessMessage] = useState('');
     const [isInfoModalOpen, setIsInfoModalOpen] = useState(false);
 
-    // useEffect(() => {
-    //     const fetchUserData = async () => {
-    //         try {
-    //             const response = await api.get('/api/current_user_data');
-    //             setPhoneNumber(response.data.phone_number);
-    //             setCity(response.data.city);
-    //         } catch (error) {
-    //             console.error('Error fetching user data:', error);
-    //         }
-    //     };
+    useEffect(() => {
+        const fetchUserData = async () => {
+            try {
+                const response = await api.get('/api/current_user_data');
+                setPhoneNumber(response.data.phone_number);
+                setCity(response.data.city);
+            } catch (error) {
+                console.error('Error fetching user data:', error);
+            }
+        };
 
-    //     fetchUserData();
-    // }, []);
+        fetchUserData();
+    }, []);
 
 
     interface ApiResponse {

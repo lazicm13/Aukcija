@@ -8,7 +8,7 @@ axios.defaults.withCredentials = true;
 // Helper function to fetch CSRF token
 async function fetchCsrfToken() {
     try {
-        const response = await axios.get(`http://192.168.0.33:8000/api/csrf/`);
+        const response = await axios.get(`http://192.168.0.34:8000/api/csrf/`);
         const csrftoken = response.data.csrftoken; // Adjust this based on your API response
         Cookies.set('csrftoken', csrftoken); // Set the token in cookies
     } catch (error) {

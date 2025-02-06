@@ -39,8 +39,8 @@ CORS_ALLOW_CREDENTIALS = True
 
 CORS_ORIGIN_WHITELIST = [
     "http://localhost:5173",
-    'http://localhost',
-    'http://192.168.0.33'
+    'http://192.168.0.34',
+    'http://192.168.0.34:5173'
 ]
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
@@ -97,6 +97,7 @@ CORS_ALLOWED_METHODS = [
 CSRF_TRUSTED_ORIGINS = [
     'http://localhost:5173',  # Add your front-end URL
     # You can add more trusted origins here as needed
+    'http://192.168.0.34:5173',
 ]
 
 
@@ -105,7 +106,7 @@ CSRF_TRUSTED_ORIGINS = [
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1", "192.168.0.33"]
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", "192.168.0.33", "192.168.0.34"]
 
 REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES":(

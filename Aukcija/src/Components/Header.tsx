@@ -3,7 +3,6 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import './../Styles/header.css';
 import api from '../api';
 import NotificationBell from './Bell';
-import { Bell } from 'lucide-react';
 
 
 function Header() {
@@ -12,38 +11,40 @@ function Header() {
   const [userName, setUserName] = useState(''); // Replace with actual user fetching logic
     const [count, setUnreadCount] = useState<number>(0);
   
-    useEffect(() => {
-      const fetchUnreadNotificationsCount = async () => {
-        try {
-          const response = await api.get('/api/notifications/unread-count/');
-          setUnreadCount(response.data.unread_notifications_count); // Ažurira broj notifikacija
-        } catch (error) {
-          console.error('Error fetching unread notifications count:', error);
-        }
-      };
-  
-      fetchUnreadNotificationsCount(); // Poziv API-ja prilikom učitavanja komponente
-    }, []);
-  
-  useEffect(() => {
-    const fetchUsername = async () => {
-      try{
-        const response = await api.get('api/username');
-        if(response.status == 200)
-        {
-          setUserName(response.data.username);
-        } else{
-          setUserName('');
-          console.error('Failed to fetch username', response.status);
-        }
-      }catch(error)
-      {
-        console.error('Error fetching username:', error);
+
+    const fetchUnreadNotificationsCount = async () => {
+      try {
+        const response = await api.get('/api/notifications/unread-count/');
+        setUnreadCount(response.data.unread_notifications_count);
+      } catch (error) {
+        console.error('Error fetching unread notifications count:', error);
       }
     };
-    if(location.pathname !== '/login' && location.pathname !== '/registracija')
+
+    useEffect(() => {
+    fetchUnreadNotificationsCount();
+  }, []);
+  
+  const fetchUsername = async () => {
+    try {
+      const response = await api.get('api/username');
+      if (response.status === 200) {
+        setUserName(response.data.username);
+        fetchUnreadNotificationsCount(); // Osvežava notifikacije nakon logovanja
+      } else {
+        setUserName('');
+        console.error('Failed to fetch username', response.status);
+      }
+    } catch (error) {
+      console.error('Error fetching username:', error);
+    }
+  };
+
+  useEffect(() => {
+    if (location.pathname !== '/login' && location.pathname !== '/registracija') {
       fetchUsername();
-  });
+    }
+  }, [location.pathname]);
   // Assuming you get the user's name from a context, prop, or state
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
@@ -75,10 +76,7 @@ function Header() {
 
   const handleNavigate = () =>{
     navigate('/notifikacije');
-  } 
-
-  
-
+  }
 
   return (
     <header className='sticky-header'>
@@ -107,6 +105,8 @@ function Header() {
             />
             {dropdownOpen && (
               <div className="dropdown-menu">
+                <b>{userName}</b>
+                <hr></hr>
                 <a href="/profil">Profil</a>
                 <a href="/moje-aukcije">Moje aukcije</a>
                 <a href='/moje-licitacije' title='Predmeti na kojima sam licitirao'>Moje licitacije</a>
