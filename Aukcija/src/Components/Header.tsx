@@ -80,6 +80,7 @@ function Header() {
 
   return (
     <header className='sticky-header'>
+      <div className='content'>
       <a href='/'><img src='/assets/logo1.png' className='header-logo' alt='Logo' /></a>
       
       <div className="header-right">
@@ -116,8 +117,9 @@ function Header() {
             )}
           </div>
         )}
-
+        </div>
       </div>
+
     </header>
   );
 }

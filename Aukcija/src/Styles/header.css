@@ -2,7 +2,8 @@
     position: fixed; /* Fiksira header na vrhu stranice */
     top: 0; /* Uvek na vrhu */
     left: 0; /* Na levoj strani */
-    width: 100%; /* Širina headera je 100% */
+    width: 100%; /* Prilagođava se manjoj širini */
+    margin: 0 auto;
     background-color: #ffffff; /* Pozadinska boja */
     color: black; /* Boja teksta */
     padding: 10px; /* Unutrašnje margine */
@@ -14,33 +15,30 @@
     height: 9%;
 }
 
+.content {
+    width: 1900px; /* Fiksna širina sadržaja */
+    margin: 0 auto; /* Centriranje */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
 .header-logo {
-    width: 150px; /* Keeps the logo responsive by limiting its width */
-    height: 150px; /* Maintains the original aspect ratio */
-    margin-left: 450px; /* Shifts logo slightly to the right */
+    width: 120px; /* Keeps the logo responsive by limiting its width */
+    height: auto; /* Maintains the original aspect ratio */
+    margin-left: 350px; /* Shifts logo slightly to the right */
     margin-bottom: 0px;
 }
 
 /* Optional media queries for responsiveness */
-@media (max-width: 900px) {
-    .header-logo {
-        margin-left: 0px; /* Reduces the left margin on smaller screens */
-    }
-    .header-right{
-        margin-right: 5px;
-    }
-    .sticky-header{
-        height: 60px;
-    }
-    
-}
+
 
 
 .header-right {
     display: flex; /* Raspoređuje elemente u red */
     align-items: center; /* Vertikalno centriranje */
-    gap: 30px; /* Razmak između elemenata */
-    margin-right: 490px;
+    gap: 50px; /* Razmak između elemenata */
+    margin-right: 390px;
     margin-top: 20px;
 }
 
@@ -142,10 +140,12 @@ button.create-auction-btn:hover {
 @media (max-width: 480px) {
     .header-logo {
         margin-left: 0px; /* Further reduces left margin on very small screens */
+        width: 100px;
+        height: auto;
     }
     .header-right{
-        margin-right: 5px;
-        gap: 5px;
+        margin-right: 15px;
+        gap: 20px;
     }
     .user-profile{
         gap: 0px;
@@ -154,10 +154,28 @@ button.create-auction-btn:hover {
     .register,.login{
         margin-right: 20px;
     }
+    button.create-auction-btn{
+        width: 50px !important;
+    }
+}
+
+@media (max-width: 1368px){
+    .header-logo{
+        margin-left: 55px;
+        width: 100px;
+        height: auto;
+    }
+    .header-right{
+        margin-right: 75px;
+        gap: 20px;
+    }
+}
+
+@media (max-width: 1768px){
 }
 
 .notification-logo{
     cursor: pointer;
-    margin-top: 20px;
+    margin-top: 25px;
     margin-left: 10px;
 }
