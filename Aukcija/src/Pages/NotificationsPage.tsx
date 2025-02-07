@@ -54,12 +54,12 @@ function NotificationsPage() {
 
   return (
     <div className="notifications-page">
-      <h1>My Notifications</h1>
+      <h1>Moje notifikacije</h1>
 
       {loading ? (
         <p>Loading...</p>
       ) : notifications.length === 0 ? (
-        <p>No notifications available.</p>
+        <p>Trenutno nemate notifikacije</p>
       ) : (
         <ul>
           {notifications.map((notification) => (

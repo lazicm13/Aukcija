@@ -24,7 +24,7 @@
 }
 
 .header-logo {
-    width: 120px; /* Keeps the logo responsive by limiting its width */
+    width: 110px; /* Keeps the logo responsive by limiting its width */
     height: auto; /* Maintains the original aspect ratio */
     margin-left: 350px; /* Shifts logo slightly to the right */
     margin-bottom: 0px;
@@ -161,7 +161,6 @@ button.create-auction-btn:hover {
 
 @media (max-width: 1368px){
     .header-logo{
-        margin-left: 55px;
         width: 100px;
         height: auto;
     }

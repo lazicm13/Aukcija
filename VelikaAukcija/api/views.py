@@ -40,7 +40,7 @@ def verify_email(request, code):
         messages.success(request, "Uspešno ste verifikovali svoj nalog.")
         
         # Redirect na login stranicu klijentskog sajta
-        return redirect(f'http://192.168:5173/login')
+        return redirect(f'http://192.168.0.34:5173/login')
     except get_user_model().DoesNotExist:
         messages.error(request, "Verifikacioni kod nije validan.")
         return redirect(f'http://192.168.0.34:5173/login')
