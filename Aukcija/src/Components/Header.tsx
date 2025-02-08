@@ -80,9 +80,9 @@ function Header() {
 
   return (
     <header className='sticky-header'>
-      <div className='content'>
+      <div className='header-left'>
       <a href='/'><img src='/assets/logo1.png' className='header-logo' alt='Logo' /></a>
-      
+      </div>
       <div className="header-right">
         {location.pathname === '/' && (
           <button className='create-auction-btn' onClick={handleCreateAuction}>
@@ -91,7 +91,7 @@ function Header() {
         )}
         {location.pathname === '/registracija' && <p className='register'>Imate nalog? → <a href='login'>Ulogujte se</a></p>}
         {location.pathname === '/login' && <p className='login'>Nemate nalog? → <a href='registracija'>Registrujte se</a></p>}
-        {(location.pathname === '/' && userName === '') && <div className='login-register-links'><a href='login'>Ulogujte se </a><a href='/registracija'> Registracija</a></div>}
+        {(location.pathname === '/' && userName === '') && <div className='login-register-links'><a href='login'>Ulogujte se </a><a href='/registracija' className='registracija'> Registracija</a></div>}
         {(location.pathname !== '/' && location.pathname !== '/login' && location.pathname !== '/registracija') && 
         <a href='/'><img src='/assets/home.png' className='home-button'></img></a>}
         {userName && (<NotificationBell count={count} onClick={handleNavigate} className='notification-logo'/>)}
@@ -117,7 +117,6 @@ function Header() {
             )}
           </div>
         )}
-        </div>
       </div>
 
     </header>

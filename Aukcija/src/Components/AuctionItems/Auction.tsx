@@ -334,7 +334,7 @@ const Auction: React.FC = () => {
             {isConfettiVisible && <Confetti width={window.innerWidth} height={window.innerHeight} />} {/* Konfeti */}
         <div className="auction-details">
             <div className="auction-header">
-                <button className="report-auction-btn" onClick={openReportModal}>Prijavi aukciju</button>
+                {/* <button className="report-auction-btn" onClick={openReportModal}>Prijavi aukciju</button> */}
                 <p className="auction-city">🧭 {auction.city}</p>
                 <h2>{auction.title}</h2>
             </div>
@@ -387,13 +387,6 @@ const Auction: React.FC = () => {
                 </div>
             <a onClick={openModal} className="bid-history-link">Broj ponuda: {bidCount}</a>
     
-            <div className="contact-info">
-                <p className='phone-number'>
-                    Broj telefona: <a href={`tel:${auction.phone_number}`}><b>{auction.phone_number}</b></a>
-                </p>
-                <p className='auction-owner'>Prodavac: <a><b>{auctionOwner}</b></a></p>
-            </div>
-    
             
     
             <hr />
@@ -405,7 +398,14 @@ const Auction: React.FC = () => {
                 title='Potvrda licitacije'
                 message={`Da li ste sigurni da želite da licitirate ${newOffer} dinara za ovu aukciju?`}
             />
-
+            <hr></hr>
+    
+            <div className="contact-info">
+                <p className='phone-number'>
+                    Broj telefona: <a href={`tel:${auction.phone_number}`}><b>{auction.phone_number}</b></a>
+                </p>
+                <p className='auction-owner'>Prodavac: <a><b>{auctionOwner}</b></a></p>
+            </div>
             <ReportModal
                 isOpen={isReportModalOpen}
                 onConfirm={handleReportConfirmation}  // Pass the function reference here
@@ -421,7 +421,7 @@ const Auction: React.FC = () => {
                 onCancel={handleCancel}
             />
             
-            <hr></hr>
+            
             <CommentSection auctionItemId={auction.id} ownerId={seller}/>
         </div>
         </>

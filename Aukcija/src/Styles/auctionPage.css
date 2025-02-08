@@ -206,8 +206,8 @@
 
 .report-auction-btn {
     position: absolute; /* Use absolute positioning */
-    top: 20px;           /* Distance from the top of the container */
-    left: 20px;          /* Distance from the left of the container */  /* Add padding for size */ /* Button background color */
+    top: 0px;           /* Distance from the top of the container */
+    left: 0px;          /* Distance from the left of the container */  /* Add padding for size */ /* Button background color */
     color: darkblue;        /* Button text color */
     padding: 6px;
     font-size: 1em;    /* Font size */
@@ -225,6 +225,5 @@
 .comment-hr{
     width: 200px;
 }
-
 
 
