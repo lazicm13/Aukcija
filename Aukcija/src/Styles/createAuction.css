@@ -177,6 +177,10 @@ input[type=number]::-webkit-inner-spin-button {
     font-weight: bold;
     margin-bottom: 20px; /* Razmak između naslova i forme */
     color: #333;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 10px;
 }
 
 .price-input-container {
@@ -374,3 +378,11 @@ label{
     }
 }
 
+.error-message{
+    font-size: 13px !important;
+    justify-self: flex-start;
+}
+
+.error-images{
+    color: red;
+}

@@ -126,32 +126,30 @@ const AuctionItem: React.FC<AuctionItemProps> = ({ auction, onDelete }) => {
     // }
 
     useEffect(() => {
-        const endTime = new Date(end_date).getTime();
-        
-        // Declare interval before using it
+        const endTime = new Date(end_date).getTime(); // Ensure it's in UTC
+    
         let interval: number;
     
         const updateRemainingTime = () => {
-            const now = Date.now();
-            const distance = endTime - now;
-            setTimeLeft(distance);
+          const now = new Date().getTime(); // Local time
+          const distance = endTime - now;
+          setTimeLeft(distance);
     
-            if (distance < 0) {
-                clearInterval(interval);
-                setTimeLeft(0);
-
-                handleAuctionEnded();
-            }
+          if (distance < 0) {
+            clearInterval(interval);
+            setTimeLeft(0);
+            handleAuctionEnded();
+          }
         };
     
         updateRemainingTime();
     
-        // Set the interval for further updates
         interval = setInterval(updateRemainingTime, 1000);
     
         return () => clearInterval(interval);
-    }, [end_date]);
-
+      }, [end_date, handleAuctionEnded]);
+    
+    
     
     const formatTimeLeft = (time: number) => {
         const seconds = Math.floor((time / 1000) % 60);

@@ -173,7 +173,8 @@ TEMPLATES = [
 
 ASGI_APPLICATION = 'backend.asgi.application'
 
-
+USE_TZ = True
+TIME_ZONE = 'UTC'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 

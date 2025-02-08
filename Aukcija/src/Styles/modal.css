@@ -58,4 +58,7 @@
     .modal-content {
         max-width: 300px;
     }
+    .modal-content textarea{
+        max-width: 300px;
+    }
 }

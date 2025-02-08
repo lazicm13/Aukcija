@@ -3,6 +3,7 @@ import api from '../../api';
 import './../../Styles/authentication.css';
 import { useNavigate } from 'react-router-dom';
 import { GoogleLogin } from '@react-oauth/google';
+import InfoModal from '../Modals/infoModal';
 
 function RegistrationComponent() {
     const [formData, setFormData] = useState({
@@ -22,8 +23,8 @@ function RegistrationComponent() {
     });
     const [successMessage, setSuccessMessage] = useState('');
     const navigate = useNavigate();
-    const [isModalOpen, setIsModalOpen] = useState(false);
     const [userEmail, setUserEmail] = useState('');
+    const [isInfoModalOpen, setIsInfoModalOpen] = useState(false);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -63,10 +64,10 @@ function RegistrationComponent() {
         if (!formData.password) {
             errors.password = 'Lozinka je obavezna.';
             isValid = false;
-        } else if (!/^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,}$/.test(formData.password)) {
-            errors.password = 'Lozinka mora imati minimum 8 znakova, barem jedan broj i jedan specijalni znak.';
+        } else if (!/^(?=.*[0-9])[a-zA-Z0-9!@#$%^&*]{8,}$/.test(formData.password)) {
+            errors.password = 'Lozinka mora imati minimum 8 znakova i barem jedan broj.';
             isValid = false;
-        }
+        }        
         if (!formData.confirmPassword) {
             errors.confirmPassword = 'Potvrda lozinke je obavezna.';
             isValid = false;
@@ -94,7 +95,7 @@ function RegistrationComponent() {
 
             if (response.status === 201) {
                 setSuccessMessage('Registracija je uspešna!');
-                setIsModalOpen(true);
+                setIsInfoModalOpen(true);
                 setUserEmail(formData.email);
                 setFormData({
                     first_name: '',
@@ -147,6 +148,11 @@ function RegistrationComponent() {
             general: 'Google login failed. Please try again.'
         }));
     };
+
+    const handleCancel = () => {
+        setIsInfoModalOpen(false);
+        navigate('/login');
+    }
 
     return (
         <Fragment>
@@ -220,20 +226,12 @@ function RegistrationComponent() {
                 </form>
             </div>
 
-            {isModalOpen && (
-                <div className="modal">
-                    <div className="modal-content">
-                        <h3>Uspešna registracija!</h3>
-                        <p>Email za verifikaciju je poslat na vašu adresu: {userEmail}</p>
-                        <button onClick={() => {
-                            setIsModalOpen(false);
-                            navigate('/login');
-                        }}>
-                            Zatvori
-                        </button>
-                    </div>
-                </div>
-            )}
+        <InfoModal
+            isOpen={isInfoModalOpen}
+            title='Uspešna registracija!'
+            message={`Email za verifikaciju je poslat na vašu adresu: ${userEmail}`}
+            onCancel={handleCancel}
+        />
         </Fragment>
     );
 }
