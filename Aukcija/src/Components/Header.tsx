@@ -10,7 +10,29 @@ function Header() {
   const navigate = useNavigate();
   const [userName, setUserName] = useState(''); // Replace with actual user fetching logic
     const [count, setUnreadCount] = useState<number>(0);
-  
+
+    const [isHidden, setIsHidden] = useState(false); // State za upravljanje vidljivošću header-a
+    let lastScrollTop = 0; // Praćenje poslednje pozicije skrolovanja
+
+    useEffect(() => {
+        const handleScroll = () => {
+            const currentScroll = window.scrollY; // Koristi window.scrollY umesto pageYOffset
+
+            if (currentScroll > lastScrollTop) {
+                // Ako je korisnik skrolovao na dole
+                setIsHidden(true);
+            } else {
+                // Ako je korisnik skrolovao na gore
+                setIsHidden(false);
+            }
+            lastScrollTop = currentScroll <= 0 ? 0 : currentScroll; // Sprečavanje negativnih vrednosti
+        };
+
+        window.addEventListener('scroll', handleScroll);
+
+        // Čišćenje event listener-a pri unmount-u komponente
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
 
     const fetchUnreadNotificationsCount = async () => {
       try {
@@ -79,7 +101,7 @@ function Header() {
   }
 
   return (
-    <header className='sticky-header'>
+    <header className={`sticky-header ${isHidden ? 'hidden' : ''}`}>
       <div className='header-left'>
       <a href='/'><img src='/assets/logo1.png' className='header-logo' alt='Logo' /></a>
       </div>

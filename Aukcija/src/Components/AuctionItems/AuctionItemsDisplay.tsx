@@ -11,6 +11,7 @@ interface AuctionItem {
     description: string;
     current_price: number;
     city: string;
+    category: string;
     images: {
         id: number;
         image: string;
@@ -230,8 +231,8 @@ const deleteAuctionItem = async (id: number) => {
                 >
                     <option value="priceAsc">Sortiraj po ceni: Niže ka višim</option>
                     <option value="priceDesc">Sortiraj po ceni: Više ka nižim</option>
-                    <option value="endDateAsc">Sortiraj po vremenu isteka: Najranije ka najkasnije</option>
-                    <option value="endDateDesc">Sortiraj po vremenu isteka: Najkasnije ka najranije</option>
+                    <option value="endDateAsc">Sortiraj po vremenu isteka: Prve ističu</option>
+                    <option value="endDateDesc">Sortiraj po vremenu isteka: Poslednje ističu</option>
                 </select>
             </div>
             <div className="auction-list">

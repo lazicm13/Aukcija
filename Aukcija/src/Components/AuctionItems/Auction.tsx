@@ -348,6 +348,7 @@ const Auction: React.FC = () => {
                 <a className="prev1" onClick={prevSlide}>&#10094;</a>
                 <a className="next1" onClick={nextSlide}>&#10095;</a>
             </div>
+            
                 <p className="current-price">
                     <b>Trenutna cena: {new Intl.NumberFormat('sr-RS').format(Number(currentPrice))} RSD</b>
                 </p>
@@ -390,6 +391,7 @@ const Auction: React.FC = () => {
             
     
             <hr />
+            <h3><u>Opis</u></h3>
             <p className="full-description">{auction.description}</p>
             <ConfirmationModal
                 isOpen={isConfirmDialogOpen}
@@ -398,7 +400,7 @@ const Auction: React.FC = () => {
                 title='Potvrda licitacije'
                 message={`Da li ste sigurni da želite da licitirate ${newOffer} dinara za ovu aukciju?`}
             />
-            <hr></hr>
+           
     
             <div className="contact-info">
                 <p className='phone-number'>

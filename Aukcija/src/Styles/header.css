@@ -8,10 +8,15 @@
     color: black;
     display: flex;
     align-items: center;
-    justify-content: space-between; /* Raspoređuje elemente */
+    justify-content: space-between;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     z-index: 1000;
     height: 80px;
+    transition: transform 0.3s ease-in-out; /* Animacija za glatki prelaz */
+}
+
+.sticky-header.hidden {
+    transform: translateY(-100%); /* Sakriva header pomeranjem ka gore */
 }
 
 /* Omotač za centriranje leve i desne polovine */
@@ -21,7 +26,7 @@
     align-items: center;
     flex: 1; /* Obe strane zauzimaju istu širinu */
     justify-content: center; /* Centriraju svoj sadržaj */
-    gap: 50px;
+    gap: 15px;
     margin-top: 25px;
 }
 

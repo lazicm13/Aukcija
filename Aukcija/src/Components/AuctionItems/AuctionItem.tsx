@@ -82,26 +82,26 @@ const AuctionItem: React.FC<AuctionItemProps> = ({ auction, onDelete }) => {
         }
     };
 
-    const handleAuctionEnded = () => {
-        api.get(`/api/auctions/${id}/winner`).then((response) => {
-            const winner = response.data;
+    // const handleAuctionEnded = () => {
+    //     api.get(`/api/auctions/${id}/winner`).then((response) => {
+    //         const winner = response.data;
 
-            if(offerCount > 0){
-                setSuccessMessage(`Aukcija je završena! Pobednik je ${winner.first_name} sa ponudom od ${winner.amount} RSD.`);
-                setWinner(winner.first_name);
-                setWinnerPrice(winner.amount);
-                // handleFinishAuction(winner.id);
-            }
-            else{
-                setSuccessMessage('Vaša aukcija nažalost nije prodata! Možete je postaviti ponovo!');
-                // handleEndAuction();
-            }
-        }).catch((error) => {
-            console.error('Error fetching winner:', error);
-        });
+    //         if(offerCount > 0){
+    //             setSuccessMessage(`Aukcija je završena! Pobednik je ${winner.first_name} sa ponudom od ${winner.amount} RSD.`);
+    //             setWinner(winner.first_name);
+    //             setWinnerPrice(winner.amount);
+    //             // handleFinishAuction(winner.id);
+    //         }
+    //         else{
+    //             setSuccessMessage('Vaša aukcija nažalost nije prodata! Možete je postaviti ponovo!');
+    //             // handleEndAuction();
+    //         }
+    //     }).catch((error) => {
+    //         console.error('Error fetching winner:', error);
+    //     });
 
         
-    };
+    // };
 
     // const handleFinishAuction = (winnerId: number) => {
     //     try{
@@ -138,7 +138,7 @@ const AuctionItem: React.FC<AuctionItemProps> = ({ auction, onDelete }) => {
           if (distance < 0) {
             clearInterval(interval);
             setTimeLeft(0);
-            handleAuctionEnded();
+            // handleAuctionEnded();
           }
         };
     
@@ -147,7 +147,7 @@ const AuctionItem: React.FC<AuctionItemProps> = ({ auction, onDelete }) => {
         interval = setInterval(updateRemainingTime, 1000);
     
         return () => clearInterval(interval);
-      }, [end_date, handleAuctionEnded]);
+      }, [end_date]);
     
     
     
@@ -167,13 +167,6 @@ const AuctionItem: React.FC<AuctionItemProps> = ({ auction, onDelete }) => {
             return `${seconds}s`;
         }
     };
-
-    useEffect(() => {
-        if (timeLeft <= 0) {
-            handleAuctionEnded();
-            
-        }
-    }, [timeLeft]);
     
 
     const nextSlide = () => {

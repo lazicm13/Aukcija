@@ -3,10 +3,11 @@
     margin: 100px auto;
     padding: 20px;
     background: #f7f7f8;
-    border-radius: 12px;
-    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
     position: relative;
     text-align: center; /* Centriraj sav tekst u kontejneru */
+    border: 3px solid #666;
 }
 
 .auction-header {
@@ -74,8 +75,8 @@
     background-color: rgba(0, 0, 0, 0.8);
 }
 
-.prev1 { left: 10px; }
-.next1 { right: 10px; }
+.prev1 { left: 8%; }
+.next1 { right: 8%; }
 
 /* Sekcija za nove ponude */
 .bid-section {
@@ -137,6 +138,11 @@
     color: #ff5733;
 }
 
+.contact-info{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
 /* Kontakt informacije */
 .contact-info p {
     text-align: center;
@@ -153,7 +159,6 @@
 }
 
 .contact-info .auction-owner {
-    margin-top: 15px;
     font-size: 1.2em;
     color: #444;
 }
@@ -226,4 +231,19 @@
     width: 200px;
 }
 
+hr{
+    height: 1px;
+    background-color: #666;
+}
 
+.full-description{
+    color: #333;
+    background-color: rgba(49, 126, 196, 0.3);
+    padding: 20px;
+    width: 85%;
+    margin: 0 auto;
+    border: 2px solid #999;
+    border-radius: 1%;
+    
+    font-weight: bolder;
+}

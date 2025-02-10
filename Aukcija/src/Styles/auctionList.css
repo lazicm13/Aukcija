@@ -5,7 +5,7 @@
     min-width: 300px;
     max-width: 1200px;
     margin: 0 auto;
-    margin-top: 70px;
+    margin-top: 50px;
 }
 
 /* Lista aukcija */
@@ -14,17 +14,21 @@
     flex-wrap: wrap;
     justify-content: center;
     gap: 20px;
-    background-color: #f9f9fb;
+    
+background-image: url('./../../public/assets/tekstura.png'); /* Dodaj teksturu ako želiš */
+background-size: cover;
+
     padding: 25px;
     border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    border: 4px solid #888;
 }
 
 /* Kontejner za pojedinačne aukcije */
 .auction-list-inner {
     display: flex;
     flex-wrap: wrap;
-    justify-content: start;
+    justify-content: center;
     gap: 20px;
     max-width: 100%;
 }
@@ -149,10 +153,14 @@ select {
     min-width: 200px;
 }
 
+
 @media (max-width: 768px) {
     .auction-item {
         flex: 1 0 45%;
         max-width: 45%;
+    }
+    .auction-list{
+        background-color: white;
     }
     .auction-list-inner {
         display: flex;
@@ -165,6 +173,7 @@ select {
 }
 
 @media (max-width: 480px) {
+   
     .auction-item {
         flex: 1 0 100%;
         max-width: 100%;
@@ -195,3 +204,15 @@ select {
 
 }
 
+.title-h1{
+    color: #0056b3;
+    padding: 0px;
+}
+
+.my-bids-container{
+    margin-top: 100px;
+}
+
+.auction-items{
+    margin-top: -50px;
+}

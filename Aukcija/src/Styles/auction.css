@@ -1,8 +1,8 @@
 .auction-item {
     background-color: #ECF0F1 !important; /* Light background for contrast */
-    border: 2px solid #bbbbbb7a !important; /* Light border for definition */
+    border: 3px solid #444 !important; /* Light border for definition */
     border-radius: 8px; /* Rounded corners */
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.7); /* Subtle shadow for depth */
     margin: 5px; /* Space between items */ /* Padding inside the item */
     transition: transform 0.2s; /* Smooth transform on hover */
     width: calc(33% - 30px); /* Responsive width, adjust based on your layout */
@@ -22,6 +22,7 @@
     overflow: hidden;           /* Sakriva tekst koji ne stane */
     text-overflow: ellipsis;
     max-width: 240px;    /* Dodaje "..." na kraju */
+    color: #444;
   }
   
 
@@ -81,10 +82,10 @@
 .slideshow-container {
     position: relative;
     max-width: 100%; /* Adjust the width as needed */
-    margin: auto;
     overflow: hidden; /* Hide overflow to prevent images from spilling out */
-    margin-bottom: 0;
-    margin-top: 0;
+    margin-bottom: 5px;
+    border: 1px solid #bbbbbb7a;
+    margin-top: 5px;
 }
 
 /* Individual slide */
@@ -92,7 +93,7 @@
     display: none; /* Hide all slides by default */
     width: 100%; /* Make images responsive */
     height: auto; /* Maintain aspect ratio */
-    margin-bottom: 0;
+    margin-bottom: -4px;
 }
 
 .slide .auction-img{
@@ -100,7 +101,7 @@
     max-height: 160px;
     min-width: 180px;
     max-width: 180px;
-    margin-bottom: 0;
+    margin: 0px;
 }
 
 /* Active slide */
@@ -126,13 +127,13 @@
 
 /* Position the left arrow on the left */
 .prev {
-    left: 10px; /* Add some spacing from the left */
+    left: 0px; /* Add some spacing from the left */
     transform: translateY(-50%); /* Center vertically */
 }
 
 /* Position the right arrow on the right */
 .next {
-    right: 10px; /* Add some spacing from the right */
+    right: 00px; /* Add some spacing from the right */
     transform: translateY(-50%); /* Center vertically */
 }
 
@@ -192,7 +193,7 @@
 
 
 .open-ad-btn {
-    background-color: #4A90E2; /* Promenite boju po želji */
+    background-color: #007bff; /* Promenite boju po želji #4A90E2 */
     color: white;
     padding: 5px ;
     border: 1px solid gray;
@@ -207,14 +208,14 @@
 
 .slide-description {
     position: absolute;
-    top: 119px; 
+    top: 105px; 
     color:  white !important; /* Boja teksta, belo za kontrast */
     background-color: rgba(0, 0, 0, 0.4); /* Poluprovidna crna pozadina */
-    padding: 5px; /* Unutrašnje margine */
-    border-radius: 4px; /* Zaobljeni uglovi */
+    padding: 7px; /* Unutrašnje margine */
+    border-radius: 1px; /* Zaobljeni uglovi */
     font-size: 14px; /* Veličina fonta */ /* Osiguranje da je ovaj element iznad ostalih */
     width: 96%;
-    height: 24%;
+    height: 26%;
 }   
 
 .current-price-par{

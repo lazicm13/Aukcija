@@ -1,63 +1,70 @@
 .comment-section {
-    margin-top: 30px;
+    margin-top: 20px;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    color: #333; /* Slightly darker text for better readability */
-    background-color:#fafafa;
-    border: 1px solid black;
-    box-shadow: #333;
+    color: #333;
+    background: #fff;
+    border: 1px solid #ddd;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
 .comment-list {
-    list-style-type: none;
+    list-style: none;
     padding: 0;
     margin: 0;
 }
 
 .comment-item {
-    border-bottom: 1px solid #ddd;
-    padding: 20px 0;
-    transition: background-color 0.3s ease;
+    border-bottom: 1px solid #eee;
     display: flex;
     flex-direction: column;
-    position: relative;
+    font-size: 0.9em;
+    background-color: #fff;
 }
 
-.comment-item:hover {
-    background-color: #f5f5f5; /* Subtle background change on hover */
+.comment-item:last-child {
+    border-bottom: none;
 }
 
 .comment-item strong {
-    color: #0056b3;
-    font-size: 1.1em;
-    margin-bottom: 5px;
+    color: #007bff;
+    font-size: 1em;
+}
+
+.comment-item p {
+    margin: 5px 0;
+    color: #444;
+}
+
+.comment-item small {
+    color: #888;
+    font-size: 0.85em;
 }
 
 .comment-form {
     display: flex;
     flex-direction: column;
-    width: 70%;
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 25px;
-    background-color: #d1d1d1;
-    border-radius: 10px;
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+    width: 80%;
+    padding: 10px;
+    background: #f8f8f8;
+    border-radius: 6px;
+    margin-top: 15px;
+    align-self: center;
 }
 
 .comment-form textarea {
-    resize: vertical;
-    padding: 15px;
-    width: 100%;
-    height: 140px;
-    max-width: 100%;
-    border: 1px solid black;
-    border-radius: 10px;
-    background-color: #fff;
-    font-size: 1em;
+    resize: none;
+    align-self: center;
+    width: 95%;
+    height: 80px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 10px;
+    font-size: 0.9em;
     font-family: inherit;
-    box-sizing: border-box;
-    margin-bottom: 15px;
-    transition: border-color 0.3s ease;
+    background: #fff;
+    transition: border 0.3s ease;
 }
 
 .comment-form textarea:focus {
@@ -67,89 +74,47 @@
 
 .comment-form button {
     align-self: flex-start;
-    padding: 12px 25px;
-    background-color: #0056b3;
+    padding: 8px 16px;
+    background: #007bff;
     color: white;
-    font-size: 1em;
+    font-size: 0.9em;
     border: none;
-    border-radius: 8px;
+    border-radius: 6px;
     cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s;
-    margin-top: 10px;
+    transition: background 0.3s ease;
+    margin-top: 8px;
 }
 
 .comment-form button:hover {
-    background-color: #0056b3;
-    transform: translateY(-2px); /* Slight elevation effect on hover */
+    background: #0056b3;
 }
 
-.reply-list {
-    margin-top: 15px;
-    margin-left: 30px; /* Indent replies slightly */
-    list-style-type: none;
-    padding: 0;
+.delete-comment-btn {
+    align-self: flex-end;
+    background: transparent;
+    color: #d9534f;
+    border: none;
+    cursor: pointer;
+    font-size: 0.85em;
+    transition: color 0.3s ease;
 }
 
-.reply-item {
-    border-left: 2px solid #007bff;
-    padding: 10px 15px;
-    margin-top: 10px;
-    font-size: 0.95em;
-    color: #444;
-    background-color: #f8f8f8;
-    border-radius: 5px;
-    transition: background-color 0.3s ease;
-}
-
-.reply-item:hover {
-    background-color: #f2f2f2;
-}
-
-.reply-item strong {
-    color: #0056b3;
-}
-
-.error-message {
-    color: #e74c3c;
-    font-size: 0.9em;
-    margin-top: 12px;
-    font-weight: bold;
+.delete-comment-btn:hover {
+    color: #c9302c;
+    background-color: beige;
 }
 
 @media (max-width: 768px) {
     .comment-form {
-        width: 90%;
-        padding: 20px;
+        padding: 10px;
     }
 
     .comment-form button {
         width: 100%;
-        padding: 12px;
-        font-size: 1em;
+        padding: 10px;
     }
-}
-
-.delete-comment-btn {
-    position: absolute;
-    top: 0;
-    right: 0;
-    max-width: 150px;
-    background-color: lightgoldenrodyellow;
-    color: black;
-    margin: 0;
-    padding: 5px 10px;
-    border: 1px solid transparent;
-    cursor: pointer;
-    transition: 0.3s;
-    box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.2); /* Subtle shadow */
-}
-
-.delete-comment-btn:hover {
-    box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1); /* Slightly stronger shadow on hover */
-}
-
-
-.delete-comment-btn:hover{
-    background-color:antiquewhite;
+    .comment-form{
+        width: 80%;
+    }
     
 }
