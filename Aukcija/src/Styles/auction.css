@@ -1,5 +1,5 @@
 .auction-item {
-    background-color: #ECF0F1 !important; /* Light background for contrast */
+    background-color: #f0f4f8 !important; /* Light background for contrast */
     border: 3px solid #444 !important; /* Light border for definition */
     border-radius: 8px; /* Rounded corners */
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.7); /* Subtle shadow for depth */
@@ -193,7 +193,7 @@
 
 
 .open-ad-btn {
-    background-color: #007bff; /* Promenite boju po želji #4A90E2 */
+background: linear-gradient(135deg, #007bff, #0056b3);/* Promenite boju po želji #4A90E2 */
     color: white;
     padding: 5px ;
     border: 1px solid gray;
@@ -204,6 +204,10 @@
     width: 85%;
     margin-bottom: 0px;
     margin-top: 3px;
+}
+
+.open-ad-btn:hover{
+    background: #0056b3;
 }
 
 .slide-description {

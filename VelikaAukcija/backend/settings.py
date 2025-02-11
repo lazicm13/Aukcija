@@ -39,8 +39,8 @@ CORS_ALLOW_CREDENTIALS = True
 
 CORS_ORIGIN_WHITELIST = [
     "http://localhost:5173",
-    'http://192.168.0.34',
-    'http://192.168.0.34:5173'
+    'http://192.168.0.20',
+    'http://192.168.0.20:5173',
 ]
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
@@ -49,7 +49,7 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'taxitracker2024@gmail.com'
 EMAIL_HOST_PASSWORD = 'qgtk hbph ibvd ojyc'
-DEFAULT_FROM_EMAIL = 'taxitracker2024@gmail.com'
+DEFAULT_FROM_EMAIL = 'Velika Aukcija <taxitracker2024@gmail.com>'
 
 # Dozvoljena zaglavlja
 default_headers = list(cors_default_headers)
@@ -97,7 +97,7 @@ CORS_ALLOWED_METHODS = [
 CSRF_TRUSTED_ORIGINS = [
     'http://localhost:5173',  # Add your front-end URL
     # You can add more trusted origins here as needed
-    'http://192.168.0.34:5173',
+    'http://192.168.0.20:5173',
 ]
 
 
@@ -106,7 +106,7 @@ CSRF_TRUSTED_ORIGINS = [
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1", "192.168.0.33", "192.168.0.34"]
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", "192.168.0.33", "192.168.0.20"]
 
 REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES":(
