@@ -1,12 +1,20 @@
-FROM python
+FROM python:3.9-slim
 
-ENV PYTHONUNBAFFERED=1
+# Set environment variable
+ENV PYTHONUNBUFFERED 1
 
+# Set the working directory
 WORKDIR /code
 
+# Install dependencies
 COPY requirements.txt /code/
+RUN pip install --no-cache-dir -r requirements.txt
 
-RUN pip install -r requirements.txt
-
+# Copy the rest of the application
 COPY . /code/
 
+# Expose port 8000 for the application
+EXPOSE 8000
+
+# Set the command to run gunicorn
+CMD ["gunicorn", "--bind", "0.0.0.0:8000", "backend.wsgi:application"]
