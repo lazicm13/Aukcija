@@ -16,4 +16,6 @@ redis
 django-celery-beat
 channels
 channels_redis
-whitenoise
+cloudinary 
+django-storages
+dj_database_url

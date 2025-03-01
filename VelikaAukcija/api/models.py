@@ -4,6 +4,7 @@ from datetime import timedelta
 from django.contrib.auth import get_user_model
 from django.utils import timezone
 from datetime import timedelta
+from cloudinary.models import CloudinaryField
 
 class CustomUser(AbstractUser):
     verification_code = models.CharField(max_length=100, blank=True, null=True)
@@ -74,7 +75,7 @@ class AuctionItem(models.Model):
 
 class AuctionImage(models.Model):
     auction_item = models.ForeignKey(AuctionItem, related_name='images', on_delete=models.CASCADE)
-    image = models.ImageField(upload_to='auction_images/')
+    image = CloudinaryField('image', null=True, blank=True)
 
     def __str__(self):
         return f"Image for {self.auction_item.title}"

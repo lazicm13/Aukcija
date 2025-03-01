@@ -7,7 +7,6 @@ services:
       - POSTGRES_DB=postgres
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
-
   redis:
     image: redis:latest
     ports:
@@ -15,7 +14,7 @@ services:
 
   web:
     build: .
-    command: gunicorn backend.wsgi:application --bind 0.0.0.0:8000
+    command: gunicorn myproject.wsgi:application --bind 0.0.0.0:8000
     ports:
       - "8000:8000"
     depends_on:

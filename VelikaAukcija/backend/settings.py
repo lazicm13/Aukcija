@@ -17,23 +17,34 @@ from dotenv import load_dotenv
 from corsheaders.defaults import default_headers as cors_default_headers
 import os
 from celery import Celery
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
 
 load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Media files (uploaded files)
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')  # Ensure this path is correct
+
+
+# Povezivanje sa Cloudinary-jem
+cloudinary.config( 
+  cloud_name = os.getenv("CLOUD_NAME"), 
+  api_key = os.getenv("API_KEY"), 
+  api_secret = os.getenv("API_SECRET")
+)
+
+# Storage settings
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv('SECRET_KEY')
+SECRET_KEY = os.getenv("SECRET_KEY")
 
-GOOGLE_OAUTH2_CLIENT_ID = os.getenv('google_id')
-GOOGLE_OAUTH2_CLIENT_SECRET = os.getenv('google_secret')
+GOOGLE_OAUTH2_CLIENT_ID = os.getenv("GOOGLE_ID")
+GOOGLE_OAUTH2_CLIENT_SECRET = os.getenv("GOOGLE_SECRET")
 
 CORS_ALLOW_CREDENTIALS = True
 
@@ -41,7 +52,8 @@ CORS_ORIGIN_WHITELIST = [
     "http://localhost:5173",
     'http://192.168.0.20',
     'http://192.168.0.20:5173',
-    'https://velikaaukcija.com',
+    "https://velikaaukcija.com", 
+    "https://www.velikaaukcija.com",
 ]
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
@@ -99,7 +111,8 @@ CSRF_TRUSTED_ORIGINS = [
     'http://localhost:5173',  # Add your front-end URL
     # You can add more trusted origins here as needed
     'http://192.168.0.20:5173',
-    'https://velikaaukcija.com',
+    "https://velikaaukcija.com", 
+    "https://www.velikaaukcija.com",
 ]
 
 
@@ -108,7 +121,7 @@ CSRF_TRUSTED_ORIGINS = [
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1", "192.168.0.33", "192.168.0.20", 'https://velikaaukcija.com']
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", 'velikaaukcija.com', "www.velikaaukcija.com", "192.168.0.20"]
 
 REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES":(
@@ -120,10 +133,9 @@ REST_FRAMEWORK = {
 }
 
 SESSION_COOKIE_AGE = 36000
-SESSION_COOKIE_SECURE = True
 SESSION_SAVE_EVERY_REQUEST = True
 CSRF_COOKIE_NAME = 'csrftoken'  # Naziv kolačića
-CSRF_COOKIE_SECURE = True  # Set to True in production with HTTPS
+CSRF_COOKIE_SECURE = False  # Set to True in production with HTTPS
 CSRF_COOKIE_HTTPONLY = False
 CSRF_COOKIE_AGE = 31449600  # 1 year in seconds
 
@@ -143,11 +155,9 @@ INSTALLED_APPS = [
     'corsheaders',
     'api',
     'channels',
-    'whitenoise.runserver_nostatic',
 ]
 
 MIDDLEWARE = [
-    'whitenoise.middleware.WhiteNoiseMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.security.SecurityMiddleware',
@@ -186,11 +196,11 @@ TIME_ZONE = 'UTC'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('DB_NAME'),
-        'USER': os.getenv('DB_USER'),
-        'PASSWORD': os.getenv('DB_PASSWORD'),
-        'HOST': os.getenv('DB_HOST'),
-        'PORT': '5432',
+        'NAME': os.getenv("DB_NAME"),
+        'USER': 'postgres',
+        'PASSWORD': os.getenv("DB_PASSWORD"),
+        'HOST': 'db',
+        'PORT': 5432,
     }
 }
 
@@ -232,7 +242,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = 'static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
