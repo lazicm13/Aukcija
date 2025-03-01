@@ -81,7 +81,6 @@ const deleteAuctionItem = async (id: number) => {
         
         // Provera statusa odgovora
         if (res.status === 204) {
-            alert("Auction item deleted!");
             setAuctions((prevItems) => prevItems.filter((item) => item.id !== id));
         } else {
             alert("Failed to delete auction item");
@@ -257,6 +256,7 @@ const deleteAuctionItem = async (id: number) => {
                 </button>
             </div>
         </div>
+        
     );
 }
 

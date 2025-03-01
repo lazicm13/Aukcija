@@ -6,7 +6,7 @@
     max-width: 1000px;
     margin: 120px auto;
     padding: 30px;
-    background-color: #ECF0F1;
+    background: linear-gradient(135deg,rgba(0, 86, 179, 0.6), #112240);
     border: 1px solid #ccc;
     border-radius: 15px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
@@ -118,14 +118,17 @@ input[type="submit"]:hover {
 .contact-info {
     display: flex;
     justify-content: space-between;
+    margin: 0 auto;
     margin-top: 40px;
-}
-.contact-info label {
     margin-left: 50px;
+    margin-bottom: 30px;
+    gap: 4px;
 }
-.contact-info input {
-    width: 200px;
+
+.contact-info input{
+    max-width: 200px;
 }
+  
 .duration {
     width: 70px;
     height: 30px;
@@ -260,6 +263,10 @@ label{
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     }
     
+    .contact-info{
+        margin-left: 0px;
+    }
+
     /* Forma unutar formContainer */
     .formContainer form {
         display: flex;
@@ -374,7 +381,7 @@ label{
     }
 
     .custom-file-upload button {
-        margin-left: -15px;
+        margin-left: 15px;
     }
 }
 

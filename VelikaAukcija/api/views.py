@@ -107,6 +107,9 @@ def user_status(request):
         return JsonResponse({'is_authenticated': False, 'username': None})
 
 
+from google.oauth2 import id_token
+from google.auth.transport import requests
+
 def google_login(request):
     if request.method == 'POST':
         try:
@@ -116,10 +119,10 @@ def google_login(request):
             if not token:
                 return JsonResponse({'error': 'No token provided'}, status=400)
 
+            # Verifikacija tokena sa novim CLIENT_ID
             idinfo = id_token.verify_oauth2_token(token, requests.Request(), settings.GOOGLE_OAUTH2_CLIENT_ID)
             email = idinfo.get('email')
             name = idinfo.get('name', '')
-
 
             user, created = User.objects.get_or_create(
                 email=email,
@@ -127,26 +130,24 @@ def google_login(request):
             )
 
             if created:
-                user.set_unusable_password()  # Disable password for Google-created users
-                user.is_verified = True      # Set is_verified to True for new users
+                user.set_unusable_password()
+                user.is_verified = True
                 user.save()
             else:
-                # Update the is_verified field for existing users
                 if not user.is_verified:
                     user.is_verified = True
                     user.save()
             
             if user.is_blocked:
-                return JsonResponse({"detail": "Vaš nalog je blokiran. Ne možete se ulogovati."}, status=status.HTTP_403_FORBIDDEN)
+                return JsonResponse({"detail": "Vaš nalog je blokiran."}, status=403)
 
             login(request, user)
             return JsonResponse({
                 'message': 'Login successful!',
                 'email': email,
                 'name': name,
-                'is_new_user': created  # This will indicate if the user is new or existing
+                'is_new_user': created
             }, status=200)
-
 
         except ValueError as e:
             return JsonResponse({'error': 'Invalid token', 'details': str(e)}, status=400)
@@ -156,6 +157,7 @@ def google_login(request):
             return JsonResponse({'error': 'An error occurred', 'details': str(e)}, status=500)
 
     return JsonResponse({'error': 'Method not allowed'}, status=405)
+
 #endregion
 
 #region auctions

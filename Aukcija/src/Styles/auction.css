@@ -1,5 +1,5 @@
 .auction-item {
-    background-color: #f0f4f8 !important; /* Light background for contrast */
+    background-color: #ffffff !important; /* Light background for contrast */
     border: 3px solid #444 !important; /* Light border for definition */
     border-radius: 8px; /* Rounded corners */
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.7); /* Subtle shadow for depth */
@@ -37,14 +37,17 @@
     border-radius: 5px; /* Slightly round the image corners */
     margin: 10px 0; /* Space around the image */
     object-fit: contain;
-
+    /* border-top: 2px solid #1A2A4A; /* Gornji border */
+  /* border-bottom: px solid #1A2A4A; */ 
 }
 
 .auction-item p {
-    font-size: 0.8em; /* Smaller font size for description and price */
+    font-size: 0.94em; /* Smaller font size for description and price */
     color: #555; /* Slightly lighter text color */
     text-align: center; /* Center align text */
     margin-top: 0px;
+    color:#0056b3;
+
 }
 
 .auction-item b{
@@ -76,6 +79,7 @@
     .auction-item {
         width: calc(100% - 30px); /* Full width for mobile */
     }
+    
 }
 
 /* Slideshow container */
@@ -84,7 +88,7 @@
     max-width: 100%; /* Adjust the width as needed */
     overflow: hidden; /* Hide overflow to prevent images from spilling out */
     margin-bottom: 5px;
-    border: 1px solid #bbbbbb7a;
+   
     margin-top: 5px;
 }
 
@@ -117,7 +121,7 @@
     top: 50%; /* Center vertically */
     width: auto;
     padding: 16px;
-    color: white;
+    color: gray;
     font-weight: bold;
     font-size: 18px;
     transition: 0.6s ease;
@@ -174,6 +178,7 @@
 .new-offer-container input {
     flex: 1;
     font-size: 15px !important;
+    border: 1px solid black;
 }
 
 .new-offer-container .new-offer-btn {
@@ -191,6 +196,7 @@
     margin-top: 0;
 }
 
+/* 1. Pozadina za naslov */
 
 .open-ad-btn {
 background: linear-gradient(135deg, #007bff, #0056b3);/* Promenite boju po želji #4A90E2 */
@@ -208,6 +214,7 @@ background: linear-gradient(135deg, #007bff, #0056b3);/* Promenite boju po želj
 
 .open-ad-btn:hover{
     background: #0056b3;
+
 }
 
 .slide-description {
@@ -220,6 +227,7 @@ background: linear-gradient(135deg, #007bff, #0056b3);/* Promenite boju po želj
     font-size: 14px; /* Veličina fonta */ /* Osiguranje da je ovaj element iznad ostalih */
     width: 96%;
     height: 26%;
+    display: none;
 }   
 
 .current-price-par{
@@ -248,9 +256,9 @@ background: linear-gradient(135deg, #007bff, #0056b3);/* Promenite boju po želj
     margin-bottom: 0px;
     border-radius: 5px; /* Zaobljeni uglovi */
     font-weight: bold;
-    font-size: 13px;
+    font-size: 14px;
  /* Povećava težinu fonta */
-    color: gray;
+    color: #CD5C5C;
 }
 
 .offer-count{

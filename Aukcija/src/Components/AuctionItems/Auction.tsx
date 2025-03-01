@@ -348,23 +348,6 @@ const Auction: React.FC = () => {
                 <a className="prev1" onClick={prevSlide}>&#10094;</a>
                 <a className="next1" onClick={nextSlide}>&#10095;</a>
             </div>
-            
-                <p className="current-price">
-                    <b>Trenutna cena: {new Intl.NumberFormat('sr-RS').format(Number(currentPrice))} RSD</b>
-                </p>
-            <Modal isOpen={isModalOpen} onRequestClose={closeModal} className="ReactModal_Content" overlayClassName="ReactModal__Overlay">
-                <button className="close-button" onClick={closeModal}>&times;</button>
-                <h2>Ponude za {auction.title}</h2>
-                <ul>
-                    {bids.map((bid, index) => (
-                        <li key={index}>
-                            <b>{usernames[index] || 'Unknown User'}</b>: {Number(bid.amount).toFixed(0)} Din. | {formatDateTime(bid.created_at)}
-                        </li>
-                    ))}
-                </ul>
-                <button onClick={closeModal}>Close</button>
-            </Modal>
-    
             {timeLeft && timeLeft > 0 && currentUser !== auctionOwnerId && (
                 <div className="bid-section">
                     <div className="new-bid-container">
@@ -382,6 +365,23 @@ const Auction: React.FC = () => {
                     <span className="bid-error">{bidError}</span>
                 </div>
             )}
+                <p className="current-price">
+                    <b>Trenutna cena: {new Intl.NumberFormat('sr-RS').format(Number(currentPrice))} RSD</b>
+                </p>
+            <Modal isOpen={isModalOpen} onRequestClose={closeModal} className="ReactModal_Content" overlayClassName="ReactModal__Overlay">
+                <button className="close-button" onClick={closeModal}>&times;</button>
+                <h2>Ponude za {auction.title}</h2>
+                <ul>
+                    {bids.map((bid, index) => (
+                        <li key={index}>
+                            <b>{usernames[index] || 'Unknown User'}</b>: {Number(bid.amount).toFixed(0)} Din. | {formatDateTime(bid.created_at)}
+                        </li>
+                    ))}
+                </ul>
+                <button onClick={closeModal}>Close</button>
+            </Modal>
+    
+            
 
                 <div className="countdown-container">
                     <p className="countdown-timer">Završava se za: {formattedTimeLeft()}</p>

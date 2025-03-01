@@ -51,11 +51,11 @@ function NotificationsPage() {
   useEffect(() => {
     fetchNotifications(); // Učitaj notifikacije kada se komponenta učita
   }, []);
-
+  
   return (
     <div className="notifications-page">
       <h1>Moje notifikacije</h1>
-
+  
       {loading ? (
         <p>Loading...</p>
       ) : notifications.length === 0 ? (
@@ -64,7 +64,10 @@ function NotificationsPage() {
         <ul>
           {notifications.map((notification) => (
             <li key={notification.id} className={notification.is_read ? 'read' : 'unread'}>
-              <p>{notification.message}</p>
+              
+              {/* Prikaz poruke sa prelomima linija */}
+              <p dangerouslySetInnerHTML={{ __html: notification.message.replace(/\n/g, '<br>') }}></p>
+  
               <div className='button-container'>
                 {!notification.is_read && (
                   <button onClick={() => markAsRead(notification.id)}>Označi kao pročitano</button>
@@ -76,6 +79,7 @@ function NotificationsPage() {
       )}
     </div>
   );
+  
 }
 
 export default NotificationsPage;

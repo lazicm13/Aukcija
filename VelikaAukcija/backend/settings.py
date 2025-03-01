@@ -30,10 +30,10 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')  # Ensure this path is correct
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-^cr3fd-km1e0e5r&#6!$#a=xjh7cc1ebr0fvrw%7h)a+v5043('
+SECRET_KEY = os.getenv('SECRET_KEY')
 
-GOOGLE_OAUTH2_CLIENT_ID = '516726223486-ese1hmu3fmae12vgcv8b2tthgcnol316.apps.googleusercontent.com'
-GOOGLE_OAUTH2_CLIENT_SECRET = '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'
+GOOGLE_OAUTH2_CLIENT_ID = os.getenv('google_id')
+GOOGLE_OAUTH2_CLIENT_SECRET = os.getenv('google_secret')
 
 CORS_ALLOW_CREDENTIALS = True
 
@@ -41,15 +41,16 @@ CORS_ORIGIN_WHITELIST = [
     "http://localhost:5173",
     'http://192.168.0.20',
     'http://192.168.0.20:5173',
+    'https://velikaaukcija.com',
 ]
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'taxitracker2024@gmail.com'
-EMAIL_HOST_PASSWORD = 'qgtk hbph ibvd ojyc'
-DEFAULT_FROM_EMAIL = 'Velika Aukcija <taxitracker2024@gmail.com>'
+EMAIL_HOST_USER = 'velikaaukcija@gmail.com'
+EMAIL_HOST_PASSWORD = 'cmjg svim zlfx kqsh'
+DEFAULT_FROM_EMAIL = 'Velika Aukcija <velikaaukcija@gmail.com>'
 
 # Dozvoljena zaglavlja
 default_headers = list(cors_default_headers)
@@ -98,15 +99,16 @@ CSRF_TRUSTED_ORIGINS = [
     'http://localhost:5173',  # Add your front-end URL
     # You can add more trusted origins here as needed
     'http://192.168.0.20:5173',
+    'https://velikaaukcija.com',
 ]
 
 
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1", "192.168.0.33", "192.168.0.20"]
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", "192.168.0.33", "192.168.0.20", 'https://velikaaukcija.com']
 
 REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES":(
@@ -118,9 +120,10 @@ REST_FRAMEWORK = {
 }
 
 SESSION_COOKIE_AGE = 36000
+SESSION_COOKIE_SECURE = True
 SESSION_SAVE_EVERY_REQUEST = True
 CSRF_COOKIE_NAME = 'csrftoken'  # Naziv kolačića
-CSRF_COOKIE_SECURE = False  # Set to True in production with HTTPS
+CSRF_COOKIE_SECURE = True  # Set to True in production with HTTPS
 CSRF_COOKIE_HTTPONLY = False
 CSRF_COOKIE_AGE = 31449600  # 1 year in seconds
 
@@ -140,9 +143,11 @@ INSTALLED_APPS = [
     'corsheaders',
     'api',
     'channels',
+    'whitenoise.runserver_nostatic',
 ]
 
 MIDDLEWARE = [
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.security.SecurityMiddleware',
@@ -181,11 +186,11 @@ TIME_ZONE = 'UTC'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'postgres',
-        'USER': 'postgres',
-        'PASSWORD': 'postgres',
-        'HOST': 'db',
-        'PORT': 5432,
+        'NAME': os.getenv('DB_NAME'),
+        'USER': os.getenv('DB_USER'),
+        'PASSWORD': os.getenv('DB_PASSWORD'),
+        'HOST': os.getenv('DB_HOST'),
+        'PORT': '5432',
     }
 }
 
@@ -227,7 +232,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = 'static/'
-
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 

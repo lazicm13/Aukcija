@@ -260,10 +260,11 @@ function CreateAuction() {
                                 value={auctionDuration}
                                 onChange={(e) => setAuctionDuration(Number(e.target.value))}
                             >
-                                <option value={4}>4 dana</option>
-                                <option value={3}>3 dana</option>
-                                <option value={2}>2 dana</option>
                                 <option value={1}>1 dan</option>
+                                <option value={3}>3 dana</option>
+                                <option value={4}>4 dana</option>
+                                <option value={7}>7 dana</option>
+                                <option value={10}>10 dana</option>
                             </select>
                         </div>
                     </div>
@@ -316,8 +317,8 @@ function CreateAuction() {
                         style={{ display: "none" }}
                     />
                     <div className="custom-file-upload">
-                        <button type="button" onClick={() => document.getElementById("images")?.click()}>Odaberi fajl</button>
-                        <span>{images.length > 0 ? `${images.length} odabranih fajlova` : "Nijedan fajl nije odabran"}</span>
+                        <button type="button" onClick={() => document.getElementById("images")?.click()}>Odaberi slike</button>
+                        <span className="fajl">{images.length > 0 ? `${images.length} odabranih fajlova` : "Nijedan fajl nije odabran"}</span>
                     </div>
                     <div className="selected-images">
                         {images.map((image, index) => (

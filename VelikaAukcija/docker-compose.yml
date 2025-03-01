@@ -15,9 +15,7 @@ services:
 
   web:
     build: .
-    command: python manage.py runserver 0.0.0.0:8000
-    volumes:
-      - .:/code
+    command: gunicorn backend.wsgi:application --bind 0.0.0.0:8000
     ports:
       - "8000:8000"
     depends_on:
@@ -39,8 +37,6 @@ services:
   celery:
     build: .
     command: celery -A backend worker --loglevel=info
-    volumes:
-      - .:/code
     depends_on:
       - redis
       - db
@@ -48,8 +44,6 @@ services:
   celery-beat:
     build: .
     command: celery -A backend beat --loglevel=info
-    volumes:
-      - .:/code
     depends_on:
       - redis
       - db

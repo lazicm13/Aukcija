@@ -21,7 +21,7 @@ import MyBids from './Pages/MyBids'
 // import ChatPage from './Pages/ChatRoom'
 // import ChatListPage from './Components/Chat/ChatListPage'
 
-const CLIENT_ID = '516726223486-ese1hmu3fmae12vgcv8b2tthgcnol316.apps.googleusercontent.com';
+const CLIENT_ID = '716931881312-0v5lv60bn004kusg3jg272jqbetmu5s8.apps.googleusercontent.com';
 
 function Register() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);

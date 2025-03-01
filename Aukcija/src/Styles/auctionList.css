@@ -15,8 +15,10 @@
     justify-content: center;
     gap: 20px;
     
-background-image: url('./../../public/assets/tekstura.png'); /* Dodaj teksturu ako želiš */
-background-size: cover;
+
+    background: linear-gradient(135deg, #112240, rgba(0, 86, 179, 0.7));
+
+
 
     padding: 25px;
     border-radius: 12px;
@@ -173,7 +175,7 @@ select {
 }
 
 @media (max-width: 480px) {
-   
+    
     .auction-item {
         flex: 1 0 100%;
         max-width: 100%;
@@ -201,7 +203,12 @@ select {
     .sorry-emoji{
         max-width: 200;
     }
-
+    .auction-list {
+        
+        border-radius: 12px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+        border: 0px solid #888;
+    }
 }
 
 .title-h1{

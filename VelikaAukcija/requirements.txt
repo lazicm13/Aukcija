@@ -16,3 +16,4 @@ redis
 django-celery-beat
 channels
 channels_redis
+whitenoise
