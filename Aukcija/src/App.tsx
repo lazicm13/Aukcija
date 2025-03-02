@@ -61,7 +61,7 @@ function Login(){
 
 
 function App() {
-  const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
+  // const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
 
   // useEffect(() => {
   //     const fetchUserData = async () => {

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import './../../Styles/auctionPage.css';
 import api from '../../api';
@@ -6,7 +6,7 @@ import { AxiosError } from 'axios';
 import Modal from 'react-modal';
 import ConfirmationModal from '../Modals/ConfirmationModal'; // Import your modal component
 import CommentSection from './CommentSection';
-import ReportModal from '../Modals/ReportModal';
+// import ReportModal from '../Modals/ReportModal';
 import Confetti from 'react-confetti';
 import InfoModal from '../Modals/infoModal';
 
@@ -49,7 +49,7 @@ const Auction: React.FC = () => {
     const [timeLeft, setTimeLeft] = useState<number | null>(null);
     const [bidError, setBidError] = useState('');
     const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState<boolean>(false);
-    const [isReportModalOpen, setIsReportModalOpen] = useState<boolean>(false);
+    // const [isReportModalOpen, setIsReportModalOpen] = useState<boolean>(false);
     const [placeholder, setPlaceholder] = useState('Unesite novu ponudu...');
     const [successMessage, setSuccessMessage] = useState('');
     const [isConfettiVisible, setIsConfettiVisible] = useState(false);
@@ -200,13 +200,13 @@ const Auction: React.FC = () => {
     
     
         // Pozivamo funkciju odmah da bismo izbegli čekanje
-    const openReportModal = () => {
-        setIsReportModalOpen(true);
-    }
+    // const openReportModal = () => {
+    //     setIsReportModalOpen(true);
+    // }
 
-    const closeReportModal = () => {
-        setIsReportModalOpen(false);
-    };
+    // const closeReportModal = () => {
+    //     setIsReportModalOpen(false);
+    // };
 
     
 
@@ -228,20 +228,20 @@ const Auction: React.FC = () => {
         amount?: string[];
     }
 
-    const handleReportConfirmation = async (reportText: string) => {
-        try {
-            const response = await api.post('/api/report-auction/', { id: auction.id, reportText }, {
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            });
+    // const handleReportConfirmation = async (reportText: string) => {
+    //     try {
+    //         const response = await api.post('/api/report-auction/', { id: auction.id, reportText }, {
+    //             headers: {
+    //                 'Content-Type': 'application/json'
+    //             }
+    //         });
     
-            setIsReportModalOpen(false);
-            console.log(response.data);
-        } catch (error) {
-            console.error("Error reporting auction:", error);
-        }
-    };
+    //         setIsReportModalOpen(false);
+    //         console.log(response.data);
+    //     } catch (error) {
+    //         console.error("Error reporting auction:", error);
+    //     }
+    // };
     
 
     const handleNewBid = async () => {
@@ -408,13 +408,13 @@ const Auction: React.FC = () => {
                 </p>
                 <p className='auction-owner'>Prodavac: <a><b>{auctionOwner}</b></a></p>
             </div>
-            <ReportModal
+            {/* <ReportModal
                 isOpen={isReportModalOpen}
                 onConfirm={handleReportConfirmation}  // Pass the function reference here
                 onCancel={closeReportModal}
                 title="Prijavi aukciju"
                 message="Unesite razlog za prijavu ove aukcije."
-            />
+            /> */}
 
             <InfoModal
                 isOpen={isInfoModalOpen}

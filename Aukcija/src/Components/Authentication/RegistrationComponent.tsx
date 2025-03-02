@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react';
+import { Fragment, useState } from 'react';
 import api from '../../api';
 import './../../Styles/authentication.css';
 import { useNavigate } from 'react-router-dom';

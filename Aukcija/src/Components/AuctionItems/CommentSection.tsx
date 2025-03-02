@@ -21,8 +21,8 @@ function CommentSection({ auctionItemId, ownerId }: CommentSectionProps) {
     const [newComment, setNewComment] = useState("");
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(""); 
-    const [reply, setReply] = useState<string>(""); 
-    const [replyToCommentId, setReplyToCommentId] = useState<number | null>(null); 
+    // const [reply, setReply] = useState<string>(""); 
+    // const [replyToCommentId, setReplyToCommentId] = useState<number | null>(null); 
     const [userId, setUserId] = useState(0);
 
     useEffect(() => {

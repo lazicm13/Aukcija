@@ -16,7 +16,7 @@ function CreateAuction() {
     const [category, setCategory] = useState('');
     const [errors, setErrors] = useState<{ [key: string]: string }>({});
     const navigate = useNavigate();
-    const [successMessage, setSuccessMessage] = useState('');
+    const [successMessage] = useState('');
     const [isInfoModalOpen, setIsInfoModalOpen] = useState(false);
 
     useEffect(() => {
@@ -34,9 +34,9 @@ function CreateAuction() {
     }, []);
 
 
-    interface ApiResponse {
-        id: number;
-    }
+    // interface ApiResponse {
+    //     id: number;
+    // }
 
     interface ApiErrorResponse {
         message: string;

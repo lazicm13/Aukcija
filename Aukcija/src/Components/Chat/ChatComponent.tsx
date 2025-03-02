@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 const ChatComponent = ({ chatroomId }: { chatroomId: number }) => {
   const [messages, setMessages] = useState<any[]>([]);

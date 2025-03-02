@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import './../../Styles/auction.css';
 import { useNavigate, useLocation } from 'react-router-dom';
 import api from '../../api';
@@ -41,9 +41,7 @@ const AuctionItem: React.FC<AuctionItemProps> = ({ auction, onDelete }) => {
     const [successMessage, setSuccessMessage] = useState('');
     const [isConfettiVisible, setIsConfettiVisible] = useState(false);
     const [isInfoModalOpen, setIsInfoModalOpen] = useState(false);
-    const [winner, setWinner] = useState('');
     const [currentUser, setCurrentUser] = useState('');
-    const [winnerPrice, setWinnerPrice] = useState(0);
     
     useEffect(() => {
         const fetchUserData = async () => {
