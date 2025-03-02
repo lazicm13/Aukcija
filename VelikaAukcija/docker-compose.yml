@@ -21,6 +21,8 @@ services:
       - redis  # Uverite se da web servis zavisi od Redis servisa
     environment:
       - CELERY_BROKER_URL=redis://redis:6379/0  # Ovo postavlja Redis kao broker za Celery
+      - PYTHONPATH=/code/VelikaAukcija
+      - DJANGO_SETTINGS_MODULE=backend.settings
 
   pgadmin:
     image: dpage/pgadmin4

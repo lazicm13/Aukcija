@@ -17,4 +17,5 @@ COPY . /code/
 EXPOSE 8000
 
 # Set the command to run gunicorn
-CMD ["gunicorn", "--bind", "0.0.0.0:8000", "VelikaAukcija.backend.wsgi:application"]
+CMD ["gunicorn", "--chdir", "/code/VelikaAukcija", "backend.wsgi:application", "--bind", "0.0.0.0:8000"]
+
