@@ -60,7 +60,7 @@ class CreateUserView(generics.CreateAPIView):
 
     def perform_create(self, serializer):
         user = serializer.save()  
-        # send_verification_email(user)  
+        send_verification_email(user)  
 
 class LoginView(APIView):
     permission_classes = [AllowAny]
