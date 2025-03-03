@@ -3,8 +3,10 @@ from django.urls import path, include
 from api.views import CreateUserView
 from django.conf import settings
 from django.conf.urls.static import static
+from django.shortcuts import redirect
 
 urlpatterns = [
+    path('', lambda request: redirect('api/')),
     path('admin/', admin.site.urls),
     path('api/user/register/', CreateUserView.as_view(), name='register'),
     path('api-auth/', include("rest_framework.urls")),
