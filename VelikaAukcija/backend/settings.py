@@ -108,7 +108,10 @@ CORS_ALLOWED_METHODS = [
 CSRF_TRUSTED_ORIGINS = [
     "https://velikaaukcija.com", 
     "https://www.velikaaukcija.com",
-    'https://api.velikaaukcija.com'
+    'https://api.velikaaukcija.com',
+    'velika-aukcija.onrender.com',
+    "https://velika-aukcija.onrender.com",
+    "api.velikaaukcija.com",
 ]
 
 
@@ -131,9 +134,10 @@ REST_FRAMEWORK = {
 SESSION_COOKIE_AGE = 36000
 SESSION_SAVE_EVERY_REQUEST = True
 CSRF_COOKIE_NAME = 'csrftoken'  # Naziv kolačića
-CSRF_COOKIE_SECURE = False  # Set to True in production with HTTPS
+CSRF_COOKIE_SECURE = True  # Set to True in production with HTTPS
 CSRF_COOKIE_HTTPONLY = False
 CSRF_COOKIE_AGE = 31449600  # 1 year in seconds
+SESSION_COOKIE_SECURE = True
 
 AUTH_USER_MODEL = 'api.CustomUser'
 
