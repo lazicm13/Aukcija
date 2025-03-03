@@ -37,6 +37,9 @@ api.interceptors.request.use(
         console.log('Token:', csrfToken);
         if (csrfToken) {
             config.headers['X-CSRFToken'] = csrfToken; // Add token to headers
+            console.log("Adding CSRF Token:", csrfToken);
+        } else{
+            console.log("No CSRF token available.");
         }
 
         return config;
