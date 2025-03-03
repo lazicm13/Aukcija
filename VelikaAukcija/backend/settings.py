@@ -49,9 +49,11 @@ GOOGLE_OAUTH2_CLIENT_SECRET = os.getenv("GOOGLE_SECRET")
 
 CORS_ALLOW_CREDENTIALS = True
 
-CORS_ORIGIN_WHITELIST = [
+CORS_ALLOWED_ORIGINS = [
     "https://www.velikaaukcija.com",
-    "https://velikaaukcija.com", 
+    "https://velikaaukcija.com",
+    "https://api.velikaaukcija.com",
+    "https://velika-aukcija.onrender.com"
 ]
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
@@ -108,19 +110,14 @@ CORS_ALLOWED_METHODS = [
 CSRF_TRUSTED_ORIGINS = [
     "https://velikaaukcija.com", 
     "https://www.velikaaukcija.com",
-    'https://api.velikaaukcija.com',
-    'velika-aukcija.onrender.com',
-    "https://velika-aukcija.onrender.com",
-    "api.velikaaukcija.com",
+    "https://api.velikaaukcija.com",
+    "https://velika-aukcija.onrender.com"
 ]
-
-
-
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['velikaaukcija.com', "www.velikaaukcija.com", "api.velikaaukcija.com", "velika-aukcija.onrender.com", "https://velika-aukcija.onrender.com", "https://api.velikaaukcija.com"]
+ALLOWED_HOSTS = ['velikaaukcija.com', "www.velikaaukcija.com", "api.velikaaukcija.com", "velika-aukcija.onrender.com"]
 
 REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES":(
@@ -138,6 +135,8 @@ CSRF_COOKIE_SECURE = True  # Set to True in production with HTTPS
 CSRF_COOKIE_HTTPONLY = False
 CSRF_COOKIE_AGE = 31449600  # 1 year in seconds
 SESSION_COOKIE_SECURE = True
+SESSION_COOKIE_SAMESITE = 'None'
+CSRF_COOKIE_SAMESITE = 'None'
 
 AUTH_USER_MODEL = 'api.CustomUser'
 
