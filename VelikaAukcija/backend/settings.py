@@ -97,6 +97,8 @@ CORS_ALLOW_HEADERS = default_headers + [
 
 ]
 
+CORS_EXPOSE_HEADERS = ["x-csrftoken"]
+
 
 CORS_ALLOWED_METHODS = [
     "DELETE",
