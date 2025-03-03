@@ -7,26 +7,26 @@
     background-color: #ffffff; /* Pozadinska boja */
     color: black; /* Boja teksta */
     padding: 10px; /* Unutrašnje margine */
-    display: flex; /* Aktivira flexbox */
-    justify-content: space-between; /* Razmak između elemenata */
-    align-items: center; /* Vertikalno centriranje elemenata */
+    /* Vertikalno centriranje elemenata */
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Blaga senka ispod headera */
     z-index: 1000; /* Osigurava da bude iznad drugih elemenata */
     height: 9%;
 }
 
-.content {
-    width: 1900px; /* Fiksna širina sadržaja */
-    margin: 0 auto; /* Centriranje */
-    display: flex;
-    justify-content: space-between;
+.content{
+    position: relative;
+    display: flex; /* Aktivira flexbox */
+    justify-content: center; /* Razmak između elemenata */
     align-items: center;
+    bottom: 35px;
+    gap: 45%;
 }
+
+
 
 .header-logo {
     width: 120px; /* Keeps the logo responsive by limiting its width */
-    height: auto; /* Maintains the original aspect ratio */
-    margin-left: 350px; /* Shifts logo slightly to the right */
+    height: auto; /* Maintains the original aspect ratio *//* Shifts logo slightly to the right */
     margin-bottom: 0px;
 }
 
@@ -37,8 +37,7 @@
 .header-right {
     display: flex; /* Raspoređuje elemente u red */
     align-items: center; /* Vertikalno centriranje */
-    gap: 50px; /* Razmak između elemenata */
-    margin-right: 390px;
+    gap: 50px;  
     margin-top: 20px;
 }
 
@@ -138,13 +137,15 @@ button.create-auction-btn:hover {
 }
 
 @media (max-width: 480px) {
-    .header-logo {
-        margin-left: 0px; /* Further reduces left margin on very small screens */
-        width: 100px;
+    .content{
+        gap: 0px;
+        margin-left: 90px;
+    }
+    .header-logo { 
+        width: 90px;
         height: auto;
     }
     .header-right{
-        margin-right: 15px;
         gap: 20px;
     }
     .user-profile{
@@ -160,22 +161,34 @@ button.create-auction-btn:hover {
 }
 
 @media (max-width: 1368px){
+    .content{
+        gap: 55%;
+    }
     .header-logo{
-        margin-left: 55px;
-        width: 100px;
+        width: 90px;
         height: auto;
+        padding-top: 5px;
     }
     .header-right{
-        margin-right: 75px;
         gap: 20px;
     }
 }
 
-@media (max-width: 1768px){
-}
 
 .notification-logo{
     cursor: pointer;
     margin-top: 25px;
     margin-left: 10px;
+}
+
+@media (max-width: 1000px){
+    .content{
+        gap: 25%;
+    }
+}
+
+@media (max-width: 610px){
+    .content{
+        gap: 5%;
+    }
 }

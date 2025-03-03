@@ -159,55 +159,60 @@ function RegistrationComponent() {
                 />
                 <form onSubmit={handleSubmit} noValidate>
                     <div>
-                        <label htmlFor="name">Ime i prezime:</label>
+                        {/* <label htmlFor="name">Ime i prezime:</label> */}
                         <input
                             type="text"
                             id="name"
                             name="first_name"
+                            placeholder='Ime i prezime: '
                             value={formData.first_name}
                             onChange={handleInputChange}
                         />
                         {error.first_name && <p className="error-message">{error.first_name}</p>}
                     </div>
                     <div>
-                        <label htmlFor="email">Email:</label>
+                        {/* <label htmlFor="email">Email:</label> */}
                         <input
                             type="email"
                             id="email"
                             name="email"
+                            placeholder='Emial:'
                             value={formData.email}
                             onChange={handleInputChange}
                         />
                         {error.email && <p className="error-message">{error.email}</p>}
                     </div>
                     <div>
-                        <label htmlFor="phone">Broj telefona:</label>
+                        {/* <label htmlFor="phone">Broj telefona:</label> */}
                         <input
                             type="phone"
                             id="phone"
                             name="phone_number"
+                            placeholder='Broj telefona:'
                             value={formData.phone_number}
                             onChange={handleInputChange}
                         />
                         {error.phone_number && <p className="error-message">{error.phone_number}</p>}
                     </div>
                     <div>
-                        <label htmlFor="password">Lozinka:</label>
+                        {/* <label htmlFor="password">Lozinka:</label> */}
                         <input
                             type="password"
                             id="password"
                             name="password"
+                            placeholder='Lozinka:'
                             value={formData.password}
                             onChange={handleInputChange}
                         />
                         {error.password && <p className="error-message">{error.password}</p>}
                     </div>
                     <div>
-                        <label htmlFor='confirmPassword'>Potvrdi lozinku:</label>
+                        {/* <label htmlFor='confirmPassword'>Potvrdi lozinku:</label> */}
                         <input
                             type='password'
                             id='confirmPassword'
                             name='confirmPassword'
+                            placeholder='Potvrdi lozinku:'
                             value={formData.confirmPassword}
                             onChange={handleInputChange}
                         />
