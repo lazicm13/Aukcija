@@ -50,11 +50,8 @@ GOOGLE_OAUTH2_CLIENT_SECRET = os.getenv("GOOGLE_SECRET")
 CORS_ALLOW_CREDENTIALS = True
 
 CORS_ORIGIN_WHITELIST = [
-    "http://localhost:5173",
-    'http://192.168.0.20',
-    'http://192.168.0.20:5173',
-    "https://velikaaukcija.com", 
     "https://www.velikaaukcija.com",
+    "https://velikaaukcija.com", 
 ]
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
@@ -109,9 +106,6 @@ CORS_ALLOWED_METHODS = [
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-    'http://localhost:5173',  # Add your front-end URL
-    # You can add more trusted origins here as needed
-    'http://192.168.0.20:5173',
     "https://velikaaukcija.com", 
     "https://www.velikaaukcija.com",
 ]
@@ -122,7 +116,7 @@ CSRF_TRUSTED_ORIGINS = [
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1", 'velikaaukcija.com', "www.velikaaukcija.com", "192.168.0.20"]
+ALLOWED_HOSTS = ['velikaaukcija.com', "www.velikaaukcija.com", "api.velikaaukcija.com"]
 
 REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES":(
@@ -237,10 +231,6 @@ USE_I18N = True
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.1/howto/static-files/
-
-STATIC_URL = 'static/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
