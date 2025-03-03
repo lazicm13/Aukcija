@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import './../../Styles/modal.css'; // Stilovi za modal (možeš prilagoditi)
 
 interface ReportModalProps {

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import './../../Styles/auctionPage.css';
 import api from '../../api';
@@ -6,7 +6,7 @@ import { AxiosError } from 'axios';
 import Modal from 'react-modal';
 import ConfirmationModal from '../Modals/ConfirmationModal'; // Import your modal component
 import CommentSection from './CommentSection';
-import ReportModal from '../Modals/ReportModal';
+// import ReportModal from '../Modals/ReportModal';
 import Confetti from 'react-confetti';
 import InfoModal from '../Modals/infoModal';
 
@@ -49,7 +49,7 @@ const Auction: React.FC = () => {
     const [timeLeft, setTimeLeft] = useState<number | null>(null);
     const [bidError, setBidError] = useState('');
     const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState<boolean>(false);
-    const [isReportModalOpen, setIsReportModalOpen] = useState<boolean>(false);
+    // const [isReportModalOpen, setIsReportModalOpen] = useState<boolean>(false);
     const [placeholder, setPlaceholder] = useState('Unesite novu ponudu...');
     const [successMessage, setSuccessMessage] = useState('');
     const [isConfettiVisible, setIsConfettiVisible] = useState(false);
@@ -200,13 +200,13 @@ const Auction: React.FC = () => {
     
     
         // Pozivamo funkciju odmah da bismo izbegli čekanje
-    const openReportModal = () => {
-        setIsReportModalOpen(true);
-    }
+    // const openReportModal = () => {
+    //     setIsReportModalOpen(true);
+    // }
 
-    const closeReportModal = () => {
-        setIsReportModalOpen(false);
-    };
+    // const closeReportModal = () => {
+    //     setIsReportModalOpen(false);
+    // };
 
     
 
@@ -228,20 +228,20 @@ const Auction: React.FC = () => {
         amount?: string[];
     }
 
-    const handleReportConfirmation = async (reportText: string) => {
-        try {
-            const response = await api.post('/api/report-auction/', { id: auction.id, reportText }, {
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            });
+    // const handleReportConfirmation = async (reportText: string) => {
+    //     try {
+    //         const response = await api.post('/api/report-auction/', { id: auction.id, reportText }, {
+    //             headers: {
+    //                 'Content-Type': 'application/json'
+    //             }
+    //         });
     
-            setIsReportModalOpen(false);
-            console.log(response.data);
-        } catch (error) {
-            console.error("Error reporting auction:", error);
-        }
-    };
+    //         setIsReportModalOpen(false);
+    //         console.log(response.data);
+    //     } catch (error) {
+    //         console.error("Error reporting auction:", error);
+    //     }
+    // };
     
 
     const handleNewBid = async () => {
@@ -334,7 +334,7 @@ const Auction: React.FC = () => {
             {isConfettiVisible && <Confetti width={window.innerWidth} height={window.innerHeight} />} {/* Konfeti */}
         <div className="auction-details">
             <div className="auction-header">
-                <button className="report-auction-btn" onClick={openReportModal}>Prijavi aukciju</button>
+                {/* <button className="report-auction-btn" onClick={openReportModal}>Prijavi aukciju</button> */}
                 <p className="auction-city">🧭 {auction.city}</p>
                 <h2>{auction.title}</h2>
             </div>
@@ -348,22 +348,6 @@ const Auction: React.FC = () => {
                 <a className="prev1" onClick={prevSlide}>&#10094;</a>
                 <a className="next1" onClick={nextSlide}>&#10095;</a>
             </div>
-                <p className="current-price">
-                    <b>Trenutna cena: {new Intl.NumberFormat('sr-RS').format(Number(currentPrice))} RSD</b>
-                </p>
-            <Modal isOpen={isModalOpen} onRequestClose={closeModal} className="ReactModal_Content" overlayClassName="ReactModal__Overlay">
-                <button className="close-button" onClick={closeModal}>&times;</button>
-                <h2>Ponude za {auction.title}</h2>
-                <ul>
-                    {bids.map((bid, index) => (
-                        <li key={index}>
-                            <b>{usernames[index] || 'Unknown User'}</b>: {Number(bid.amount).toFixed(0)} Din. | {formatDateTime(bid.created_at)}
-                        </li>
-                    ))}
-                </ul>
-                <button onClick={closeModal}>Close</button>
-            </Modal>
-    
             {timeLeft && timeLeft > 0 && currentUser !== auctionOwnerId && (
                 <div className="bid-section">
                     <div className="new-bid-container">
@@ -381,22 +365,33 @@ const Auction: React.FC = () => {
                     <span className="bid-error">{bidError}</span>
                 </div>
             )}
+                <p className="current-price">
+                    <b>Trenutna cena: {new Intl.NumberFormat('sr-RS').format(Number(currentPrice))} RSD</b>
+                </p>
+            <Modal isOpen={isModalOpen} onRequestClose={closeModal} className="ReactModal_Content" overlayClassName="ReactModal__Overlay">
+                <button className="close-button" onClick={closeModal}>&times;</button>
+                <h2>Ponude za {auction.title}</h2>
+                <ul>
+                    {bids.map((bid, index) => (
+                        <li key={index}>
+                            <b>{usernames[index] || 'Unknown User'}</b>: {Number(bid.amount).toFixed(0)} Din. | {formatDateTime(bid.created_at)}
+                        </li>
+                    ))}
+                </ul>
+                <button onClick={closeModal}>Close</button>
+            </Modal>
+    
+            
 
                 <div className="countdown-container">
                     <p className="countdown-timer">Završava se za: {formattedTimeLeft()}</p>
                 </div>
             <a onClick={openModal} className="bid-history-link">Broj ponuda: {bidCount}</a>
     
-            <div className="contact-info">
-                <p className='phone-number'>
-                    Broj telefona: <a href={`tel:${auction.phone_number}`}><b>{auction.phone_number}</b></a>
-                </p>
-                <p className='auction-owner'>Prodavac: <a><b>{auctionOwner}</b></a></p>
-            </div>
-    
             
     
             <hr />
+            <h3><u>Opis</u></h3>
             <p className="full-description">{auction.description}</p>
             <ConfirmationModal
                 isOpen={isConfirmDialogOpen}
@@ -405,14 +400,21 @@ const Auction: React.FC = () => {
                 title='Potvrda licitacije'
                 message={`Da li ste sigurni da želite da licitirate ${newOffer} dinara za ovu aukciju?`}
             />
-
-            <ReportModal
+           
+    
+            <div className="contact-info">
+                <p className='phone-number'>
+                    Broj telefona: <a href={`tel:${auction.phone_number}`}><b>{auction.phone_number}</b></a>
+                </p>
+                <p className='auction-owner'>Prodavac: <a><b>{auctionOwner}</b></a></p>
+            </div>
+            {/* <ReportModal
                 isOpen={isReportModalOpen}
                 onConfirm={handleReportConfirmation}  // Pass the function reference here
                 onCancel={closeReportModal}
                 title="Prijavi aukciju"
                 message="Unesite razlog za prijavu ove aukcije."
-            />
+            /> */}
 
             <InfoModal
                 isOpen={isInfoModalOpen}
@@ -421,7 +423,7 @@ const Auction: React.FC = () => {
                 onCancel={handleCancel}
             />
             
-            <hr></hr>
+            
             <CommentSection auctionItemId={auction.id} ownerId={seller}/>
         </div>
         </>

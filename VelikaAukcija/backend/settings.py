@@ -17,39 +17,52 @@ from dotenv import load_dotenv
 from corsheaders.defaults import default_headers as cors_default_headers
 import os
 from celery import Celery
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
+import dj_database_url
 
 load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Media files (uploaded files)
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')  # Ensure this path is correct
+
+
+# Povezivanje sa Cloudinary-jem
+cloudinary.config( 
+  cloud_name = os.getenv("CLOUD_NAME"), 
+  api_key = os.getenv("API_KEY"), 
+  api_secret = os.getenv("API_SECRET")
+)
+
+# Storage settings
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-^cr3fd-km1e0e5r&#6!$#a=xjh7cc1ebr0fvrw%7h)a+v5043('
+SECRET_KEY = os.getenv("SECRET_KEY")
 
-GOOGLE_OAUTH2_CLIENT_ID = '516726223486-ese1hmu3fmae12vgcv8b2tthgcnol316.apps.googleusercontent.com'
-GOOGLE_OAUTH2_CLIENT_SECRET = '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'
+GOOGLE_OAUTH2_CLIENT_ID = os.getenv("GOOGLE_ID")
+GOOGLE_OAUTH2_CLIENT_SECRET = os.getenv("GOOGLE_SECRET")
 
 CORS_ALLOW_CREDENTIALS = True
 
-CORS_ORIGIN_WHITELIST = [
-    "http://localhost:5173",
-    'http://192.168.0.34',
-    'http://192.168.0.34:5173'
+CORS_ALLOWED_ORIGINS = [
+    "https://www.velikaaukcija.com",
+    "https://velikaaukcija.com",
+    "https://api.velikaaukcija.com",
+    "https://velika-aukcija.onrender.com"
 ]
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'taxitracker2024@gmail.com'
-EMAIL_HOST_PASSWORD = 'qgtk hbph ibvd ojyc'
-DEFAULT_FROM_EMAIL = 'taxitracker2024@gmail.com'
+EMAIL_HOST_USER = 'velikaaukcija@gmail.com'
+EMAIL_HOST_PASSWORD = 'cmjg svim zlfx kqsh'
+DEFAULT_FROM_EMAIL = 'Velika Aukcija <velikaaukcija@gmail.com>'
 
 # Dozvoljena zaglavlja
 default_headers = list(cors_default_headers)
@@ -84,6 +97,8 @@ CORS_ALLOW_HEADERS = default_headers + [
 
 ]
 
+CORS_EXPOSE_HEADERS = ["x-csrftoken"]
+
 
 CORS_ALLOWED_METHODS = [
     "DELETE",
@@ -95,18 +110,14 @@ CORS_ALLOWED_METHODS = [
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-    'http://localhost:5173',  # Add your front-end URL
-    # You can add more trusted origins here as needed
-    'http://192.168.0.34:5173',
+    "https://www.velikaaukcija.com",
+    "https://api.velikaaukcija.com"
 ]
-
-
-
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1", "192.168.0.33", "192.168.0.34"]
+ALLOWED_HOSTS = ['velikaaukcija.com', "www.velikaaukcija.com", "api.velikaaukcija.com", "velika-aukcija.onrender.com"]
 
 REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES":(
@@ -117,12 +128,18 @@ REST_FRAMEWORK = {
     ),
 }
 
+CORS_ALLOW_ALL_ORIGINS = True
+
 SESSION_COOKIE_AGE = 36000
 SESSION_SAVE_EVERY_REQUEST = True
 CSRF_COOKIE_NAME = 'csrftoken'  # Naziv kolačića
-CSRF_COOKIE_SECURE = False  # Set to True in production with HTTPS
+CSRF_COOKIE_DOMAIN = ".velikaaukcija.com"
+CSRF_COOKIE_SECURE = True  # Set to True in production with HTTPS
 CSRF_COOKIE_HTTPONLY = False
 CSRF_COOKIE_AGE = 31449600  # 1 year in seconds
+SESSION_COOKIE_SECURE = True
+SESSION_COOKIE_SAMESITE = 'None'
+CSRF_COOKIE_SAMESITE = 'None'
 
 AUTH_USER_MODEL = 'api.CustomUser'
 
@@ -173,20 +190,19 @@ TEMPLATES = [
 
 ASGI_APPLICATION = 'backend.asgi.application'
 
-
+USE_TZ = True
+TIME_ZONE = 'UTC'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
+
+
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'postgres',
-        'USER': 'postgres',
-        'PASSWORD': 'postgres',
-        'HOST': 'db',
-        'PORT': 5432,
-    }
+    'default': dj_database_url.config(
+        default=os.getenv("DATABASE_URL")
+    )
 }
+
 
 
 # Password validation
@@ -208,6 +224,24 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "file": {
+            "level": "ERROR",
+            "class": "logging.FileHandler",
+            "filename": "errors.log",
+        },
+    },
+    "loggers": {
+        "django": {
+            "handlers": ["file"],
+            "level": "ERROR",
+            "propagate": True,
+        },
+    },
+}
 
 
 # Internationalization
@@ -220,10 +254,6 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 
 USE_TZ = True
-
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = 'static/'
 

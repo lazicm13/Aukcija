@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import './../../Styles/auction.css';
 import { useNavigate, useLocation } from 'react-router-dom';
 import api from '../../api';
@@ -41,9 +41,7 @@ const AuctionItem: React.FC<AuctionItemProps> = ({ auction, onDelete }) => {
     const [successMessage, setSuccessMessage] = useState('');
     const [isConfettiVisible, setIsConfettiVisible] = useState(false);
     const [isInfoModalOpen, setIsInfoModalOpen] = useState(false);
-    const [winner, setWinner] = useState('');
     const [currentUser, setCurrentUser] = useState('');
-    const [winnerPrice, setWinnerPrice] = useState(0);
     
     useEffect(() => {
         const fetchUserData = async () => {
@@ -82,26 +80,26 @@ const AuctionItem: React.FC<AuctionItemProps> = ({ auction, onDelete }) => {
         }
     };
 
-    const handleAuctionEnded = () => {
-        api.get(`/api/auctions/${id}/winner`).then((response) => {
-            const winner = response.data;
+    // const handleAuctionEnded = () => {
+    //     api.get(`/api/auctions/${id}/winner`).then((response) => {
+    //         const winner = response.data;
 
-            if(offerCount > 0){
-                setSuccessMessage(`Aukcija je završena! Pobednik je ${winner.first_name} sa ponudom od ${winner.amount} RSD.`);
-                setWinner(winner.first_name);
-                setWinnerPrice(winner.amount);
-                // handleFinishAuction(winner.id);
-            }
-            else{
-                setSuccessMessage('Vaša aukcija nažalost nije prodata! Možete je postaviti ponovo!');
-                // handleEndAuction();
-            }
-        }).catch((error) => {
-            console.error('Error fetching winner:', error);
-        });
+    //         if(offerCount > 0){
+    //             setSuccessMessage(`Aukcija je završena! Pobednik je ${winner.first_name} sa ponudom od ${winner.amount} RSD.`);
+    //             setWinner(winner.first_name);
+    //             setWinnerPrice(winner.amount);
+    //             // handleFinishAuction(winner.id);
+    //         }
+    //         else{
+    //             setSuccessMessage('Vaša aukcija nažalost nije prodata! Možete je postaviti ponovo!');
+    //             // handleEndAuction();
+    //         }
+    //     }).catch((error) => {
+    //         console.error('Error fetching winner:', error);
+    //     });
 
         
-    };
+    // };
 
     // const handleFinishAuction = (winnerId: number) => {
     //     try{
@@ -126,32 +124,30 @@ const AuctionItem: React.FC<AuctionItemProps> = ({ auction, onDelete }) => {
     // }
 
     useEffect(() => {
-        const endTime = new Date(end_date).getTime();
-        
-        // Declare interval before using it
+        const endTime = new Date(end_date).getTime(); // Ensure it's in UTC
+    
         let interval: number;
     
         const updateRemainingTime = () => {
-            const now = Date.now();
-            const distance = endTime - now;
-            setTimeLeft(distance);
+          const now = new Date().getTime(); // Local time
+          const distance = endTime - now;
+          setTimeLeft(distance);
     
-            if (distance < 0) {
-                clearInterval(interval);
-                setTimeLeft(0);
-
-                handleAuctionEnded();
-            }
+          if (distance < 0) {
+            clearInterval(interval);
+            setTimeLeft(0);
+            // handleAuctionEnded();
+          }
         };
     
         updateRemainingTime();
     
-        // Set the interval for further updates
         interval = setInterval(updateRemainingTime, 1000);
     
         return () => clearInterval(interval);
-    }, [end_date]);
-
+      }, [end_date]);
+    
+    
     
     const formatTimeLeft = (time: number) => {
         const seconds = Math.floor((time / 1000) % 60);
@@ -169,13 +165,6 @@ const AuctionItem: React.FC<AuctionItemProps> = ({ auction, onDelete }) => {
             return `${seconds}s`;
         }
     };
-
-    useEffect(() => {
-        if (timeLeft <= 0) {
-            handleAuctionEnded();
-            
-        }
-    }, [timeLeft]);
     
 
     const nextSlide = () => {

@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useEffect } from 'react';
+import { Fragment, useState, useEffect } from 'react';
 import './../Styles/authentication.css';
 import './../Styles/userpage.css';
 import api from '../api';

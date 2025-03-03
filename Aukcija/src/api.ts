@@ -8,9 +8,9 @@ axios.defaults.withCredentials = true;
 // Helper function to fetch CSRF token
 async function fetchCsrfToken() {
     try {
-        const response = await axios.get(`http://192.168.0.34:8000/api/csrf/`);
+        const response = await axios.get(`https://api.velikaaukcija.com/api/csrf/`);
         const csrftoken = response.data.csrftoken; // Adjust this based on your API response
-        Cookies.set('csrftoken', csrftoken); // Set the token in cookies
+        Cookies.set('csrftoken', csrftoken, { domain: '.velikaaukcija.com', secure: true, sameSite: 'None' });
     } catch (error) {
         console.error("Error fetching CSRF token:", error);
     }
@@ -37,6 +37,9 @@ api.interceptors.request.use(
         console.log('Token:', csrfToken);
         if (csrfToken) {
             config.headers['X-CSRFToken'] = csrfToken; // Add token to headers
+            console.log("Adding CSRF Token:", csrfToken);
+        } else{
+            console.log("No CSRF token available.");
         }
 
         return config;

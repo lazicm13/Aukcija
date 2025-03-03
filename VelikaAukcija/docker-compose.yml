@@ -7,7 +7,6 @@ services:
       - POSTGRES_DB=postgres
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
-
   redis:
     image: redis:latest
     ports:
@@ -15,9 +14,6 @@ services:
 
   web:
     build: .
-    command: python manage.py runserver 0.0.0.0:8000
-    volumes:
-      - .:/code
     ports:
       - "8000:8000"
     depends_on:
@@ -25,6 +21,8 @@ services:
       - redis  # Uverite se da web servis zavisi od Redis servisa
     environment:
       - CELERY_BROKER_URL=redis://redis:6379/0  # Ovo postavlja Redis kao broker za Celery
+      - PYTHONPATH=/code/VelikaAukcija
+      - DJANGO_SETTINGS_MODULE=backend.settings
 
   pgadmin:
     image: dpage/pgadmin4
@@ -39,8 +37,6 @@ services:
   celery:
     build: .
     command: celery -A backend worker --loglevel=info
-    volumes:
-      - .:/code
     depends_on:
       - redis
       - db
@@ -48,8 +44,6 @@ services:
   celery-beat:
     build: .
     command: celery -A backend beat --loglevel=info
-    volumes:
-      - .:/code
     depends_on:
       - redis
       - db

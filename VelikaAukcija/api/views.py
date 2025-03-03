@@ -40,10 +40,10 @@ def verify_email(request, code):
         messages.success(request, "Uspešno ste verifikovali svoj nalog.")
         
         # Redirect na login stranicu klijentskog sajta
-        return redirect(f'http://192.168:5173/login')
+        return redirect(f'https://velikaaukcija.com/login')
     except get_user_model().DoesNotExist:
         messages.error(request, "Verifikacioni kod nije validan.")
-        return redirect(f'http://192.168.0.34:5173/login')
+        return redirect(f'https://velikaaukcija.com/login')
 
 @method_decorator(ensure_csrf_cookie, name='dispatch')
 class CSRFTokenView(APIView):
@@ -83,7 +83,7 @@ class LoginView(APIView):
             login(request, user)
 
             if user.is_superuser:
-                return Response({"redirect_url": "http://192.168.0.34:5173/admin/dashboard"}, status=status.HTTP_200_OK)
+                return Response({"redirect_url": "https://velikaaukcija.com/admin/dashboard"}, status=status.HTTP_200_OK)
             return Response({"detail": "Uspešno ste se ulogovali"}, status=status.HTTP_200_OK)
         
         return Response({"detail": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
@@ -107,6 +107,9 @@ def user_status(request):
         return JsonResponse({'is_authenticated': False, 'username': None})
 
 
+from google.oauth2 import id_token
+from google.auth.transport import requests
+
 def google_login(request):
     if request.method == 'POST':
         try:
@@ -116,10 +119,10 @@ def google_login(request):
             if not token:
                 return JsonResponse({'error': 'No token provided'}, status=400)
 
+            # Verifikacija tokena sa novim CLIENT_ID
             idinfo = id_token.verify_oauth2_token(token, requests.Request(), settings.GOOGLE_OAUTH2_CLIENT_ID)
             email = idinfo.get('email')
             name = idinfo.get('name', '')
-
 
             user, created = User.objects.get_or_create(
                 email=email,
@@ -127,26 +130,24 @@ def google_login(request):
             )
 
             if created:
-                user.set_unusable_password()  # Disable password for Google-created users
-                user.is_verified = True      # Set is_verified to True for new users
+                user.set_unusable_password()
+                user.is_verified = True
                 user.save()
             else:
-                # Update the is_verified field for existing users
                 if not user.is_verified:
                     user.is_verified = True
                     user.save()
             
             if user.is_blocked:
-                return JsonResponse({"detail": "Vaš nalog je blokiran. Ne možete se ulogovati."}, status=status.HTTP_403_FORBIDDEN)
+                return JsonResponse({"detail": "Vaš nalog je blokiran."}, status=403)
 
             login(request, user)
             return JsonResponse({
                 'message': 'Login successful!',
                 'email': email,
                 'name': name,
-                'is_new_user': created  # This will indicate if the user is new or existing
+                'is_new_user': created
             }, status=200)
-
 
         except ValueError as e:
             return JsonResponse({'error': 'Invalid token', 'details': str(e)}, status=400)
@@ -156,6 +157,7 @@ def google_login(request):
             return JsonResponse({'error': 'An error occurred', 'details': str(e)}, status=500)
 
     return JsonResponse({'error': 'Method not allowed'}, status=405)
+
 #endregion
 
 #region auctions
@@ -168,7 +170,7 @@ class AuctionItemListCreate(generics.ListCreateAPIView):
         return AuctionItem.objects.filter(seller=user)  # Return all auctions for the current user
 
     def send_email_new_auction(self, id, user):
-        auction_link = f"http://192.168.0.34:5173/aukcija/{id}"
+        auction_link = f"https://velikaaukcija.com/aukcija/{id}"
 
         subject = 'Čestitamo, uspešno ste postavili aukciju!'
         message = f'Pogledajte oglas ovde: {auction_link}'
@@ -603,7 +605,7 @@ class CommentCreateView(APIView):
     permission_classes = [IsAuthenticated]
     
     def send_new_comment_email(self, id, user):
-        auction_link = f"http://192.168.0.34:5173/aukcija/{id}"
+        auction_link = f"https://velikaaukcija.com/aukcija/{id}"
         
         subject = "Novi komentar na vašoj aukciji"
         message = f'Pogledajte novi komentar ovde: {auction_link}'
@@ -669,7 +671,7 @@ def send_verification_email(user):
     user.save()
     
     # Kreiraj link za potvrdu
-    verification_link = f"http://192.168.0.34:8000/api/verify/{verification_code}/"
+    verification_link = f"https://api.velikaaukcija.com/api/verify/{verification_code}/"
     
     # Kreiraj HTML sadržaj email-a
     html_message = f'''
@@ -693,7 +695,7 @@ def send_verification_email(user):
 def send_report_email(id, reportText):
     send_mail(
         'Nova prijava aukcije',
-        f"Prijavljena aukcija: http://192.168.0.34:5173/aukcija/{id}\n\n Tekst prijave: {reportText}",
+        f"Prijavljena aukcija: https://velikaaukcija.com/aukcija/{id}\n\n Tekst prijave: {reportText}",
         settings.DEFAULT_FROM_EMAIL,
         ["taxitracker2024@gmail.com"],
         fail_silently=False,

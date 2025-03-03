@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import './../Styles/header.css';
 import api from '../api';
@@ -10,7 +10,29 @@ function Header() {
   const navigate = useNavigate();
   const [userName, setUserName] = useState(''); // Replace with actual user fetching logic
     const [count, setUnreadCount] = useState<number>(0);
-  
+
+    const [isHidden, setIsHidden] = useState(false); // State za upravljanje vidljivošću header-a
+    let lastScrollTop = 0; // Praćenje poslednje pozicije skrolovanja
+
+    useEffect(() => {
+        const handleScroll = () => {
+            const currentScroll = window.scrollY; // Koristi window.scrollY umesto pageYOffset
+
+            if (currentScroll > lastScrollTop) {
+                // Ako je korisnik skrolovao na dole
+                setIsHidden(true);
+            } else {
+                // Ako je korisnik skrolovao na gore
+                setIsHidden(false);
+            }
+            lastScrollTop = currentScroll <= 0 ? 0 : currentScroll; // Sprečavanje negativnih vrednosti
+        };
+
+        window.addEventListener('scroll', handleScroll);
+
+        // Čišćenje event listener-a pri unmount-u komponente
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
 
     const fetchUnreadNotificationsCount = async () => {
       try {
@@ -79,19 +101,19 @@ function Header() {
   }
 
   return (
-    <header className='sticky-header'>
-      <div className='content'>
+    <header className={`sticky-header ${isHidden ? 'hidden' : ''}`}>
+      <div className='header-left'>
       <a href='/'><img src='/assets/logo1.png' className='header-logo' alt='Logo' /></a>
-      
+      </div>
       <div className="header-right">
         {location.pathname === '/' && (
           <button className='create-auction-btn' onClick={handleCreateAuction}>
             Postavi Aukciju 
           </button>
         )}
-        {location.pathname === '/registracija' && <p className='register'>Imate nalog? → <a href='login'>Ulogujte se</a></p>}
-        {location.pathname === '/login' && <p className='login'>Nemate nalog? → <a href='registracija'>Registrujte se</a></p>}
-        {(location.pathname === '/' && userName === '') && <div className='login-register-links'><a href='login'>Ulogujte se </a><a href='/registracija'> Registracija</a></div>}
+        {location.pathname === '/registracija' && <p className='register'>Imate nalog? → <a href='/login'>Ulogujte se</a></p>}
+        {location.pathname === '/login' && <p className='login'>Nemate nalog? → <a href='/registracija'>Registrujte se</a></p>}
+        {(location.pathname === '/' && userName === '') && <div className='login-register-links'><a href='/login'>Ulogujte se </a><a href='/registracija' className='registracija'> Registracija</a></div>}
         {(location.pathname !== '/' && location.pathname !== '/login' && location.pathname !== '/registracija') && 
         <a href='/'><img src='/assets/home.png' className='home-button'></img></a>}
         {userName && (<NotificationBell count={count} onClick={handleNavigate} className='notification-logo'/>)}
@@ -117,7 +139,6 @@ function Header() {
             )}
           </div>
         )}
-        </div>
       </div>
 
     </header>

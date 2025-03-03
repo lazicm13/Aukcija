@@ -3,10 +3,11 @@
     margin: 100px auto;
     padding: 20px;
     background: #f7f7f8;
-    border-radius: 12px;
-    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
     position: relative;
     text-align: center; /* Centriraj sav tekst u kontejneru */
+    border: 3px solid #666;
 }
 
 .auction-header {
@@ -37,8 +38,16 @@
     font-size: 1.4em;
     font-weight: bold;
     text-align: center;
-    color: #0056b3;
-    margin-top: 15px;
+    background-color: #f8d210; /* Zlatno-žuta boja za isticanje */
+    color: #333; /* Tamna boja teksta za dobar kontrast */
+    font-size: 24px; /* Veći font za veću vidljivost */
+    font-weight: bold; /* Podebljan tekst */
+    padding: 10px 20px; /* Dobar padding za unutrašnje razmake */
+    border-radius: 10px; /* Zaobljeni uglovi */
+    border: 3px solid #ffb703; /* Kontrastni okvir */
+    text-align: center; /* Centriran tekst */
+    display: inline-block; /* Da ne zauzima celu širinu */
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
 }
 
 /* Slideshow */
@@ -74,8 +83,8 @@
     background-color: rgba(0, 0, 0, 0.8);
 }
 
-.prev1 { left: 10px; }
-.next1 { right: 10px; }
+.prev1 { left: 8%; }
+.next1 { right: 8%; }
 
 /* Sekcija za nove ponude */
 .bid-section {
@@ -95,6 +104,7 @@
     cursor: pointer;
     text-decoration: underline;
     font-size: 20px;
+    color: green;
 }
 
 .new-bid-container {
@@ -131,12 +141,31 @@
 
 /* Countdown timer */
 .countdown-container {
-    margin-top: 20px;
-    font-size: 1.2em;
-    font-weight: bold;
-    color: #ff5733;
+    /* Svetloplava, poluprovidna */
+     /* Tamnoplava za dobar kontrast */
+    font-size: 20px; /* Veći font za čitljivost */
+    font-weight: bold; /* Podebljan tekst */
+    padding: 8px 15px; /* Udoban padding */
+    border-radius: 8px; /* Zaobljeni uglovi */
+     /* Poluprovidni okvir */
+    text-align: center; /* Centriran tekst *//* Ne zauzima celu širinu */
+    /* Blaga senka */
+    font-family: Arial, sans-serif; /* Čist i moderan font */
+    margin: auto;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    max-width: 250px;
 }
 
+.countdown-timer{
+    color:#CD5C5C;
+}
+
+.contact-info{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
 /* Kontakt informacije */
 .contact-info p {
     text-align: center;
@@ -153,7 +182,6 @@
 }
 
 .contact-info .auction-owner {
-    margin-top: 15px;
     font-size: 1.2em;
     color: #444;
 }
@@ -180,7 +208,7 @@
     background-color: white;
     padding: 30px;
     border-radius: 12px;
-    max-width: 400px;
+    max-width: 500px;
     margin: 50px auto;
 }
 
@@ -206,8 +234,8 @@
 
 .report-auction-btn {
     position: absolute; /* Use absolute positioning */
-    top: 20px;           /* Distance from the top of the container */
-    left: 20px;          /* Distance from the left of the container */  /* Add padding for size */ /* Button background color */
+    top: 0px;           /* Distance from the top of the container */
+    left: 0px;          /* Distance from the left of the container */  /* Add padding for size */ /* Button background color */
     color: darkblue;        /* Button text color */
     padding: 6px;
     font-size: 1em;    /* Font size */
@@ -226,5 +254,34 @@
     width: 200px;
 }
 
+hr{
+    height: 1px;
+    background-color: #666;
+}
 
+.full-description{
+    color: #333;
+    background-color: rgba(49, 126, 196, 0.3);
+    padding: 20px;
+    width: 85%;
+    margin: 0 auto;
+    border: 2px solid #999;
+    border-radius: 1%;
+    
+    font-weight: bolder;
+}
 
+@media (max-width: 768px) {
+    .new-bid-container {
+        padding: 10px;
+        width: 100%;
+        margin: 0 auto;
+    }
+    .new-bid-container input{
+        font-size: 1rem;
+
+    }
+    .new-bid-btn{
+        margin-top: 10px;
+    }
+}

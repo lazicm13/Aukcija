@@ -16,7 +16,7 @@ function CreateAuction() {
     const [category, setCategory] = useState('');
     const [errors, setErrors] = useState<{ [key: string]: string }>({});
     const navigate = useNavigate();
-    const [successMessage, setSuccessMessage] = useState('');
+    const [successMessage] = useState('');
     const [isInfoModalOpen, setIsInfoModalOpen] = useState(false);
 
     useEffect(() => {
@@ -34,9 +34,9 @@ function CreateAuction() {
     }, []);
 
 
-    interface ApiResponse {
-        id: number;
-    }
+    // interface ApiResponse {
+    //     id: number;
+    // }
 
     interface ApiErrorResponse {
         message: string;
@@ -70,8 +70,12 @@ function CreateAuction() {
             isValid = false;
         }
 
-        if (phoneNumber === '' || !/^\d{10}$/.test(phoneNumber)) {
-            newErrors.phoneNumber = "Broj telefona nije validan. Mora imati 10 cifara.";
+        if (phoneNumber === '' || !/^0\d{8,}$/.test(phoneNumber)) {
+            newErrors.phoneNumber = "Broj telefona nije validan. Mora počinjati sa 0 i imati najmanje 9 cifara.";
+            isValid = false;
+        }
+        if (!category) {
+            newErrors.category = "Kategorija je obavezna.";
             isValid = false;
         }
 
@@ -84,6 +88,7 @@ function CreateAuction() {
             newErrors.images = "Maksimalno možete odabrati 6 slika.";
             isValid = false;
         }
+        
 
         const fileSizeLimit = 5 * 1024 * 1024; // 5 MB
         for (const image of images) {
@@ -188,6 +193,10 @@ function CreateAuction() {
         setErrors((prevErrors) => ({ ...prevErrors, description: "" }));
         setDescription(value);
     };
+    const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        setCategory(e.target.value);
+        setErrors(prevErrors => ({ ...prevErrors, category: "" }));
+    };
 
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const selectedFiles = Array.from(e.target.files || []);
@@ -227,8 +236,8 @@ function CreateAuction() {
                             maxLength={50}
                             className="naslov"
                         />
-                        {errors.title && <p className="error-message">{errors.title}</p>}
                     </div>
+                    {errors.title && <p className="error-message">{errors.title}</p>}
                     <div className="price-duration-container">
                         <div className="price-input-container">
                             <label htmlFor="current_price">Početna cena:</label>
@@ -251,10 +260,11 @@ function CreateAuction() {
                                 value={auctionDuration}
                                 onChange={(e) => setAuctionDuration(Number(e.target.value))}
                             >
-                                <option value={4}>4 dana</option>
-                                <option value={3}>3 dana</option>
-                                <option value={2}>2 dana</option>
                                 <option value={1}>1 dan</option>
+                                <option value={3}>3 dana</option>
+                                <option value={4}>4 dana</option>
+                                <option value={7}>7 dana</option>
+                                <option value={10}>10 dana</option>
                             </select>
                         </div>
                     </div>
@@ -273,7 +283,7 @@ function CreateAuction() {
                             <select 
                                 id="product-category" 
                                 value={category}
-                                onChange={(e) => setCategory(e.target.value)}
+                                onChange={handleCategoryChange}
                                 >
                                 <option value="" disabled>Izaberite kategoriju</option>
                                 <option value="electronics">Elektronika</option>
@@ -290,7 +300,9 @@ function CreateAuction() {
                                 <option value="real-estate">Nekretnine</option>
                                 <option value="food">Hrana i Piće</option>
                                 <option value="other">Ostalo</option>
+                                
                             </select>
+                            {errors.category && <p className="error-message">{errors.category}</p>}
                         </div>
                 </div>
 
@@ -305,8 +317,8 @@ function CreateAuction() {
                         style={{ display: "none" }}
                     />
                     <div className="custom-file-upload">
-                        <button type="button" onClick={() => document.getElementById("images")?.click()}>Odaberi fajl</button>
-                        <span>{images.length > 0 ? `${images.length} odabranih fajlova` : "Nijedan fajl nije odabran"}</span>
+                        <button type="button" onClick={() => document.getElementById("images")?.click()}>Odaberi slike</button>
+                        <span className="fajl">{images.length > 0 ? `${images.length} odabranih fajlova` : "Nijedan fajl nije odabran"}</span>
                     </div>
                     <div className="selected-images">
                         {images.map((image, index) => (
@@ -316,6 +328,7 @@ function CreateAuction() {
                             </div>
                         ))}
                     </div>
+                    {errors.images && <p className="error-images">{errors.images}</p>}
 
                     <div className="contact-info">
                         <label htmlFor="city">Grad:</label>
@@ -326,7 +339,7 @@ function CreateAuction() {
                             onChange={(e) => handleInputChange(e, 'city')}
                         />
                     </div>
-                    {errors.city && <p className="error-message">{errors.city}</p>}
+                    {errors.city && <p className="error-images">{errors.city}</p>}
                     <div className="contact-info">
                         <label htmlFor="phone">Broj telefona:</label>
                         <input
@@ -336,7 +349,7 @@ function CreateAuction() {
                             onChange={(e) => handleInputChange(e, 'phoneNumber')}
                         />
                     </div>
-                    {errors.phoneNumber && <p className="error-message">{errors.phoneNumber}</p>}
+                    {errors.phoneNumber && <p className="error-images">{errors.phoneNumber}</p>}
                     
                     <input type="submit" value="Završi" id="submit-btn" />
                         {successMessage && (
