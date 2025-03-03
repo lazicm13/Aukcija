@@ -111,9 +111,9 @@ function Header() {
             Postavi Aukciju 
           </button>
         )}
-        {location.pathname === '/registracija' && <p className='register'>Imate nalog? → <a href='login'>Ulogujte se</a></p>}
-        {location.pathname === '/login' && <p className='login'>Nemate nalog? → <a href='registracija'>Registrujte se</a></p>}
-        {(location.pathname === '/' && userName === '') && <div className='login-register-links'><a href='login'>Ulogujte se </a><a href='/registracija' className='registracija'> Registracija</a></div>}
+        {location.pathname === '/registracija' && <p className='register'>Imate nalog? → <a href='/login'>Ulogujte se</a></p>}
+        {location.pathname === '/login' && <p className='login'>Nemate nalog? → <a href='/registracija'>Registrujte se</a></p>}
+        {(location.pathname === '/' && userName === '') && <div className='login-register-links'><a href='/login'>Ulogujte se </a><a href='/registracija' className='registracija'> Registracija</a></div>}
         {(location.pathname !== '/' && location.pathname !== '/login' && location.pathname !== '/registracija') && 
         <a href='/'><img src='/assets/home.png' className='home-button'></img></a>}
         {userName && (<NotificationBell count={count} onClick={handleNavigate} className='notification-logo'/>)}
