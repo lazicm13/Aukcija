@@ -108,10 +108,8 @@ CORS_ALLOWED_METHODS = [
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-    "https://velikaaukcija.com", 
     "https://www.velikaaukcija.com",
-    "https://api.velikaaukcija.com",
-    "https://velika-aukcija.onrender.com"
+    "https://api.velikaaukcija.com"
 ]
 
 # SECURITY WARNING: don't run with debug turned on in production!
