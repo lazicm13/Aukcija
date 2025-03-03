@@ -20,6 +20,7 @@ from celery import Celery
 import cloudinary
 import cloudinary.uploader
 import cloudinary.api
+import dj_database_url
 
 load_dotenv()
 
@@ -193,16 +194,14 @@ TIME_ZONE = 'UTC'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
+
+
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv("DB_NAME"),
-        'USER': 'postgres',
-        'PASSWORD': os.getenv("DB_PASSWORD"),
-        'HOST': 'db',
-        'PORT': 5432,
-    }
+    'default': dj_database_url.config(
+        default=os.getenv("DATABASE_URL")
+    )
 }
+
 
 
 # Password validation

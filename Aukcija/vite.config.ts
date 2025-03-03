@@ -7,8 +7,4 @@ export default defineConfig({
   build: {
     outDir: 'dist', // osigurava da se build generiše u pravi folder
   },
-  server: {
-    host: '0.0.0.0',
-    port: 5173,
-  }
 })
