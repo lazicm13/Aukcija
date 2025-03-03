@@ -10,7 +10,7 @@ async function fetchCsrfToken() {
     try {
         const response = await axios.get(`https://api.velikaaukcija.com/api/csrf/`);
         const csrftoken = response.data.csrftoken; // Adjust this based on your API response
-        Cookies.set('csrftoken', csrftoken); // Set the token in cookies
+        Cookies.set('csrftoken', csrftoken, { domain: '.velikaaukcija.com', secure: true, sameSite: 'None' });
     } catch (error) {
         console.error("Error fetching CSRF token:", error);
     }
