@@ -116,7 +116,7 @@ CSRF_TRUSTED_ORIGINS = [
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['velikaaukcija.com', "www.velikaaukcija.com", "api.velikaaukcija.com", "https://velika-aukcija.onrender.com", "https://api.velikaaukcija.com"]
+ALLOWED_HOSTS = ['velikaaukcija.com', "www.velikaaukcija.com", "api.velikaaukcija.com", "velika-aukcija.onrender.com", "https://velika-aukcija.onrender.com", "https://api.velikaaukcija.com"]
 
 REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES":(
