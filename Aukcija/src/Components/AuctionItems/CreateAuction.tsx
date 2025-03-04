@@ -79,10 +79,10 @@ function CreateAuction() {
             isValid = false;
         }
 
-        if (images.length === 0) {
-            newErrors.images = "Morate odabrati barem jednu sliku.";
-            isValid = false;
-        }
+        // if (images.length === 0) {
+        //     newErrors.images = "Morate odabrati barem jednu sliku.";
+        //     isValid = false;
+        // }
 
         if (images.length > 6) {
             newErrors.images = "Maksimalno možete odabrati 6 slika.";
