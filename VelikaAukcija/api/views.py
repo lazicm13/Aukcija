@@ -174,7 +174,7 @@ class AuctionItemListCreate(generics.ListCreateAPIView):
 
         subject = 'Čestitamo, uspešno ste postavili aukciju!'
         message = f'Pogledajte oglas ovde: {auction_link}'
-        send_email_task.delay(subject, message, settings.DEFAULT_FROM_EMAIL, [user.email])
+        # send_email_task.delay(subject, message, settings.DEFAULT_FROM_EMAIL, [user.email])
         
 
     def perform_create(self, serializer):
