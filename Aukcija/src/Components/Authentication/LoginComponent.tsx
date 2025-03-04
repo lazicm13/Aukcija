@@ -12,6 +12,7 @@ function LoginComponent() {
         email: '',
         password: ''
     });
+    const [passwordPlaceholder, setPasswordPlaceholder] = useState('Unesite lozinku...');
 
     const [error, setError] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
@@ -20,6 +21,14 @@ function LoginComponent() {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
     };
+
+    const handlePasswordFocus = () => {
+        setPasswordPlaceholder('');
+    }
+
+    const handlePasswordBlur = () => {
+        setPasswordPlaceholder('Unesite lozinku...');
+    }
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -127,21 +136,25 @@ function LoginComponent() {
                 />
                 <form onSubmit={handleSubmit}>
                     <div>
-                        <label htmlFor="email">Email:</label>
+                        {/* <label htmlFor="email">Email:</label> */}
                         <input
                             type="email"
                             id="email"
                             name="email"
+                            placeholder='Unesite email:'
                             value={formData.email}
                             onChange={handleChange}
                         />
                     </div>
                     <div>
-                        <label htmlFor="password">Lozinka:</label>
+                        {/* <label htmlFor="password">Lozinka:</label> */}
                         <input
                             type="password"
                             id="password"
                             name="password"
+                            placeholder={passwordPlaceholder}
+                            onFocus={handlePasswordFocus}
+                            onBlur={handlePasswordBlur}
                             value={formData.password}
                             onChange={handleChange}
                         />

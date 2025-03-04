@@ -25,6 +25,12 @@ function RegistrationComponent() {
     const navigate = useNavigate();
     const [userEmail, setUserEmail] = useState('');
     const [isInfoModalOpen, setIsInfoModalOpen] = useState(false);
+    const [namePlaceholder, setNamePlaceholder] = useState('Ime i prezime');
+    const [emailPlaceholder, setEmailPlaceholder] = useState('Email');
+    const [phonePlaceholder, setPhonePlaceholder] = useState('Broj telefona');
+    const [passwordPlaceholder, setPasswordPlaceholder] = useState('Lozinka');
+    const [confirmPasswordPlaceholder, setConfirmPasswordPlaceholder] = useState('Potvrdite lozinku');
+
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -54,11 +60,11 @@ function RegistrationComponent() {
             errors.email = 'Email nije validan.';
             isValid = false;
         }
-        if(!formData.phone_number){
-            errors.phone = 'Broj telefona je obavezan';
+        if (!formData.phone_number) {
+            errors.phone_number = 'Broj telefona je obavezan';
             isValid = false;
-        }else if (!/^\+?[0-9]\d{1,14}$/.test(formData.phone_number)) {
-            errors.phone = 'Broj telefona nije validan.';
+        } else if (!/^\+?[0-9]\d{1,14}$/.test(formData.phone_number)) {
+            errors.phone_number = 'Broj telefona nije validan.';
             isValid = false;
         }
         if (!formData.password) {
@@ -154,6 +160,46 @@ function RegistrationComponent() {
         navigate('/login');
     }
 
+    const handleNameFocus = () => {
+        setNamePlaceholder('');
+    }
+
+    const handleEmailFocus = () => {
+        setEmailPlaceholder('');
+    }
+
+    const handlePhoneFocus = () => {
+        setPhonePlaceholder('');
+    }
+
+    const handlePasswordFocus = () => {
+        setPasswordPlaceholder('');
+    }
+
+    const handleConfirmPasswordFocus = () => {
+        setConfirmPasswordPlaceholder('');
+    }
+
+    const handleNameBlur = () => {
+        setNamePlaceholder('Ime i prezime');
+    }
+
+    const handleEmailBlur = () => {
+        setEmailPlaceholder('Email');
+    }
+
+    const handlePhoneBlur = () => {
+        setPhonePlaceholder('Broj telefona');
+    }
+
+    const handlePasswordBlur = () => {
+        setPasswordPlaceholder('Lozinka');
+    }
+
+    const handleConfirmPasswordBlur = () => {
+        setConfirmPasswordPlaceholder('Potvrdite lozinku');
+    }
+
     return (
         <Fragment>
             <div className='form-container'>
@@ -165,57 +211,72 @@ function RegistrationComponent() {
                 />
                 <form onSubmit={handleSubmit} noValidate>
                     <div>
-                        <label htmlFor="name">Ime i prezime:</label>
+                        {/* <label htmlFor="name">Ime i prezime:</label> */}
                         <input
                             type="text"
                             id="name"
                             name="first_name"
                             value={formData.first_name}
                             onChange={handleInputChange}
+                            placeholder={namePlaceholder}
+                            onFocus={handleNameFocus}
+                            onBlur={handleNameBlur}
                         />
                         {error.first_name && <p className="error-message">{error.first_name}</p>}
                     </div>
                     <div>
-                        <label htmlFor="email">Email:</label>
+                        {/* <label htmlFor="email">Email:</label> */}
                         <input
                             type="email"
                             id="email"
                             name="email"
                             value={formData.email}
                             onChange={handleInputChange}
+                            placeholder={emailPlaceholder}
+                            onFocus={handleEmailFocus}
+                            onBlur={handleEmailBlur}
                         />
                         {error.email && <p className="error-message">{error.email}</p>}
                     </div>
                     <div>
-                        <label htmlFor="phone">Broj telefona:</label>
+                        {/* <label htmlFor="phone">Broj telefona:</label> */}
                         <input
                             type="phone"
                             id="phone"
                             name="phone_number"
                             value={formData.phone_number}
                             onChange={handleInputChange}
+                            placeholder={phonePlaceholder}
+                            onFocus={handlePhoneFocus}
+                            onBlur={handlePhoneBlur}
                         />
                         {error.phone_number && <p className="error-message">{error.phone_number}</p>}
                     </div>
                     <div>
-                        <label htmlFor="password">Lozinka:</label>
+                        {/* <label htmlFor="password">Lozinka:</label> */}
                         <input
                             type="password"
                             id="password"
                             name="password"
                             value={formData.password}
                             onChange={handleInputChange}
+                            placeholder={passwordPlaceholder}
+                            onFocus={handlePasswordFocus}
+                            onBlur={handlePasswordBlur}
                         />
                         {error.password && <p className="error-message">{error.password}</p>}
                     </div>
                     <div>
-                        <label htmlFor='confirmPassword'>Potvrdi lozinku:</label>
+                        {/* <label htmlFor='confirmPassword'>Potvrdi lozinku:</label> */}
                         <input
                             type='password'
                             id='confirmPassword'
                             name='confirmPassword'
                             value={formData.confirmPassword}
                             onChange={handleInputChange}
+                            placeholder={confirmPasswordPlaceholder}
+                            onFocus={handleConfirmPasswordFocus}
+                            onBlur={handleConfirmPasswordBlur}
                         />
                         {error.confirmPassword && <p className="error-message">{error.confirmPassword}</p>}
                     </div>

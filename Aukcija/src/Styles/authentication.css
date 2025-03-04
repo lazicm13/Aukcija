@@ -2,7 +2,7 @@
 form {
     max-width: 800px; /* Povećana širina forme */
     min-width: 230px;
-    margin: 50px auto;
+    margin: 10px auto;
     padding: 30px; /* Više prostora unutar forme */
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     border-radius: 15px; /* Blago povećana zaobljenost ivica */
@@ -38,8 +38,8 @@ input[type="password"],
 input[type="number"],
 input[type="phone"] {
     width: 100%;
-    padding: 5px; /* Povećan padding unutar input polja */
-    font-size: 15px !important; /* Veći font za lakše čitanje */
+    padding: 10px; /* Povećan padding unutar input polja */
+    font-size: 18px !important; /* Veći font za lakše čitanje */
     border: 1px solid #ccc;
     border-radius: 3px; /* Zaobljenije ivice input polja */
     box-sizing: border-box;
