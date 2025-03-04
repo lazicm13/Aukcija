@@ -9,11 +9,14 @@ services:
       - POSTGRES_PASSWORD=postgres
   redis:
     image: redis:latest
+    restart: always  # Osigurava da Redis ponovo pokrene ako padne
     ports:
-      - "6379:6379"  # Ovo omogućava pristup Redis-u na portu 6379 u Docker-u
+      - "6379:6379"
+
 
   web:
     build: .
+    restart: always
     ports:
       - "8000:8000"
     depends_on:
