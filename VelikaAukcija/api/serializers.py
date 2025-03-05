@@ -44,10 +44,10 @@ class AuctionImageSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError({"image": "This field is required."})
         return attrs
     
-import cloudinary.uploader  # Ako koristiš Cloudinary
+
 
 class AuctionItemSerializer(serializers.ModelSerializer):
-    images = serializers.ListField(child=serializers.ImageField(), write_only=True, required=False)
+    images = AuctionImageSerializer(many=True, required=False)
     auction_duration = serializers.IntegerField(write_only=True)
 
     class Meta:
@@ -55,11 +55,12 @@ class AuctionItemSerializer(serializers.ModelSerializer):
         fields = [
             "id", "title", "description", "current_price", 
             "auction_duration", "city", "category", "phone_number", 
-            "created_at", "end_date", "images", "seller"
+            "created_at", "end_date", "images", "seller", 
         ]
         read_only_fields = ["id", "created_at", "end_date", "seller"]
 
     def validate_title(self, value):
+        # Check if an auction with the same title exists for the same user
         user = self.context['request'].user
         if AuctionItem.objects.filter(title=value, seller=user).exists():
             raise serializers.ValidationError("You already have an auction with this title.")
@@ -69,18 +70,18 @@ class AuctionItemSerializer(serializers.ModelSerializer):
         images_data = self.context['request'].FILES.getlist('images')  # Uzimanje slika iz requesta
         auction_duration = validated_data.pop('auction_duration', 1)  # Default 1 dan
         owner = self.context['request'].user  # Uzimanje trenutnog korisnika
+        # Ensure 'seller' is not in validated_data to avoid conflict
+        validated_data['seller'] = owner
 
-        # Kreiranje aukcije
+        # Create auction item and set the end_date based on the auction_duration
         auction_item = AuctionItem.objects.create(
-            seller=owner,
             end_date=timezone.now() + timedelta(days=auction_duration),
             **validated_data
         )
 
-        # Upload slika na Cloudinary (ako koristiš Cloudinary)
-        for image in images_data:
-            upload_result = cloudinary.uploader.upload(image)
-            AuctionImage.objects.create(auction_item=auction_item, image=upload_result['secure_url'])
+        # Save images associated with this auction item
+        for image_data in images_data:
+            AuctionImage.objects.create(auction_item=auction_item, **image_data)
 
         return auction_item
 
