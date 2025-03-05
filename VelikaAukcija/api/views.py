@@ -225,13 +225,8 @@ class AuctionImageListCreate(generics.ListCreateAPIView):
         if not images:
             return Response({"error": "No images were provided."}, status=status.HTTP_400_BAD_REQUEST)
 
-        for image in images:
-            image_serializer = AuctionImageSerializer(data={'image': image, 'auction_item': auction_item.id})
-            if image_serializer.is_valid():
-                image_serializer.save(auction_item_id=auction_item.id)
-            else:
-                print("Serializer errors:", image_serializer.errors)
-                return Response({"error": image_serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+        auction_images = [AuctionImage(image=image, auction_item=auction_item) for image in images]
+        AuctionImage.objects.bulk_create(auction_images)
 
         return Response({'message': 'Images uploaded successfully'}, status=status.HTTP_201_CREATED)
 
