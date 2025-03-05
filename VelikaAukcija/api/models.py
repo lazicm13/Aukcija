@@ -75,7 +75,7 @@ class AuctionItem(models.Model):
 
 class AuctionImage(models.Model):
     auction_item = models.ForeignKey(AuctionItem, related_name='images', on_delete=models.CASCADE)
-    image = CloudinaryField('image', null=True, blank=True)
+    image = CloudinaryField('image')
 
     def __str__(self):
         return f"Image for {self.auction_item.title}"

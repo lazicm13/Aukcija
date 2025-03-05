@@ -25,7 +25,6 @@ from rest_framework.exceptions import AuthenticationFailed
 from datetime import timedelta
 from django.utils.timezone import now
 from celery import shared_task
-import cloudinary.uploader
 
 
 User = get_user_model()
@@ -215,28 +214,26 @@ class AuctionImageListCreate(generics.ListCreateAPIView):
         auction_item_id = self.kwargs.get('auction_item_id')
         return AuctionImage.objects.filter(auction_item_id=auction_item_id)
 
-    def create(self, request, *args, **kwargs):
+    def perform_create(self, serializer):
         auction_item_id = self.kwargs.get('auction_item_id')
         try:
             auction_item = AuctionItem.objects.get(id=auction_item_id)
         except AuctionItem.DoesNotExist:
             return Response({"error": "Auction item not found."}, status=status.HTTP_404_NOT_FOUND)
 
-        images = request.FILES.getlist('images')  # Dobijanje svih slika
+        images = self.request.FILES.getlist('image')  # Adjust based on the actual field name
         if not images:
             return Response({"error": "No images were provided."}, status=status.HTTP_400_BAD_REQUEST)
 
-        image_instances = []
         for image in images:
-            upload_result = cloudinary.uploader.upload(image)  # Upload na Cloudinary
-            auction_image = AuctionImage.objects.create(
-                auction_item=auction_item,
-                image=upload_result['secure_url']
-            )
-            image_instances.append(auction_image)
+            image_serializer = AuctionImageSerializer(data={'image': image, 'auction_item': auction_item.id})
+            if image_serializer.is_valid():
+                image_serializer.save(auction_item_id=auction_item.id)
+            else:
+                print("Serializer errors:", image_serializer.errors)
+                return Response({"error": image_serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
-        serializer = self.get_serializer(image_instances, many=True)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response({'message': 'Images uploaded successfully'}, status=status.HTTP_201_CREATED)
 
 class AuctionItemDetail(generics.RetrieveAPIView):
     serializer_class = AuctionItemSerializer

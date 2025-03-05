@@ -39,11 +39,11 @@ class AuctionImageSerializer(serializers.ModelSerializer):
         model = AuctionImage
         fields = ['id', 'image', 'auction_item_id'] 
 
-    def validate(self, attrs):
-        if 'image' not in attrs:
-            raise serializers.ValidationError({"image": "This field is required."})
-        return attrs
-    
+        def validate(self, attrs):
+            if 'image' not in attrs:
+                raise serializers.ValidationError({"image": "This field is required."})
+            return attrs
+        
 
 
 class AuctionItemSerializer(serializers.ModelSerializer):
@@ -67,21 +67,27 @@ class AuctionItemSerializer(serializers.ModelSerializer):
         return value
 
     def create(self, validated_data):
-        images_data = self.context['request'].FILES.getlist('images')  # Uzimanje slika iz requesta
-        auction_duration = validated_data.pop('auction_duration', 1)  # Default 1 dan
-        owner = self.context['request'].user  # Uzimanje trenutnog korisnika
+        images_data = validated_data.pop('images', [])
+        auction_duration = validated_data.pop('auction_duration', 1)  # Default to 1 day if not specified
+        current_time = timezone.now()
+        owner = self.context['request'].user  # Get the current user from the request context
+
         # Ensure 'seller' is not in validated_data to avoid conflict
         validated_data['seller'] = owner
 
         # Create auction item and set the end_date based on the auction_duration
         auction_item = AuctionItem.objects.create(
-            end_date=timezone.now() + timedelta(days=auction_duration),
-            **validated_data
+            **validated_data,
+            created_at=current_time,
+            end_date=current_time + timedelta(days=auction_duration)
         )
 
         # Save images associated with this auction item
         for image_data in images_data:
-            AuctionImage.objects.create(auction_item=auction_item, **image_data)
+            image = image_data.get('image')  # Preuzmi sliku sa frontenda
+            if image:
+                # Slika će biti automatski uploadovana na Cloudinary
+                AuctionImage.objects.create(auction_item=auction_item, image=image)
 
         return auction_item
 
