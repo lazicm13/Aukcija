@@ -36,7 +36,7 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class AuctionImageSerializer(serializers.ModelSerializer):
-    image = CloudinaryField()
+    image = serializers.ImageField()
     class Meta:
         model = AuctionImage
         fields = ['id', 'image', 'auction_item_id'] 

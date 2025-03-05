@@ -221,12 +221,12 @@ class AuctionImageListCreate(generics.ListCreateAPIView):
         except AuctionItem.DoesNotExist:
             return Response({"error": "Auction item not found."}, status=status.HTTP_404_NOT_FOUND)
 
-        images = self.request.FILES.getlist('image')  # Adjust based on the actual field name
+        images = self.request.FILES.getlist('image')
         if not images:
             return Response({"error": "No images were provided."}, status=status.HTTP_400_BAD_REQUEST)
 
-        auction_images = [AuctionImage(image=image, auction_item=auction_item) for image in images]
-        AuctionImage.objects.bulk_create(auction_images)
+        for image in images:
+            auction_image = AuctionImage.objects.create(image=image, auction_item=auction_item)  # Kreira direktno
 
         return Response({'message': 'Images uploaded successfully'}, status=status.HTTP_201_CREATED)
 
