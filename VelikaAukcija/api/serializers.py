@@ -39,11 +39,11 @@ class AuctionImageSerializer(serializers.ModelSerializer):
         model = AuctionImage
         fields = ['id', 'image', 'auction_item_id'] 
 
-        def validate(self, attrs):
-            if 'image' not in attrs:
-                raise serializers.ValidationError({"image": "This field is required."})
-            return attrs
-        
+    def validate(self, attrs):
+        if 'image' not in attrs:
+            raise serializers.ValidationError({"image": "This field is required."})
+        return attrs
+    
 
 
 class AuctionItemSerializer(serializers.ModelSerializer):

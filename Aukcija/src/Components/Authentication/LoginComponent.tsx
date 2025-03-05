@@ -12,7 +12,8 @@ function LoginComponent() {
         email: '',
         password: ''
     });
-    const [passwordPlaceholder, setPasswordPlaceholder] = useState('Unesite lozinku...');
+    const [passwordPlaceholder, setPasswordPlaceholder] = useState('Lozinka');
+    const [emailPlaceholder, setEmailPlaceholder] = useState('Email');
 
     const [error, setError] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
@@ -22,12 +23,20 @@ function LoginComponent() {
         setFormData({ ...formData, [name]: value });
     };
 
+    const handleEmailFocus = () => {
+        setEmailPlaceholder('');
+    }
+
+    const handleEmailBlur = () => {
+        setEmailPlaceholder('Email');
+    }
+
     const handlePasswordFocus = () => {
         setPasswordPlaceholder('');
     }
 
     const handlePasswordBlur = () => {
-        setPasswordPlaceholder('Unesite lozinku...');
+        setPasswordPlaceholder('Lozinka');
     }
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -141,9 +150,11 @@ function LoginComponent() {
                             type="email"
                             id="email"
                             name="email"
-                            placeholder='Unesite email:'
+                            placeholder={emailPlaceholder}
                             value={formData.email}
                             onChange={handleChange}
+                            onFocus={handleEmailFocus}
+                            onBlur={handleEmailBlur}
                         />
                     </div>
                     <div>
