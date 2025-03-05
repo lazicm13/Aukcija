@@ -3,6 +3,7 @@ from rest_framework import serializers
 from .models import AuctionItem, AuctionImage, Comment, Notification
 from datetime import timedelta
 from django.utils import timezone
+from cloudinary.models import CloudinaryField
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -33,33 +34,18 @@ class UserSerializer(serializers.ModelSerializer):
         user.save()
         return user
 
-class CloudinaryImageField(serializers.Field):
-    def to_representation(self, value):
-        # Ako je value dictionary, vrati 'secure_url'
-        if isinstance(value, dict):
-            return value.get('secure_url', '')
-        # Ako je value objekat sa atributom url, vrati ga
-        try:
-            return value.url
-        except AttributeError:
-            return value
 
-    def to_internal_value(self, data):
-        # Prihvata ulaz kao fajl (InMemoryUploadedFile) – backend će obraditi upload
-        return data
-    
-    
 class AuctionImageSerializer(serializers.ModelSerializer):
-    image = CloudinaryImageField()
-
+    image = CloudinaryField()
     class Meta:
         model = AuctionImage
-        fields = ['id', 'image', 'auction_item_id']
+        fields = ['id', 'image', 'auction_item_id'] 
 
-    def validate(self, attrs):
-        if 'image' not in attrs:
-            raise serializers.ValidationError({"image": "This field is required."})
-        return attrs
+        def validate(self, attrs):
+            if 'image' not in attrs:
+                raise serializers.ValidationError({"image": "This field is required."})
+            return attrs
+        
 
 
 class AuctionItemSerializer(serializers.ModelSerializer):
@@ -100,10 +86,7 @@ class AuctionItemSerializer(serializers.ModelSerializer):
 
         # Save images associated with this auction item
         for image_data in images_data:
-            image = image_data.get('image')  # Preuzmi sliku sa frontenda
-            if image:
-                # Slika će biti automatski uploadovana na Cloudinary
-                AuctionImage.objects.create(auction_item=auction_item, image=image)
+            AuctionImage.objects.create(auction_item=auction_item, **image_data)
 
         return auction_item
 
