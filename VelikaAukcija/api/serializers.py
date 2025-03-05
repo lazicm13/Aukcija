@@ -34,7 +34,23 @@ class UserSerializer(serializers.ModelSerializer):
         return user
 
 
+class CloudinaryImageField(serializers.Field):
+    def to_representation(self, value):
+        # Ako je value dict, pokušaj da vratiš URL iz njega
+        if isinstance(value, dict):
+            return value.get('url', '')
+        # Ako je value objekt sa atributom url, vrati ga
+        try:
+            return value.url
+        except AttributeError:
+            return value
+
+    def to_internal_value(self, data):
+        # Podaci dolaze kao fajl (InMemoryUploadedFile) i default ImageField ih može obraditi
+        return data
+
 class AuctionImageSerializer(serializers.ModelSerializer):
+    image = CloudinaryImageField()
     class Meta:
         model = AuctionImage
         fields = ['id', 'image', 'auction_item_id'] 
