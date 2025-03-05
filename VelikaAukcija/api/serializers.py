@@ -33,17 +33,33 @@ class UserSerializer(serializers.ModelSerializer):
         user.save()
         return user
 
+class CloudinaryImageField(serializers.Field):
+    def to_representation(self, value):
+        # Ako je value dictionary, vrati 'secure_url'
+        if isinstance(value, dict):
+            return value.get('secure_url', '')
+        # Ako je value objekat sa atributom url, vrati ga
+        try:
+            return value.url
+        except AttributeError:
+            return value
 
+    def to_internal_value(self, data):
+        # Prihvata ulaz kao fajl (InMemoryUploadedFile) – backend će obraditi upload
+        return data
+    
+    
 class AuctionImageSerializer(serializers.ModelSerializer):
+    image = CloudinaryImageField()
+
     class Meta:
         model = AuctionImage
-        fields = ['id', 'image', 'auction_item_id'] 
+        fields = ['id', 'image', 'auction_item_id']
 
-        def validate(self, attrs):
-            if 'image' not in attrs:
-                raise serializers.ValidationError({"image": "This field is required."})
-            return attrs
-        
+    def validate(self, attrs):
+        if 'image' not in attrs:
+            raise serializers.ValidationError({"image": "This field is required."})
+        return attrs
 
 
 class AuctionItemSerializer(serializers.ModelSerializer):
