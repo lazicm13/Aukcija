@@ -157,7 +157,6 @@ INSTALLED_APPS = [
     'corsheaders',
     'api',
     'channels',
-    'django.contrib.sitemaps',
     'cloudinary',
     'cloudinary_storage',
 ]
