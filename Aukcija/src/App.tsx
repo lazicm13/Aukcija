@@ -15,6 +15,7 @@ import MyAuctionsPage from './Pages/MyAuctionsPage'
 import ChangePasswordPage from './Pages/ChangePasswordPage'
 import Auction from './Components/AuctionItems/Auction'
 import NotificationsPage from './Pages/NotificationsPage'
+import "./LoadingPage.css";
 // import AdminPage from './Pages/AdminPage'
 // import AdminRoute from './Components/AdminRoute'
 import MyBids from './Pages/MyBids'
@@ -25,7 +26,7 @@ const CLIENT_ID = '716931881312-0v5lv60bn004kusg3jg272jqbetmu5s8.apps.googleuser
 
 function Register() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-
+ 
   useEffect(() => {
     const checkAuth = async () => {
       const response = await api.get("/api/user/status/");
@@ -81,6 +82,22 @@ function App() {
   //     // Loader dok se ne utvrdi da li je admin
   //     return <div>Loading...</div>;
   // }
+  const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        setTimeout(() => {
+            setLoading(false);
+        }, 2000); // Simulacija učitavanja
+    }, []);
+
+    if (loading) {
+        return (
+            <div className="loading-container">
+                <div className="loading-spinner"></div>
+                <img src="/assets/logo1-1.png" alt="Loading..." className="loading-gif" />
+            </div>
+        );
+    }
 
   return (
     <>

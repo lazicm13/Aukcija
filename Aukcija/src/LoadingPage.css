@@ -1,0 +1,67 @@
+/* Centriranje celog ekrana */
+.loading-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 80vh;
+    background-color: white;
+    position: relative;
+}
+
+/* Kružni loader */
+.loading-spinner {
+    width: 180px;
+    height: 180px;
+    border: 8px solid rgba(0, 0, 255, 0.3);
+    border-top: 8px solid blue;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    position: absolute;
+    margin-top: 19px;
+}
+
+/* GIF u centru */
+.loading-gif {
+    width: 160px;
+    height: 160px;
+    position: absolute;
+}
+
+/* Animacija rotacije */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Kada se stranica učita */
+.content {
+    text-align: center;
+    padding: 50px;
+}
+
+/* 📱 Responzivan dizajn - za mobilne uređaje */
+@media (max-width: 768px) {
+    .loading-spinner {
+        width: 100px;
+        height: 100px;
+        border-width: 5px; /* Manja debljina ivice */
+    }
+
+    .loading-gif {
+        width: 80px;
+        height: 80px;
+    }
+}
+
+@media (max-width: 480px) {
+    .loading-spinner {
+        width: 80px;
+        height: 80px;
+        border-width: 4px;
+    }
+
+    .loading-gif {
+        width: 60px;
+        height: 60px;
+    }
+}
