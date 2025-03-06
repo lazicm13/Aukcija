@@ -70,6 +70,23 @@ function UserPage() {
         }));
     };
 
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        setTimeout(() => {
+            setLoading(false);
+        }, 2000); // Simulacija učitavanja
+    }, []);
+
+    if (loading) {
+        return (
+            <div className="loading-container">
+                <div className="loading-spinner"></div>
+                <img src="/assets/logo1-1.png" alt="Loading..." className="loading-gif" />
+            </div>
+        );
+    }
+
     return (
         <Fragment>
             <div className='form-container'>
