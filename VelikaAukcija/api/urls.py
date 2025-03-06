@@ -6,7 +6,7 @@ from .views import CurrentUserDataView, UpdateUserProfileView, CommentCreateView
 from .views import FetchAuctionsByCategory, CommentDeleteView, AuctionItemDelete, AuctionItemListCreate, AllAuctionItemsList, verify_email
 from .views import FetchAllMyBiddings, FetchAuctionWinner, FinishAuction, NotificationListView, MarkAsReadNotificationView, UnreadNotificationsCountView
 
-from sitemap import AuctionSitemap, StaticViewSitemap
+from .sitemap import AuctionSitemap, StaticViewSitemap
 
 sitemap = {
     'auctions': AuctionSitemap(),
