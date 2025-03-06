@@ -6,6 +6,13 @@ from .views import CurrentUserDataView, UpdateUserProfileView, CommentCreateView
 from .views import FetchAuctionsByCategory, CommentDeleteView, AuctionItemDelete, AuctionItemListCreate, AllAuctionItemsList, verify_email
 from .views import FetchAllMyBiddings, FetchAuctionWinner, FinishAuction, NotificationListView, MarkAsReadNotificationView, UnreadNotificationsCountView
 
+from sitemap import AuctionSitemap, StaticViewSitemap
+
+sitemap = {
+    'auctions': AuctionSitemap(),
+    'static': StaticViewSitemap(),
+}
+
 urlpatterns = [
     path('login/', LoginView.as_view(), name='login'),
     path('auth/google/', google_login, name='google_login'),
@@ -40,5 +47,6 @@ urlpatterns = [
     path('notifications/', NotificationListView.as_view(), name='notifications-list'),
     path('notifications/<int:pk>/mark-as-read/', MarkAsReadNotificationView.as_view(), name='mark-as-read-notification'),
     path('notifications/unread-count/', UnreadNotificationsCountView.as_view(), name='unread-notifications-count'),
+    path('sitemap.xml', sitemap, {'sitemaps': sitemap}, name='django.contrib.sitemaps.views.sitemap'),
     # path('chat/<int:chatroom_id>/messages/', MessageView.as_view(), name='messages'),
 ]

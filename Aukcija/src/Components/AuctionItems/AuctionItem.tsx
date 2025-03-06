@@ -299,7 +299,7 @@ const AuctionItem: React.FC<AuctionItemProps> = ({ auction, onDelete }) => {
                 <b>Trenutna cena: {new Intl.NumberFormat('sr-RS').format(Number(currentPrice))} RSD</b>
             </p>
 
-            {(currentUser && auction.seller && timeLeft > 0 && currentUser != auction.seller.toString()) && (
+            {((currentUser != auction.seller.toString()) && timeLeft > 0) && (
                 <div className='new-offer-container'>
                     <input
                         type='number'
@@ -314,13 +314,12 @@ const AuctionItem: React.FC<AuctionItemProps> = ({ auction, onDelete }) => {
                     <button
                         type='button'
                         className='new-offer-btn'
-                        onClick={openModal}
+                        onClick={openModal} // Open confirmation dialog
                     >
                         Licitiraj
                     </button>
                 </div>
             )}
-
             <span>{bidError}</span>
             {((location.pathname === '/moje-aukcije' && offerCount === 0) || location.pathname === '/admin/dashboard') && (
                 <button className="delete-btn" onClick={handleDelete}>Obriši aukciju</button>

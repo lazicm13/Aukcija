@@ -57,7 +57,23 @@ const Auction: React.FC = () => {
     const [auctionOwnerId, setAuctionOwnerId] = useState();
     const [currentUser, setCurrentUser] = useState('');
     
-    
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        setTimeout(() => {
+            setLoading(false);
+        }, 2000); // Simulacija učitavanja
+    }, []);
+
+    if (loading) {
+        return (
+            <div className="loading-container">
+                <div className="loading-spinner"></div>
+                <img src="/assets/logo1-1.png" alt="Loading..." className="loading-gif" />
+            </div>
+        );
+    }
+
     const fetchUsernames = async (userIds: number[]) => {
         try {
             const response = await api.post('/api/users/', { ids: userIds }); // Adjust the endpoint accordingly
