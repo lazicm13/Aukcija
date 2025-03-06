@@ -42,6 +42,7 @@ const AuctionItem: React.FC<AuctionItemProps> = ({ auction, onDelete }) => {
     const [isConfettiVisible, setIsConfettiVisible] = useState(false);
     const [isInfoModalOpen, setIsInfoModalOpen] = useState(false);
     const [currentUser, setCurrentUser] = useState('');
+    const [newOfferDisable, setNewOfferDisable] = useState(false);
     
     useEffect(() => {
         const fetchUserData = async () => {
@@ -272,8 +273,6 @@ const AuctionItem: React.FC<AuctionItemProps> = ({ auction, onDelete }) => {
         setIsInfoModalOpen(false);
     }
 
-    
-
     return (
         <>
         <div className="auction-item">
@@ -301,26 +300,25 @@ const AuctionItem: React.FC<AuctionItemProps> = ({ auction, onDelete }) => {
                 <b>Trenutna cena: {new Intl.NumberFormat('sr-RS').format(Number(currentPrice))} RSD</b>
             </p>
 
-                <div className='new-offer-container'>
-                    <input
-                        type='number'
-                        name='new_offer'
-                        id='new_offer'
-                        value={newOffer}
-                        onChange={(e) => setNewOffer(e.target.value)}
-                        placeholder={placeholder}
-                        onFocus={handleFocus}
-                        onBlur={handleBlur}
-                        disabled={currentUser === auction.seller.toString()}
-                    />
-                    <button
-                        type='button'
-                        className='new-offer-btn'
-                        onClick={openModal} // Open confirmation dialog
-                    >
-                        Licitiraj
-                    </button>
-                </div>
+            <div className={`new-offer-container ${currentUser === auction.seller.toString() || timeLeft <= 0 ? 'hidden' : ''}`}>
+                <input
+                    type='number'
+                    name='new_offer'
+                    id='new_offer'
+                    value={newOffer}
+                    onChange={(e) => setNewOffer(e.target.value)}
+                    placeholder={placeholder}
+                    onFocus={handleFocus}
+                    onBlur={handleBlur}
+                />
+                <button
+                    type='button'
+                    className='new-offer-btn'
+                    onClick={openModal}
+                >
+                    Licitiraj
+                </button>
+            </div>
             <span>{bidError}</span>
             {((location.pathname === '/moje-aukcije' && offerCount === 0) || location.pathname === '/admin/dashboard') && (
                 <button className="delete-btn" onClick={handleDelete}>Obriši aukciju</button>

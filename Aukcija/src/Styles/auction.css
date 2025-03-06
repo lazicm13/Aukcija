@@ -181,6 +181,11 @@
     border: 1px solid black;
 }
 
+.hidden {
+    display: none;
+}
+
+
 .new-offer-container .new-offer-btn {
     width: 30%; /* Po želji prilagodite širinu */
     font-size: 13px;
