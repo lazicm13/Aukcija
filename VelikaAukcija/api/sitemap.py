@@ -7,7 +7,7 @@ class AuctionSitemap(Sitemap):
     priority = 0.8
 
     def items(self):
-        return Auction.objects.all()  # Aukcije koje će biti indeksirane
+        return AuctionItem.objects.all()  # Aukcije koje će biti indeksirane
 
     def location(self, item):
         return reverse('auction-detail', args=[item.id])  # prilagodi prema svojoj ruti
