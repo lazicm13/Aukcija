@@ -31,7 +31,7 @@ function CommentSection({ auctionItemId, ownerId }: CommentSectionProps) {
 
     const fetchComments = async () => {
         try {
-            const response = await api.get(`/api/comments/${auctionItemId}`);
+            const response = await api.get(`/api/comments/${auctionItemId}/`);
             setComments(response.data);
             setLoading(false);
         } catch (error) {
@@ -78,7 +78,7 @@ function CommentSection({ auctionItemId, ownerId }: CommentSectionProps) {
     useEffect(() => {
         const fetchUserData = async () => {
             try {
-                const response = await api.get('/api/current_user_data');
+                const response = await api.get('/api/current_user_data/');
                 setUserId(response.data.id);
             } catch (error) {
                 console.error('Error fetching user data:', error);

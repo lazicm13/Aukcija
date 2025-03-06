@@ -272,6 +272,8 @@ const AuctionItem: React.FC<AuctionItemProps> = ({ auction, onDelete }) => {
         setIsInfoModalOpen(false);
     }
 
+    
+
     return (
         <>
         <div className="auction-item">
@@ -299,7 +301,6 @@ const AuctionItem: React.FC<AuctionItemProps> = ({ auction, onDelete }) => {
                 <b>Trenutna cena: {new Intl.NumberFormat('sr-RS').format(Number(currentPrice))} RSD</b>
             </p>
 
-            {((currentUser != auction.seller.toString()) && timeLeft > 0) && (
                 <div className='new-offer-container'>
                     <input
                         type='number'
@@ -310,6 +311,7 @@ const AuctionItem: React.FC<AuctionItemProps> = ({ auction, onDelete }) => {
                         placeholder={placeholder}
                         onFocus={handleFocus}
                         onBlur={handleBlur}
+                        disabled={currentUser === auction.seller.toString()}
                     />
                     <button
                         type='button'
@@ -319,7 +321,6 @@ const AuctionItem: React.FC<AuctionItemProps> = ({ auction, onDelete }) => {
                         Licitiraj
                     </button>
                 </div>
-            )}
             <span>{bidError}</span>
             {((location.pathname === '/moje-aukcije' && offerCount === 0) || location.pathname === '/admin/dashboard') && (
                 <button className="delete-btn" onClick={handleDelete}>Obriši aukciju</button>
