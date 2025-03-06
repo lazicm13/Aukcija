@@ -1,6 +1,6 @@
 from django.contrib.sitemaps import Sitemap
 from django.urls import reverse
-from .models import Auction  # prilagodi prema modelima
+from .models import AuctionItem  # prilagodi prema modelima
 
 class AuctionSitemap(Sitemap):
     changefreq = "daily"
