@@ -46,7 +46,7 @@ const AuctionItem: React.FC<AuctionItemProps> = ({ auction, onDelete }) => {
     useEffect(() => {
         const fetchUserData = async () => {
             try {
-                const response = await api.get('/api/current_user_data');
+                const response = await api.get('/api/current_user_data/');
                 setCurrentUser(response.data.id);
             } catch (error) {
                 console.error('Error fetching user data:', error);
@@ -60,7 +60,7 @@ const AuctionItem: React.FC<AuctionItemProps> = ({ auction, onDelete }) => {
     useEffect(() => {
         const fetchOfferCount = async () => {
             try {
-                const response = await api.get(`/api/auctions/${id}/offer_count`); // Pretpostavljeni API endpoint
+                const response = await api.get(`/api/auctions/${id}/offer_count/`); // Pretpostavljeni API endpoint
                 setOfferCount(response.data.bid_count); // Postavljanje broja ponuda
             } catch (error) {
                 console.error('Error fetching offer count:', error);
