@@ -10,8 +10,8 @@
 
 /* Kružni loader */
 .loading-spinner {
-    width: 180px;
-    height: 180px;
+    width: 160px;
+    height: 160px;
     border: 8px solid rgba(0, 0, 255, 0.3);
     border-top: 8px solid blue;
     border-radius: 50%;
@@ -22,8 +22,8 @@
 
 /* GIF u centru */
 .loading-gif {
-    width: 160px;
-    height: 160px;
+    width: 140px;
+    height: 140px;
     position: absolute;
 }
 

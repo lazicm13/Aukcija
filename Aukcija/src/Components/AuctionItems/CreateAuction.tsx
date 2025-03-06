@@ -60,8 +60,8 @@ function CreateAuction() {
             isValid = false;
         }
 
-        if (Number(current_price) <= 0) {
-            newErrors.current_price = "Početna cena mora biti pozitivna.";
+        if (Number(current_price) < 100) {
+            newErrors.current_price = "Početna cena mora biti veca od 100 dinara.";
             isValid = false;
         }
 
@@ -264,7 +264,7 @@ function CreateAuction() {
                                 <option value={3}>3 dana</option>
                                 <option value={4}>4 dana</option>
                                 <option value={7}>7 dana</option>
-                                <option value={10}>10 dana</option>
+                                <option value={10} disabled>10 dana - uskoro</option>
                             </select>
                         </div>
                     </div>

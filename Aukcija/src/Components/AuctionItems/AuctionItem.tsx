@@ -299,7 +299,7 @@ const AuctionItem: React.FC<AuctionItemProps> = ({ auction, onDelete }) => {
                 <b>Trenutna cena: {new Intl.NumberFormat('sr-RS').format(Number(currentPrice))} RSD</b>
             </p>
 
-            {(currentUser && auction.seller && timeLeft > 0 && currentUser !== auction.seller.toString()) && (
+            {(currentUser && auction.seller && timeLeft > 0 && currentUser != auction.seller.toString()) && (
                 <div className='new-offer-container'>
                     <input
                         type='number'
