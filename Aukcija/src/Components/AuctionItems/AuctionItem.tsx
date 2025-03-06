@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import './../../Styles/auction.css';
 import { useNavigate, useLocation } from 'react-router-dom';
 import api from '../../api';
@@ -272,6 +272,15 @@ const AuctionItem: React.FC<AuctionItemProps> = ({ auction, onDelete }) => {
         setIsInfoModalOpen(false);
     }
 
+    const shouldShowOfferInput = useMemo(() => {
+        return (
+            currentUser !== auction.seller.toString() &&
+            location.pathname !== '/moje-aukcije' &&
+            location.pathname !== '/admin/dashboard' &&
+            timeLeft > 0
+        );
+    }, [currentUser, auction.seller, location.pathname, timeLeft]);
+
     return (
         <>
         <div className="auction-item">
@@ -299,7 +308,7 @@ const AuctionItem: React.FC<AuctionItemProps> = ({ auction, onDelete }) => {
                 <b>Trenutna cena: {new Intl.NumberFormat('sr-RS').format(Number(currentPrice))} RSD</b>
             </p>
 
-            {((currentUser != auction.seller.toString()) && location.pathname !== '/moje-aukcije' && location.pathname !== '/admin/dashboard' && timeLeft > 0) && (
+            {shouldShowOfferInput && (
                 <div className='new-offer-container'>
                     <input
                         type='number'
@@ -314,7 +323,7 @@ const AuctionItem: React.FC<AuctionItemProps> = ({ auction, onDelete }) => {
                     <button
                         type='button'
                         className='new-offer-btn'
-                        onClick={openModal} // Open confirmation dialog
+                        onClick={openModal}
                     >
                         Licitiraj
                     </button>
