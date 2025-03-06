@@ -42,7 +42,7 @@ const AuctionItem: React.FC<AuctionItemProps> = ({ auction, onDelete }) => {
     const [isConfettiVisible, setIsConfettiVisible] = useState(false);
     const [isInfoModalOpen, setIsInfoModalOpen] = useState(false);
     const [currentUser, setCurrentUser] = useState('');
-    const [newOfferDisable, setNewOfferDisable] = useState(false);
+  
     
     useEffect(() => {
         const fetchUserData = async () => {
