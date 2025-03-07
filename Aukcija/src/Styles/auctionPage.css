@@ -18,9 +18,19 @@
 }
 
 .auction-header h2 {
-    font-size: 2.5em;
-    color: #333;
-    margin: 0;
+    color: #fff;
+    text-align: center;
+    padding: 12px 20px;
+    margin: 20px auto;
+    width: fit-content;
+    background: linear-gradient(135deg, #4a90e2, #0056b3);
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border: none;
 }
 
 
@@ -53,10 +63,14 @@
 /* Slideshow */
 .slideshow-container-large {
     position: relative;
-    max-width: 100%;
+    max-width: 70%;
     margin: 30px auto;
     overflow: hidden;
     border-radius: 10px;
+    border: 1px solid black;
+    padding: 30px;
+    background: lightslategray;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
 }
 
 .large-image {
@@ -65,15 +79,16 @@
     height: auto;
     border-radius: 10px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    border: 1px solid white;
 }
 
 /* Dugmadi za slideshow */
 .prev1, .next1 {
     position: absolute;
-    top: 50%;
+    top: 45%;
     font-size: 2em;
     color: white;
-    background-color: rgba(0, 0, 0, 0.5);
+    /* background-color: rgba(0, 0, 0, 0.5); */
     padding: 10px;
     cursor: pointer;
     transition: background-color 0.2s ease;
@@ -261,13 +276,13 @@ hr{
 
 .full-description{
     color: #333;
-    background-color: rgba(49, 126, 196, 0.3);
+    background-color: white;
     padding: 20px;
     width: 85%;
     margin: 0 auto;
-    border: 2px solid #999;
+    border: 1px solid #999;
     border-radius: 1%;
-    
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.4);
     font-weight: bolder;
 }
 
@@ -285,3 +300,4 @@ hr{
         margin-top: 10px;
     }
 }
+
