@@ -348,7 +348,7 @@ const Auction: React.FC = () => {
                 <a className="prev1" onClick={prevSlide}>&#10094;</a>
                 <a className="next1" onClick={nextSlide}>&#10095;</a>
             </div>
-            {timeLeft && timeLeft > 0 && currentUser !== auctionOwnerId && (
+            {timeLeft != null && timeLeft > 0 && currentUser !== auctionOwnerId && (
                 <div className="bid-section">
                     <div className="new-bid-container">
                         <input
