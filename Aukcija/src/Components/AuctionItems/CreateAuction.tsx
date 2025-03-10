@@ -18,6 +18,7 @@ function CreateAuction() {
     const navigate = useNavigate();
     const [successMessage] = useState('');
     const [isInfoModalOpen, setIsInfoModalOpen] = useState(false);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchUserData = async () => {
@@ -103,6 +104,8 @@ function CreateAuction() {
 
         if (!isValid) return;
 
+        setLoading(true);
+
         const formData = new FormData();
         formData.append("title", title);
         formData.append("description", description);
@@ -122,6 +125,7 @@ function CreateAuction() {
 
             if (response.status === 201) {
                 try {
+
                     const auctionItemId = response.data.id;
 
                     const imageFormData = new FormData();
@@ -136,6 +140,7 @@ function CreateAuction() {
                     });
 
                     if (imageResponse.status === 201) {
+                        setLoading(false);
                         setIsInfoModalOpen(true);
                         setTimeout(() => { 
                             setIsInfoModalOpen(false);
@@ -144,6 +149,7 @@ function CreateAuction() {
                     } else {
                         console.error("Greška pri učitavanju slika: ", imageResponse);
                         alert("Neuspešno učitavanje slika.");
+                        setLoading(false);
                     }
                 } catch (err: unknown) {
                     console.error("Greška pri dodavanju slika:", err);
@@ -158,6 +164,7 @@ function CreateAuction() {
             } else {
                 console.error("Greška pri kreiranju aukcije: ", response);
                 alert("Neuspešno kreiranje aukcije.");
+                setLoading(false);
             }
         } catch (err: unknown) {
             console.error("Greška pri kreiranju aukcije:", err);
@@ -316,6 +323,11 @@ function CreateAuction() {
                         onChange={handleImageChange}
                         style={{ display: "none" }}
                     />
+
+                    {loading && <div className="loading-container">
+                        <div className="loading-spinner"></div>
+                        <img src="/assets/logo1-1.png" alt="Loading..." className="loading-gif" />
+                    </div>}
                     <div className="custom-file-upload">
                         <button type="button" onClick={() => document.getElementById("images")?.click()}>Odaberi slike</button>
                         <span className="fajl">{images.length > 0 ? `${images.length} odabranih fajlova` : "Nijedan fajl nije odabran"}</span>

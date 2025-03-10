@@ -119,7 +119,7 @@
     padding: 8px 16px; /* Unutrašnji razmak */
     border-radius: 4px; /* Zaobljeni uglovi */
     margin: 0 8px; /* Razmak između linkova */
-    font-size: 14px; /* Manja veličina fonta */
+    font-size: 16px; /* Manja veličina fonta */
     transition: color 0.3s ease, background-color 0.3s ease; /* Efekti prelaza */
 }
 
@@ -183,6 +183,6 @@ button.create-auction-btn:hover {
     cursor: pointer;
     margin-top: 25px;
     margin-left: 10px;
-    width: 60px;
+    width: 40px;
     height: 33px;
 }
