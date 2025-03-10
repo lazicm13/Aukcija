@@ -18,7 +18,7 @@ function CreateAuction() {
     const navigate = useNavigate();
     const [successMessage] = useState('');
     const [isInfoModalOpen, setIsInfoModalOpen] = useState(false);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         const fetchUserData = async () => {
