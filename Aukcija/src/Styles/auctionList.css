@@ -48,6 +48,8 @@
     box-sizing: border-box;
 }
 
+
+
 /* Stil za pretragu, odabir kategorije i sortiranje, da budu jednake širine */
 
 .search-input{
@@ -59,18 +61,20 @@
     box-sizing: border-box !important;
     transition: all 0.3s ease !important;
     min-width: 160px !important;
+    max-height: 35px !important;
 }
 
 .sort-select,
 select {
     flex: 1; /* Da zauzimaju jednaku širinu unutar kontejnera */
-    padding: 10px 10px;
+
     border: 1px solid #d0d0d5;
     border-radius: 8px;
     font-size: 1rem;
     box-sizing: border-box;
     transition: all 0.3s ease;
     min-width: 160px; /* Minimalna širina za male ekrane */
+    min-height: 35px !important;
 }
 
 /* Fokus efekat za sve inpute */
@@ -82,18 +86,43 @@ select {
     box-shadow: 0 4px 8px rgba(0, 123, 255, 0.2);
 }
 
+.toggle-search-btn {
+    display: none;
+    background-color:whitesmoke;
+    color: black;
+    padding: 10px;
+    border: none;
+    width: 60%;
+    cursor: pointer;
+    font-size: 16px;
+    margin: 20px auto;
+    border-radius: 10px;
+    border: 1px solid black;
+}
+
+
 /* Prilagođavanje za manje ekrane */
 @media (max-width: 768px) {
-    .search-sort-container {
-        flex-direction: column; /* Postavi elemente vertikalno na manjim ekranima */
-        align-items: stretch; /* Da svi elementi budu iste širine */
-    }
-
+    
     .search-input,
     .sort-select,
     .select-container select {
         width: 100%; /* Ispunjavaju širinu kontejnera */
-        margin-bottom: 10px; /* Prostor između elemenata */
+        margin-bottom: 0px; /* Prostor između elemenata */
+    }
+
+    .toggle-search-btn {
+        display: block;
+    }
+
+    .search-sort-container {
+        display: none;
+        
+    }
+    .search-sort-container.active {
+        display: flex;
+        flex-direction: column; /* Postavi elemente vertikalno na manjim ekranima */
+        align-items: stretch;
     }
 }
 .auction-item {

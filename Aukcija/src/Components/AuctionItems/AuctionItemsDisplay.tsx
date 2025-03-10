@@ -30,6 +30,7 @@ function AuctionItemsDisplay() {
     const [auctions, setAuctions] = useState<AuctionItem[]>([]); // Type update here
     const [placeholder, setPlaceholder] = useState('Pretražite aukcije...');
     const [auctionCount, setAuctionCount] = useState(1);
+    const [isVisible, setIsVisible] = useState(false);
 
     useEffect(() => {
         if (location.pathname === '/' || location.pathname === '/admin/dashboard') {
@@ -188,8 +189,10 @@ const deleteAuctionItem = async (id: number) => {
 
     return (
         <div className="auction-container">
-            <div className="search-sort-container">
-                
+            <button className="toggle-search-btn" onClick={() => setIsVisible(!isVisible)}>
+                Pretraga
+            </button>
+            <div className={`search-sort-container ${isVisible ? "active" : ""}`}>
                 <input
                     type="text"
                     placeholder={placeholder}
