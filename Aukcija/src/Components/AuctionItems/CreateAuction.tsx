@@ -228,6 +228,15 @@ function CreateAuction() {
         setImages(prevImages => prevImages.filter((_, i) => i !== index));
     };
 
+    if (loading) {
+        return (
+            <div className="loading-container">
+                <div className="loading-spinner"></div>
+                <img src="/assets/logo1-1.png" alt="Loading..." className="loading-gif" />
+            </div>
+        );
+    }
+
     return (
         <div className="formContainer">
             <form onSubmit={createAuctionItem} style={{ display: 'flex' }}>
@@ -324,10 +333,7 @@ function CreateAuction() {
                         style={{ display: "none" }}
                     />
 
-                    {loading && <div className="loading-container">
-                        <div className="loading-spinner"></div>
-                        <img src="/assets/logo1-1.png" alt="Loading..." className="loading-gif" />
-                    </div>}
+                    
                     <div className="custom-file-upload">
                         <button type="button" onClick={() => document.getElementById("images")?.click()}>Odaberi slike</button>
                         <span className="fajl">{images.length > 0 ? `${images.length} odabranih fajlova` : "Nijedan fajl nije odabran"}</span>
