@@ -71,8 +71,8 @@
 }
 
 .user-icon {
-    width: 30px; /* Veličina ikone korisnika */
-    height: 30px; /* Veličina ikone korisnika */
+    width: 40px; /* Veličina ikone korisnika */
+    height: 40px; /* Veličina ikone korisnika */
     cursor: pointer; /* Kursor pointer za ikonu */
 }
 
@@ -102,9 +102,8 @@
 }
 
 .home-button {
-    width: 30px;
+    width: 40px;
     margin-top: 5px;
-    margin-right: -10px;
 }
 
 .login-register-links {
@@ -184,4 +183,6 @@ button.create-auction-btn:hover {
     cursor: pointer;
     margin-top: 25px;
     margin-left: 10px;
+    width: 60px;
+    height: 33px;
 }
