@@ -112,9 +112,9 @@ function App() {
           <Route
             path='/nova-aukcija'
             element={
-              
+              <ProtectedRoute>
                 <CreateAuction />
-            
+              </ProtectedRoute>
             }
           />
           <Route

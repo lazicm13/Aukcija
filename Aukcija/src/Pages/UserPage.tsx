@@ -95,7 +95,7 @@ function UserPage() {
                 <form onSubmit={handleSubmit}>
                     <div className="userpage-form">
                         <div className='form-group'>
-                            <label>Email adresa:</label>
+                            <label>Email adresa</label>
                             <input type='text' disabled readOnly value={userData.email}></input>
                         </div>
                         <div className="form-group">

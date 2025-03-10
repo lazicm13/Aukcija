@@ -51,6 +51,7 @@
     border-radius: 6px;
     margin-top: 15px;
     align-self: center;
+    justify-content: center;
 }
 
 .comment-form textarea {
@@ -107,11 +108,17 @@
 @media (max-width: 768px) {
     .comment-form {
         padding: 10px;
+        
+    }
+
+    .comment-form textarea{
+        width: 80%;
     }
 
     .comment-form button {
-        width: 100%;
+        width: 80%;
         padding: 10px;
+        align-self: center;
     }
     .comment-form{
         width: 80%;

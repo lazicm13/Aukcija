@@ -253,7 +253,7 @@ function CreateAuction() {
                         </div>
 
                         <div className="auction-duration">
-                            <label htmlFor="auction_duration">Trajanje aukcije</label>
+                            <label htmlFor="auction_duration">Trajanje aukcije:</label>
                             <select
                                 className="duration"
                                 id="auction_duration"
