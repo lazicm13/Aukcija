@@ -133,7 +133,7 @@ const deleteAuctionItem = async (id: number) => {
                 await getAuctionItems();
                 return;
             }
-            const response = await api.get(`/api/auctions?category=${selectedCategory}`);
+            const response = await api.get(`/api/auctions/?category=${selectedCategory}`);
             
             if (response.status === 200) {
                 setAuctions(response.data);

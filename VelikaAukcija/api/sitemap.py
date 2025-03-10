@@ -17,7 +17,7 @@ class StaticViewSitemap(Sitemap):
     changefreq = 'weekly'
 
     def items(self):
-        return ['home', 'about', 'contact']  # Staticke stranice koje želiš da indeksiraš
+        return ['/', '', 'contact']  # Staticke stranice koje želiš da indeksiraš
 
     def location(self, item):
         return reverse(item)

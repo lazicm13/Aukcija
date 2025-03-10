@@ -62,7 +62,7 @@ function CreateAuction() {
         }
 
         if (Number(current_price) < 100) {
-            newErrors.current_price = "Početna cena mora biti veca od 100 dinara.";
+            newErrors.current_price = "Minimalna cena je 100 dinara.";
             isValid = false;
         }
 
