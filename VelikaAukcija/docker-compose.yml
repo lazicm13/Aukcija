@@ -1,12 +1,6 @@
 version: '3'
 
 services:
-  db:
-    image: postgres
-    environment:
-      - POSTGRES_DB=postgres
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
   redis:
     image: redis:latest
     restart: always  # Osigurava da Redis ponovo pokrene ako padne
@@ -24,6 +18,7 @@ services:
       - redis  # Uverite se da web servis zavisi od Redis servisa
     environment:
       - CELERY_BROKER_URL=redis://red-cv8ri9vnoe9s73atfs0g:6379  # Ovo postavlja Redis kao broker za Celery
+      - CELERY_RESULT_BACKEND=redis://red-cv8ri9vnoe9s73atfs0g:6379
       - PYTHONPATH=/code/VelikaAukcija
       - DJANGO_SETTINGS_MODULE=backend.settings
 
@@ -40,12 +35,18 @@ services:
   celery:
     build: .
     command: celery -A backend worker --loglevel=info
+    environment:
+    - CELERY_BROKER_URL=redis://red-cv8ri9vnoe9s73atfs0g:6379  # Ovo postavlja Redis kao broker za Celery
+    - CELERY_RESULT_BACKEND=redis://red-cv8ri9vnoe9s73atfs0g:6379
     depends_on:
       - redis
       - db
 
   celery-beat:
     build: .
+    environment:
+    - CELERY_BROKER_URL=redis://red-cv8ri9vnoe9s73atfs0g:6379/0  # Ovo postavlja Redis kao broker za Celery
+    - CELERY_RESULT_BACKEND=redis://red-cv8ri9vnoe9s73atfs0g:6379
     command: celery -A backend beat --loglevel=info
     depends_on:
       - redis
