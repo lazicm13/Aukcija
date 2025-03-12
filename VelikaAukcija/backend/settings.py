@@ -16,7 +16,6 @@ from datetime import timedelta
 from dotenv import load_dotenv
 from corsheaders.defaults import default_headers as cors_default_headers
 import os
-from celery import Celery
 import cloudinary
 import cloudinary.uploader
 import cloudinary.api
