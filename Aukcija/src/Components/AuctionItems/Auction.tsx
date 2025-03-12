@@ -115,7 +115,7 @@ const Auction: React.FC = () => {
     useEffect(() => {
         const fetchUserData = async () => {
             try {
-                const response = await api.get('/api/current_user_data');
+                const response = await api.get('/api/current_user_data/');
                 setCurrentUser(response.data.id);
             } catch (error) {
                 console.error('Error fetching user data:', error);

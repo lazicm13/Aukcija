@@ -23,7 +23,7 @@ function CreateAuction() {
     useEffect(() => {
         const fetchUserData = async () => {
             try {
-                const response = await api.get('/api/current_user_data');
+                const response = await api.get('/api/current_user_data/');
                 setPhoneNumber(response.data.phone_number);
                 setCity(response.data.city);
             } catch (error) {

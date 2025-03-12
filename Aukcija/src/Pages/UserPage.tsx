@@ -22,7 +22,7 @@ function UserPage() {
 
         const fetchUserData = async () => {
             try {
-                const response = await api.get('/api/current_user_data');
+                const response = await api.get('/api/current_user_data/');
                 setUserData({
                     first_name: response.data.first_name || '',
                     phone_number: response.data.phone_number || '',
