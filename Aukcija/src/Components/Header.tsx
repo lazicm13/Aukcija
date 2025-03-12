@@ -49,7 +49,7 @@ function Header() {
   
   const fetchUsername = async () => {
     try {
-      const response = await api.get('api/username');
+      const response = await api.get('api/username/');
       if (response.status === 200) {
         setUserName(response.data.username);
         fetchUnreadNotificationsCount(); // Osvežava notifikacije nakon logovanja

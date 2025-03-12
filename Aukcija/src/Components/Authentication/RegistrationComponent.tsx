@@ -136,7 +136,6 @@ function RegistrationComponent() {
         try {
             const response = await api.post("/api/auth/google/", { id_token: credential });
             if (response.status === 200) {
-                alert("Google login successful!");
                 navigate('/');
             }
         } catch (error) {
