@@ -721,8 +721,9 @@ def send_report_email(id, reportText):
     
 
 @shared_task
-def send_email_task(subject, message, from_email, recipient_list):
-    send_mail(subject, message, from_email, recipient_list, fail_silently=False)
+def send_email_task(subject, message, recipient_list):
+    send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, recipient_list, fail_silently=False)
+    print('Mejl je uspesno poslat!')
 #endregion
 
         
