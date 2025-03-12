@@ -70,8 +70,8 @@ default_headers = list(cors_default_headers)
 
 
 
-CELERY_BROKER_URL = 'redis://redis:6379/0'
-CELERY_RESULT_BACKEND = 'redis://redis:6379/0'
+CELERY_BROKER_URL = 'redis://red-cv8ri9vnoe9s73atfs0g:6379'
+CELERY_RESULT_BACKEND = 'redis://red-cv8ri9vnoe9s73atfs0g:6379'
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_TIMEZONE = 'Europe/Belgrade'
