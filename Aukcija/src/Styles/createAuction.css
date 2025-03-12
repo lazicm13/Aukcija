@@ -280,6 +280,7 @@ label{
         display: flex;
         flex: 1;
         flex-direction: column; /* Vertikalni raspored elemenata */
+        border: 3px solid black;
     }
     
     /* Leva i desna strana forme */
