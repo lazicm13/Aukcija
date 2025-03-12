@@ -260,6 +260,11 @@ const AuctionItem: React.FC<AuctionItemProps> = ({ auction, onDelete }) => {
     };
 
     const openModal = () => {
+        if(currentUser == null)
+        {
+            navigate('/login');
+            return;
+        }
         if (newOffer !== '' && Number(newOffer) > (Number(currentPrice) + 9)) {
             setIsConfirmDialogOpen(true);
             setBidError('');
