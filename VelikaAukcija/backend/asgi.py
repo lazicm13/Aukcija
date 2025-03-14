@@ -9,11 +9,11 @@ from django.urls import path
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'VelikaAukcija.settings')
 
 # Glavna ASGI aplikacija
-application = ProtocolTypeRouter({
-    "http": get_asgi_application(),  # Upravlja HTTP zahtevima
-    "websocket": AuthMiddlewareStack(  # Povezivanje WebSocket-a sa consumer-om
-        URLRouter([
-            path("ws/chat/<int:chatroom_id>/", ChatConsumer.as_asgi()),  # WebSocket ruta
-        ])
-    ),
-})
+# application = ProtocolTypeRouter({
+#     "http": get_asgi_application(),  # Upravlja HTTP zahtevima
+#     "websocket": AuthMiddlewareStack(  # Povezivanje WebSocket-a sa consumer-om
+#         URLRouter([
+#             path("ws/chat/<int:chatroom_id>/", ChatConsumer.as_asgi()),  # WebSocket ruta
+#         ])
+#     ),
+# })
