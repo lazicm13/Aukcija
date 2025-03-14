@@ -3,11 +3,12 @@ import os
 from celery import Celery
 from celery.schedules import crontab
 
+
 # Postavi Django settings modul za Celery
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'backend.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'VelikaAukcija.backend.settings')
 
 # Kreiraj Celery aplikaciju
-app = Celery('backend')
+app = Celery('VelikaAukcija')
 
 # Učitaj Celery konfiguraciju iz Django settings-a
 app.config_from_object('django.conf:settings', namespace='CELERY')
