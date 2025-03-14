@@ -16,7 +16,7 @@ app.config_from_object('django.conf:settings', namespace='CELERY')
 # Podesi raspored zadataka
 app.conf.beat_schedule = {
     'check-auctions-status-every-5-minutes': {
-        'task': 'api.tasks.check_auctions_status',
+        'task': 'VelikaAukcija.api.tasks.check_auctions_status',
         'schedule': crontab(minute='*/5'),  # Ispravljeno na svakih 5 minuta
     },
 }
