@@ -86,9 +86,9 @@
 /* Dugmadi za slideshow */
 .prev1, .next1 {
     position: absolute;
-    top: 45%;
-    font-size: 2em;
-    color: white;
+    top: 40%;
+    font-size: 3em;
+    color: black;
     /* background-color: rgba(0, 0, 0, 0.5); */
     padding: 10px;
     cursor: pointer;
@@ -99,8 +99,8 @@
     background-color: rgba(0, 0, 0, 0.8);
 }
 
-.prev1 { left: 8%; }
-.next1 { right: 8%; }
+.prev1 { left: 5%; }
+.next1 { right: 5%; }
 
 /* Sekcija za nove ponude */
 .bid-section {
@@ -127,8 +127,9 @@
     display: flex;
     justify-content: center;
     gap: 15px;
-    margin-top: 20px;
     width: 64% !important;
+    margin: 0 auto;
+    margin-top: 30px;
 }
 
 .new-bid-container input {
