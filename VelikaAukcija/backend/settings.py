@@ -154,7 +154,7 @@ INSTALLED_APPS = [
     'django_celery_beat',
     'rest_framework',
     'corsheaders',
-    'backend.api',
+    'VelikaAukcija.api',
     'channels',
     'cloudinary',
     'django.contrib.sitemaps',
