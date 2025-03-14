@@ -7,8 +7,8 @@ from .models import Notification
 
 @shared_task
 def check_auctions_status():
-    Auction = importlib.import_module('api.models').AuctionItem
-    Bid = importlib.import_module('api.models').Bid
+    Auction = importlib.import_module('VelikaAukcija.api.models').AuctionItem
+    Bid = importlib.import_module('VelikaAukcija.api.models').Bid
     now = datetime.now()
 
     auctions = Auction.objects.filter(end_date__lte=now, is_finished=False)
