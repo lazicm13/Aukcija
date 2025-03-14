@@ -154,7 +154,7 @@ INSTALLED_APPS = [
     'django_celery_beat',
     'rest_framework',
     'corsheaders',
-    'api',
+    'backend.api',
     'channels',
     'cloudinary',
     'django.contrib.sitemaps',
