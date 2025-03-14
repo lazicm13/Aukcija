@@ -145,13 +145,13 @@ AUTH_USER_MODEL = 'api.CustomUser'
 # Application definition
 
 INSTALLED_APPS = [
-    'VelikaAukcija.api',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'VelikaAukcija.api',
     'django_celery_beat',
     'rest_framework',
     'corsheaders',
