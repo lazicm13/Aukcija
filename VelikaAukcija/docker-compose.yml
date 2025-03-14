@@ -6,8 +6,6 @@ services:
     restart: always
     ports:
       - "8000:8000"
-    depends_on:
-      - db
     environment:
       - CELERY_BROKER_URL=redis://red-cv8ri9vnoe9s73atfs0g:6379/0
       - CELERY_RESULT_BACKEND=redis://red-cv8ri9vnoe9s73atfs0g:6379/0
@@ -21,8 +19,6 @@ services:
       PGADMIN_DEFAULT_PASSWORD: admin
     ports:
       - "5050:80"
-    depends_on:
-      - db
 
   celery:
     build: .
@@ -30,8 +26,6 @@ services:
     environment:
       - CELERY_BROKER_URL=redis://red-cv8ri9vnoe9s73atfs0g:6379/0
       - CELERY_RESULT_BACKEND=redis://red-cv8ri9vnoe9s73atfs0g:6379/0
-    depends_on:
-      - db
 
   celery-beat:
     build: .
@@ -39,5 +33,3 @@ services:
     environment:
       - CELERY_BROKER_URL=redis://red-cv8ri9vnoe9s73atfs0g:6379/0
       - CELERY_RESULT_BACKEND=redis://red-cv8ri9vnoe9s73atfs0g:6379/0
-    depends_on:
-      - db
