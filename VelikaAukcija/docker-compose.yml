@@ -26,7 +26,7 @@ services:
 
   celery:
     build: .
-    command: celery -A backend worker --loglevel=info
+    command: celery -A VelikaAukcija.backend worker --loglevel=info
     environment:
       - CELERY_BROKER_URL=redis://red-cv8ri9vnoe9s73atfs0g:6379/0
       - CELERY_RESULT_BACKEND=redis://red-cv8ri9vnoe9s73atfs0g:6379/0
@@ -35,7 +35,7 @@ services:
 
   celery-beat:
     build: .
-    command: celery -A backend beat --loglevel=info
+    command: celery -A VelikaAukcija.backend beat --loglevel=info
     environment:
       - CELERY_BROKER_URL=redis://red-cv8ri9vnoe9s73atfs0g:6379/0
       - CELERY_RESULT_BACKEND=redis://red-cv8ri9vnoe9s73atfs0g:6379/0
